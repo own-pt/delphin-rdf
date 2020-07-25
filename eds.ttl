@@ -1,0 +1,66 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix eds:  <http://www.delph-in.net/rdf/eds#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+xsd:integer
+    a rdfs:Datatype .
+
+xsd:nonNegativeInteger
+    a rdfs:Datatype .
+
+xsd:positiveInteger
+    a rdfs:Datatype .
+
+owl:Thing
+    a owl:Class .
+
+eds:Event
+ a rdf:Class, owl:Class ;
+ rdfs:comment "A Event type node identifier."@en-us .
+
+eds:Individual
+ a rdf:Class, owl:Class ;
+ rdfs:comment "An Individual type node identifier."@en-us .
+
+eds:predicate
+    a rdf:Property, owl:DatatypeProperty ;
+    rdfs:comment "the predicate of a given node."@en-us ;
+    rdfs:domain eds:Node ;
+    rdfs:range xsd:string .
+
+eds:from
+    a rdf:Property, owl:DatatypeProperty ;
+    rdfs:comment "the predicate of a given node."@en-us ;
+    rdfs:domain eds:Node ;
+    rdfs:range xsd:positiveInteger .
+
+eds:to
+    a rdf:Property, owl:DatatypeProperty ;
+    rdfs:comment "the predicate of a given node."@en-us ;
+    rdfs:domain eds:Node ;
+    rdfs:range xsd:positiveInteger .
+
+eds:bv 
+    a rdf:Property, owl:ObjectProperty ;
+    rdfs:domain eds:Node ;
+    rdfs:range eds:Node .
+
+eds:role
+    a rdf:Property, owl:ObjectProperty ;
+    rdfs:domain eds:Node ;
+    rdfs:range eds:Node .
+
+eds:arg1
+    rdfs:subPropertyOf eds:role .
+
+eds:arg2
+    rdfs:subPropertyOf eds:role .
+
+eds:arg3
+    rdfs:subPropertyOf eds:role .
+
+eds:arg4
+    rdfs:subPropertyOf eds:role .
+

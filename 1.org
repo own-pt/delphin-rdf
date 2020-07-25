@@ -93,6 +93,8 @@ the file:eds.ttl.
     erg:num  erg:pl ;
     erg:pers "3"^^xsd:integer ;
     erg:pt   erg:pt ;
+    eds:from "4"^^xsd:integer ;
+    eds:to   "8"^^xsd:integer ;
     eds:predicate "_dog_n_1"^^xsd:string ;
     a eds:Individual .
 #+END_EXAMPLE
