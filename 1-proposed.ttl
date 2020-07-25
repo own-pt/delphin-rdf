@@ -1,0 +1,39 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix eds: <http://www.delph-in.net/rdf/eds#> .
+@prefix erg: <http://www.delph-in.net/rdf/eds#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/node/_1>
+    eds:bv <http://example.com/node/x3> ;
+    eds:predicate "udef_q"^^xsd:string .
+
+<http://example.com/node/e2>
+    erg:mood  erg:indicative ;
+    erg:perf  "false"^^xsd:boolean ;
+    erg:prog  true ;
+    erg:sf    erg:prop ;
+    erg:tense erg:pres ;
+    eds:arg1  <http://example.com/node/x3> ;
+    eds:predicate "_fight_v_1"^^xsd:string ;
+    eds:top true ;
+    a eds:Event .
+
+<http://example.com/node/e9>
+    erg:mood erg:indicative ;
+    erg:perf false ;
+    erg:prog false ;
+    erg:sf   erg:prop ;
+    erg:tense erg:untensed ;
+    eds:arg1 <http://example.com/node/x3> ;
+    eds:carg "2"^^xsd:integer ;
+    eds:predicate "card"^^xsd:string ;
+    a eds:Event .
+
+<http://example.com/node/x3>
+    erg:ind  true ;
+    erg:num  erg:pl ;
+    erg:pers "3"^^xsd:integer ;
+    erg:pt   erg:pt ;
+    eds:predicate "_dog_n_1"^^xsd:string ;
+    a eds:Individual .
+

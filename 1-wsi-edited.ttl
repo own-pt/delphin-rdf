@@ -1,0 +1,82 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix eds: <http://www.delph-in.net/rdf/eds#> .
+
+<http://example.com/node/_1>
+    eds:bv <http://example.com/node/x3> ;
+    eds:predicate "udef_q"^^<http://www.w3.org/2001/XMLSchema#string> ;
+    eds:role <http://example.com/node/x3> .
+
+<http://example.com/node/e2>
+    eds:MOOD <http://example.com/node/e2_MOOD> ;
+    eds:PERF <http://example.com/node/e2_PERF> ;
+    eds:PROG <http://example.com/node/e2_PROG> ;
+    eds:SF <http://example.com/node/e2_SF> ;
+    eds:TENSE <http://example.com/node/e2_TENSE> ;
+    eds:arg1 <http://example.com/node/x3> ;
+    eds:predicate "_fight_v_1"^^<http://www.w3.org/2001/XMLSchema#string> ;
+    eds:role <http://example.com/node/x3> ;
+    eds:top true ;
+    a eds:E, eds:I .
+
+<http://example.com/node/e2_MOOD>
+    a eds:indicative, eds:mood .
+
+<http://example.com/node/e2_PERF>
+    a eds:False, eds:bool .
+
+<http://example.com/node/e2_PROG>
+    a eds:True, eds:bool .
+
+<http://example.com/node/e2_SF>
+    a eds:prop, eds:sf .
+
+<http://example.com/node/e2_TENSE>
+    a eds:non-past, eds:pres, eds:tense, eds:tensed .
+
+<http://example.com/node/e9>
+    eds:MOOD <http://example.com/node/e9_MOOD> ;
+    eds:PERF <http://example.com/node/e9_PERF> ;
+    eds:PROG <http://example.com/node/e9_PROG> ;
+    eds:SF <http://example.com/node/e9_SF> ;
+    eds:TENSE <http://example.com/node/e9_TENSE> ;
+    eds:arg1 <http://example.com/node/x3> ;
+    eds:carg "2"^^<http://www.w3.org/2001/XMLSchema#string> ;
+    eds:predicate "card"^^<http://www.w3.org/2001/XMLSchema#string> ;
+    eds:role <http://example.com/node/x3> ;
+    a eds:E, eds:I .
+
+<http://example.com/node/e9_MOOD>
+    a eds:indicative, eds:mood .
+
+<http://example.com/node/e9_PERF>
+    a eds:False, eds:bool .
+
+<http://example.com/node/e9_PROG>
+    a eds:False, eds:bool .
+
+<http://example.com/node/e9_SF>
+    a eds:prop, eds:sf .
+
+<http://example.com/node/e9_TENSE>
+    a eds:tense, eds:untensed .
+
+<http://example.com/node/x3>
+    eds:IND <http://example.com/node/x3_IND> ;
+    eds:NUM <http://example.com/node/x3_NUM> ;
+    eds:PERS <http://example.com/node/x3_PERS> ;
+    eds:PT <http://example.com/node/x3_PT> ;
+    eds:predicate "_dog_n_1"^^<http://www.w3.org/2001/XMLSchema#string> ;
+    a eds:I, eds:P, eds:X .
+
+<http://example.com/node/x3_IND>
+    a eds:True, eds:bool .
+
+<http://example.com/node/x3_NUM>
+    a eds:num, eds:pl .
+
+<http://example.com/node/x3_PERS>
+    a <http://www.delph-in.net/rdf/eds#3>, eds:pers .
+
+<http://example.com/node/x3_PT>
+    a eds:pt .
+
