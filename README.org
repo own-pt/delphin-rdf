@@ -1,0 +1,10 @@
+#+title: DELPH-IN formats in RDF
+
+This repository is a temporary place to discuss how DELPH-IN formats
+can be represented in RDF.
+
+See file:1.org for one initial example of EDS representation.
+
+This can be consider a continuation of some discussion started in
+[[http://moin.delph-in.net/WeSearch/Rdf]].
+
