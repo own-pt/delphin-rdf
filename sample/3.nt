@@ -1,0 +1,162 @@
+# A skilled person is riding a bicycle on one wheel
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mrs: <http://depin-rdf/2020/mrs#> .
+@prefix mrsIns: <http://depin-rdf/2020/mrs-instance#> .
+
+mrsIns:mrs a mrs:MRS .
+
+mrsIns:h0 a mrs:Handle .
+mrsIns:h1 a mrs:Handle .
+mrsIns:h4 a mrs:Handle .
+mrsIns:h5 a mrs:Handle .
+mrsIns:h6 a mrs:Handle .
+mrsIns:h7 a mrs:Handle .
+mrsIns:h10 a mrs:Handle .
+mrsIns:h11 a mrs:Handle .
+mrsIns:h12 a mrs:Handle .
+mrsIns:h13 a mrs:Handle .
+mrsIns:h14 a mrs:Handle .
+mrsIns:h16 a mrs:Handle .
+mrsIns:h17 a mrs:Handle .
+mrsIns:h18 a mrs:Handle .
+mrsIns:h19 a mrs:Handle .
+
+mrsIns:e2 a mrs:Node .
+mrsIns:x3 a mrs:Node .
+mrsIns:e8 a mrs:Node .
+mrsIns:e9 a mrs:Node .
+mrsIns:x15 a mrs:Node .
+mrsIns:e14 a mrs:Node .
+mrsIns:e21 a mrs:Node .
+
+# describe RELS
+mrsIns:rels a mrs:RELS .
+mrsIns:mrs mrs:hasRELS mrsIns:rels .
+
+mrsIns:rels rdf:_1 _:rel1 .
+_:rel1 a mrs:ElementaryPredication .
+_:rel1 mrs:predicate "_a_q⟨0:1⟩" .
+_:rel1 mrs:label mrsIns:h4 .	
+_:rel1 mrs:variable mrsIns:x3 .
+_:rel1 mrs:arguments _:args1 .
+_:args1 a rdf:Bag .
+_:args1 rdf:_1 mrsIns:h5 .	# RSTR h5
+_:args1 rdf:_2 mrsIns:h6 .	# BODY h6
+
+mrsIns:rels rdf:_2 _:rel2 .
+_:rel2 a mrs:ElementaryPredication .
+_:rel2 mrs:predicate "_skilled_a_1⟨2:9⟩" .
+_:rel2 mrs:label mrsIns:h7 .
+_:rel2 mrs:variable mrsIns:e8 .
+_:rel2 mrs:arguments _:args2 .
+_:args2 a rdf:Bag .
+_:args2 rdf:_1 mrsIns:x3 .	# ARG1 x3
+
+mrsIns:rels rdf:_3 _:rel3 .
+_:rel3 a mrs:ElementaryPredication .
+_:rel3 mrs:predicate "_person_n_1⟨10:16⟩" .
+_:rel3 mrs:label mrsIns:h7 .
+_:rel3 mrs:variable mrsIns:x3 .
+_:rel3 mrs:arguments _:args3 .
+_:args3 a rdf:Bag .
+
+mrsIns:rels rdf:_4 _:rel4 .
+_:rel4 a mrs:ElementaryPredication .
+_:rel4 mrs:predicate "_ride_v_1⟨20:26⟩" .
+_:rel4 mrs:label mrsIns:h1 .
+_:rel4 mrs:variable mrsIns:e2 .
+_:rel4 mrs:arguments _:args4 .
+_:args4 a rdf:Bag .
+_:args4 rdf:_1 mrsIns:x3 .	# ARG1 x3
+_:args4 rdf:_2 mrsIns:x9 .	# AR21 x9
+
+mrsIns:rels rdf:_5 _:rel5 .
+_:rel5 a mrs:ElementaryPredication .
+_:rel5 mrs:predicate "_a_q⟨27:28⟩" .
+_:rel5 mrs:label mrsIns:h10 .
+_:rel5 mrs:variable mrsIns:x9 .
+_:rel5 mrs:arguments _:args5 .
+_:args5 a rdf:Bag .
+_:args5 rdf:_1 mrsIns:h12 .	# RSTR h11
+_:args5 rdf:_2 mrsIns:h13 .	# BODY h12
+
+mrsIns:rels rdf:_6 _:rel6 .
+_:rel6 a mrs:ElementaryPredication .
+_:rel6 mrs:predicate "_bicycle_n_1⟨29:36⟩" .
+_:rel6 mrs:label mrsIns:h13 .
+_:rel6 mrs:variable mrsIns:x9 .
+_:rel6 mrs:arguments _:args6 .
+_:args6 a rdf:Bag .
+
+mrsIns:rels rdf:_7 _:rel7 .
+_:rel7 a mrs:ElementaryPredication .
+_:rel7 mrs:predicate "_on_p_state⟨37:39⟩" .
+_:rel7 mrs:label mrsIns:h1 .
+_:rel7 mrs:variable mrsIns:e14 .
+_:rel7 mrs:arguments _:args7 .
+_:args7 a rdf:Bag .
+_:args7 rdf:_1 mrsIns:e2 .	# ARG1 e2
+_:args7 rdf:_2 mrsIns:x15 .	# ARG1 x15
+
+mrsIns:rels rdf:_8 _:rel8 .
+_:rel8 a mrs:ElementaryPredication .
+_:rel8 mrs:predicate "udef_q⟨40:43⟩" .
+_:rel8 mrs:label mrsIns:h16 .
+_:rel8 mrs:variable mrsIns:x15 .
+_:rel8 mrs:arguments _:args8 .
+_:args8 a rdf:Bag .
+_:args8 rdf:_1 mrsIns:h17 .	# RSTR h17
+_:args8 rdf:_2 mrsIns:h18 .	# BODY h18
+
+mrsIns:rels rdf:_9 _:rel9 .
+_:rel9 a mrs:ElementaryPredication .
+_:rel9 mrs:predicate "card⟨40:43⟩" .
+_:rel9 mrs:label mrsIns:h19 .
+_:rel9 mrs:variable mrsIns:e21 .
+_:rel9 mrs:arguments _:args9 .
+_:args9 a rdf:Bag .
+_:args9 rdf:_1 mrsIns:x15 .	# ARG1 x15
+_:args9 rdf:_2 "1"^^xsd:integer . # CARG 1
+
+mrsIns:rels rdf:_10 _:rel10 .
+_:rel10 a mrs:ElementaryPredication .
+_:rel10 mrs:predicate "_wheel_n_1⟨44:49⟩" .
+_:rel10 mrs:label mrsIns:h19 .
+_:rel10 mrs:variable mrsIns:x15 .
+_:rel10 mrs:arguments _:args10 .
+_:args10 a rdf:Bag .
+
+# describe HCONS
+mrsIns:hcons a mrs:HCONS .
+mrsIns:mrs mrs:hasHCONS mrsIns:hcons .
+
+mrsIns:hcons rdf:_1 _:cons1 .
+_:cons1 a mrs:Constraint .
+_:cons1 mrs:harg mrsIns:h11 .
+_:cons1 mrs:larg mrsIns:h13 .
+_:cons1 mrs:rel "qeq" .
+
+mrsIns:hcons rdf:_2 _:cons2 .
+_:cons a mrs:Constraint .
+_:cons mrs:harg mrsIns:h5 .
+_:cons mrs:larg mrsIns:h5 .
+_:cons mrs:rel "qeq" .
+
+mrsIns:hcons rdf:_3 _:cons3 .
+_:cons a mrs:Constraint .
+_:cons mrs:harg mrsIns:h17 .
+_:cons mrs:larg mrsIns:h19 .
+_:cons mrs:rel "qeq" .
+
+mrsIns:hcons rdf:_4 _:cons4 .
+_:cons a mrs:Constraint .
+_:cons mrs:harg mrsIns:h0 .
+_:cons mrs:larg mrsIns:h1 .
+_:cons mrs:rel "qeq" .
+
+# describe ICONS
+mrsIns:icons a mrs:ICONS .
+mrsIns:mrs mrs:hasICONS mrsIns:icons .

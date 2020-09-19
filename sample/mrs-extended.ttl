@@ -1,0 +1,121 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mrs: <http://www.w3.org/2020/mrs#> .
+
+
+
+# referençe: Michael Wayne Goodman, University of Washington
+# Semantic Operations for Transfer-based Machine Translation
+
+# possibly an owl:Class
+mrs:MRS
+    a rdf:Class ;
+    rdfs:comment "An mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
+
+# possibly an owl:Class
+mrs:Handle
+    a rdfs:Class ;
+    rdfs:comment ""@en-us .
+
+# possibly an owl:Class
+mrs:Node
+    a rdfs:Literal ;
+    rdfs:comment ""@en-us .
+
+mrs:top
+    a rdfs:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:Handle ;
+    rdfs:comment "The TOP global handle"@en-us .
+    
+mrs:index
+    a rdfs:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:Node ;
+    rdfs:comment "Global INDEX"@en-us .
+    
+# revisiting redundancy in rels
+mrs:RELS
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "Elementary Predications"@en-us .
+mrs:hasRELS
+    a rdf:Property;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:RELS .
+   
+
+# revisiting redundancy in hcons
+mrs:HCONS
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "Handle constraints"@en-us .
+mrs:hasHCONS
+    a rdf:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:HCONS ;
+    rdfs:comment ""@en-us .
+    
+# revisiting redundancy in icons
+mrs:ICONS
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "Individual constraints"@en-us .
+mrs:hasICONS
+    a rdf:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:ICONS ;
+    rdfs:comment ""@en-us .
+
+# Elementary predications have structure ⟨p, l, v, A⟩
+mrs:ElementaryPredication
+    a rdfs:Class ;
+    rdfs:comment "Quadruples like ⟨p, l, v, A⟩"@en-us .
+
+mrs:predicate
+    a rdfs:Property ;
+    rdfs:range rdfs:Literal ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment ""@en-us .
+
+mrs:label
+    a rdfs:Property ;
+    rdfs:range rdfs:Handle ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment ""@en-us .
+
+mrs:variable
+    a rdfs:Property ;
+    rdfs:range rdfs:Node ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment "Its own intrinsec handle"@en-us .
+
+mrs:arguments
+    a rdfs:Property ;
+    rdfs:range rdfs:Bag ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment ""@en-us .
+
+# Constraints are simple triples ⟨lhs, rel, rhs⟩
+# There are differences between HCONS and ICONS,
+# but for simplicity, we define in the same way.
+mrs:Constraint
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "simple triples ⟨lhs, rel, rhs⟩"@en-us .
+
+mrs:harg
+	a rdf:Property ;
+    rdfs:range rdfs:Resource ;
+    rdfs:domain mrs:Constraint ;
+    rdfs:comment ""@en-us .
+
+mrs:larg
+	a rdf:Property ;
+    rdfs:range rdfs:Resource ;
+    rdfs:domain mrs:Constraint ;
+    rdfs:comment ""@en-us .
+
+mrs:rel
+	a rdf:Property ;
+    rdfs:range rdfs:Resource ;
+    rdfs:domain mrs:Constraint ;
+    rdfs:comment ""@en-us .
+

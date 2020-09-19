@@ -1,0 +1,84 @@
+# Two dogs are fighting
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mrs: <http://depin-rdf/2020/mrs#> .
+@prefix mrsIns: <http://depin-rdf/2020/mrs-instance#> .
+
+
+mrsIns:mrs a mrs:MRS .
+
+mrsIns:h0 a mrs:Handle .
+mrsIns:h1 a mrs:Handle .
+mrsIns:h4 a mrs:Handle .
+mrsIns:h5 a mrs:Handle .
+mrsIns:h6 a mrs:Handle .
+mrsIns:h7 a mrs:Handle .
+
+mrsIns:e2 a mrs:Node .
+mrsIns:x3 a mrs:Node .
+mrsIns:e9 a mrs:Node .
+mrsIns:i10 a mrs:Node .
+
+# describe RELS
+mrsIns:rels a mrs:RELS .
+mrsIns:mrs mrs:hasRELS mrsIns:rels .
+
+mrsIns:rels rdf:_1 _:rel1 .
+_:rel1 a mrs:ElementaryPredication .
+_:rel1 mrs:predicate "udef_q⟨0:3⟩" .
+_:rel1 mrs:label mrsIns:h4 .
+_:rel1 mrs:variable mrsIns:x3 .
+_:rel1 mrs:arguments _:args1 .
+_:args1 a rdf:Bag .
+_:args1 rdf:_1 mrsIns:h5 .
+_:args1 rdf:_2 mrsIns:h6 .
+
+mrsIns:rels rdf:_2 _:rel2 .
+_:rel2 a mrs:ElementaryPredication .
+_:rel2 mrs:predicate "card⟨0:3⟩".
+_:rel2 mrs:label mrsIns:h7 .
+_:rel2 mrs:variable mrsIns:e9 .
+_:rel2 mrs:arguments _:args2 .
+_:args2 a rdf:Bag .
+_:args2 rdf:_1 mrsIns:x3 .
+_:args2 rdf:_2 "2"^^xsd:integer .
+
+mrsIns:rels rdf:_3 _:rel3.
+_:rel3 a mrs:ElementaryPredication .
+_:rel3 mrs:predicate "_dog_n_1⟨4:8⟩" .
+_:rel3 mrs:label mrsIns:h7 .
+_:rel3 mrs:variable mrsIns:x3 .
+_:rel3 mrs:arguments _:args3 .
+_:args3 a rdf:Bag .
+
+mrsIns:rels rdf:_4 _:rel4.
+_:rel4 a mrs:ElementaryPredication .
+_:rel4 mrs:predicate "_fight_v_1⟨13:21⟩" .
+_:rel4 mrs:label mrsIns:h1 .
+_:rel4 mrs:variable mrsIns:e2 .
+_:rel4 mrs:arguments _:args4 .
+_:args4 a rdf:Bag .
+_:args4 rdf:_1 mrsIns:x3 .
+_:args4 rdf:_2 mrsIns:i10 .
+
+# describe HCONS
+mrsIns:hcons a mrs:HCONS .
+mrsIns:mrs mrs:hasHCONS mrsIns:hcons .
+
+mrsIns:hcons rdf:_1 _:cons1 .
+_:cons1 a mrs:Constraint .
+_:cons1 mrs:harg mrsIns:h0 .
+_:cons1 mrs:larg mrsIns:h1 .
+_:cons1 mrs:rel "qeq" .
+
+mrsIns:hcons rdf:_2 _:cons2 .
+_:cons a mrs:Constraint .
+_:cons mrs:harg mrsIns:h5 .
+_:cons mrs:larg mrsIns:h7 .
+_:cons mrs:rel "qeq" .
+
+# describe ICONS
+mrsIns:icons a mrs:ICONS .
+mrsIns:mrs mrs:hasICONS mrsIns:icons .
