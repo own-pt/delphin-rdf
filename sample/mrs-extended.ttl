@@ -3,8 +3,6 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix mrs: <http://www.w3.org/2020/mrs#> .
 
-
-
 # referençe: Michael Wayne Goodman, University of Washington
 # Semantic Operations for Transfer-based Machine Translation
 
@@ -19,7 +17,7 @@ mrs:Handle
     rdfs:comment ""@en-us .
 
 # possibly an owl:Class
-mrs:Node
+mrs:Variable
     a rdfs:Literal ;
     rdfs:comment ""@en-us .
 
@@ -32,7 +30,7 @@ mrs:top
 mrs:index
     a rdfs:Property ;
     rdfs:domain mrs:MRS ;
-    rdfs:range mrs:Node ;
+    rdfs:range mrs:Variable ;
     rdfs:comment "Global INDEX"@en-us .
     
 # revisiting redundancy in rels
@@ -44,7 +42,6 @@ mrs:hasRELS
     rdfs:domain mrs:MRS ;
     rdfs:range mrs:RELS .
    
-
 # revisiting redundancy in hcons
 mrs:HCONS
 	rdfs:subClassOf rdf:Bag ;
@@ -84,7 +81,7 @@ mrs:label
 
 mrs:variable
     a rdfs:Property ;
-    rdfs:range rdfs:Node ;
+    rdfs:range rdfs:Variable ;
     rdfs:domain mrs:ElementaryPredication ;
     rdfs:comment "Its own intrinsec handle"@en-us .
 
@@ -119,3 +116,40 @@ mrs:rel
     rdfs:domain mrs:Constraint ;
     rdfs:comment ""@en-us .
 
+
+# Further ideas from last talk:
+
+# review types of objects defined: Literal, Class,
+# or owl types, for example.
+
+# specify kinds and meaning of arguments such as
+# REST, BODY, etc in RELS
+
+# remove blank nodes of bags and containeres for
+# RELS, HCONS, ICONS, for example
+
+# discuss generation of URIs for identifiation of
+# different rdf nodes: mrs, x12, e9, etc. Should
+# global prefix be defined by user?
+
+# specify meaning to diferent relations defined
+# in vocabulary for ICONS
+
+# specify kinds and meaning of relations wich are
+# qeq, lheq, or outscopes in HCONS
+
+# specify kinds and meaning of nodes types such
+# as x, e, i, u in NODES definition. Besides that,
+# add information about morfology in NODE, such
+# as TENSE, MOOD, PERS, etc
+
+# discuss differences of "abstract" and "surface"
+# predicates, wich are those wich starts or not
+# with undescore: _mouse_n_1 and compound
+
+# define differences between vocabulary defined
+# for mrs structures and erg structures.
+
+# add a supertype Variable defined for Handle and Node
+
+# semantic interface for diferent languages

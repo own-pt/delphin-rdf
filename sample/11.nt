@@ -1,5 +1,5 @@
 
-# Kids in red shirts are playing in the leaves
+# Two groups of people are playing football
 
 # prefixes
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -14,28 +14,26 @@ mrsi:mrs a mrs:MRS .
 # individual nodes declaration
 mrsi:e2 a mrs:Node .
 mrsi:x3 a mrs:Node .
-mrsi:e8 a mrs:Node .
-mrsi:x9 a mrs:Node .
-mrsi:e14 a mrs:Node .
+mrsi:e9 a mrs:Node .
+mrsi:x10 a mrs:Node .
 mrsi:i15 a mrs:Node .
-mrsi:e16 a mrs:Node .
-mrsi:x17 a mrs:Node .
+mrsi:x16 a mrs:Node .
 
 # individual handles declaration
 mrsi:h5 a mrs:Handle .
 mrsi:h6 a mrs:Handle .
-mrsi:h11 a mrs:Handle .
 mrsi:h12 a mrs:Handle .
+mrsi:h13 a mrs:Handle .
+mrsi:h18 a mrs:Handle .
 mrsi:h19 a mrs:Handle .
-mrsi:h20 a mrs:Handle .
 mrsi:h0 a mrs:Handle .
 mrsi:h1 a mrs:Handle .
 mrsi:h7 a mrs:Handle .
-mrsi:h13 a mrs:Handle .
-mrsi:h21 a mrs:Handle .
+mrsi:h14 a mrs:Handle .
+mrsi:h20 a mrs:Handle .
 mrsi:h4 a mrs:Handle .
-mrsi:h10 a mrs:Handle .
-mrsi:h18 a mrs:Handle .
+mrsi:h11 a mrs:Handle .
+mrsi:h17 a mrs:Handle .
 
 # describe RELS
 mrsi:rels a mrs:RELS .
@@ -54,97 +52,76 @@ _:args1 rdf:_2 mrsi:h6 .
 
 mrsi:rels rdf:_2 _:rel2 .
 _:rel2 a mrs:ElementaryPredication .
-_:rel2 mrs:predicate "_kid_n_1" .
+_:rel2 mrs:predicate "card" .
 _:rel2 mrs:label mrsi:h7 .
-_:rel2 mrs:variable mrsi:x3 .
+_:rel2 mrs:variable mrsi:e9 .
 _:rel2 mrs:arguments _:args2 .
 
 _:args2 a rdf:Bag .
-
+_:args2 rdf:_1 "2"^^xsd:integer .
+_:args2 rdf:_2 mrsi:x3 .
 
 mrsi:rels rdf:_3 _:rel3 .
 _:rel3 a mrs:ElementaryPredication .
-_:rel3 mrs:predicate "_in_p_loc" .
+_:rel3 mrs:predicate "_group_n_of" .
 _:rel3 mrs:label mrsi:h7 .
-_:rel3 mrs:variable mrsi:e8 .
+_:rel3 mrs:variable mrsi:x3 .
 _:rel3 mrs:arguments _:args3 .
 
 _:args3 a rdf:Bag .
-_:args3 rdf:_1 mrsi:x3 .
-_:args3 rdf:_2 mrsi:x9 .
+_:args3 rdf:_1 mrsi:x10 .
 
 mrsi:rels rdf:_4 _:rel4 .
 _:rel4 a mrs:ElementaryPredication .
 _:rel4 mrs:predicate "udef_q" .
-_:rel4 mrs:label mrsi:h10 .
-_:rel4 mrs:variable mrsi:x9 .
+_:rel4 mrs:label mrsi:h11 .
+_:rel4 mrs:variable mrsi:x10 .
 _:rel4 mrs:arguments _:args4 .
 
 _:args4 a rdf:Bag .
-_:args4 rdf:_1 mrsi:h11 .
-_:args4 rdf:_2 mrsi:h12 .
+_:args4 rdf:_1 mrsi:h12 .
+_:args4 rdf:_2 mrsi:h13 .
 
 mrsi:rels rdf:_5 _:rel5 .
 _:rel5 a mrs:ElementaryPredication .
-_:rel5 mrs:predicate "_red_a_1" .
-_:rel5 mrs:label mrsi:h13 .
-_:rel5 mrs:variable mrsi:e14 .
+_:rel5 mrs:predicate "_people_n_of" .
+_:rel5 mrs:label mrsi:h14 .
+_:rel5 mrs:variable mrsi:x10 .
 _:rel5 mrs:arguments _:args5 .
 
 _:args5 a rdf:Bag .
-_:args5 rdf:_1 mrsi:x9 .
+_:args5 rdf:_1 mrsi:i15 .
 
 mrsi:rels rdf:_6 _:rel6 .
 _:rel6 a mrs:ElementaryPredication .
-_:rel6 mrs:predicate "_shirt_n_1" .
-_:rel6 mrs:label mrsi:h13 .
-_:rel6 mrs:variable mrsi:x9 .
+_:rel6 mrs:predicate "_play_v_1" .
+_:rel6 mrs:label mrsi:h1 .
+_:rel6 mrs:variable mrsi:e2 .
 _:rel6 mrs:arguments _:args6 .
 
 _:args6 a rdf:Bag .
-
+_:args6 rdf:_1 mrsi:x3 .
+_:args6 rdf:_2 mrsi:x16 .
 
 mrsi:rels rdf:_7 _:rel7 .
 _:rel7 a mrs:ElementaryPredication .
-_:rel7 mrs:predicate "_play_v_1" .
-_:rel7 mrs:label mrsi:h1 .
-_:rel7 mrs:variable mrsi:e2 .
+_:rel7 mrs:predicate "udef_q" .
+_:rel7 mrs:label mrsi:h17 .
+_:rel7 mrs:variable mrsi:x16 .
 _:rel7 mrs:arguments _:args7 .
 
 _:args7 a rdf:Bag .
-_:args7 rdf:_1 mrsi:x3 .
-_:args7 rdf:_2 mrsi:i15 .
+_:args7 rdf:_1 mrsi:h18 .
+_:args7 rdf:_2 mrsi:h19 .
 
 mrsi:rels rdf:_8 _:rel8 .
 _:rel8 a mrs:ElementaryPredication .
-_:rel8 mrs:predicate "_in_p_state" .
-_:rel8 mrs:label mrsi:h1 .
-_:rel8 mrs:variable mrsi:e16 .
+_:rel8 mrs:predicate "_football_n_1" .
+_:rel8 mrs:label mrsi:h20 .
+_:rel8 mrs:variable mrsi:x16 .
 _:rel8 mrs:arguments _:args8 .
 
 _:args8 a rdf:Bag .
-_:args8 rdf:_1 mrsi:e2 .
-_:args8 rdf:_2 mrsi:x17 .
-
-mrsi:rels rdf:_9 _:rel9 .
-_:rel9 a mrs:ElementaryPredication .
-_:rel9 mrs:predicate "_the_q" .
-_:rel9 mrs:label mrsi:h18 .
-_:rel9 mrs:variable mrsi:x17 .
-_:rel9 mrs:arguments _:args9 .
-
-_:args9 a rdf:Bag .
-_:args9 rdf:_1 mrsi:h19 .
-_:args9 rdf:_2 mrsi:h20 .
-
-mrsi:rels rdf:_10 _:rel10 .
-_:rel10 a mrs:ElementaryPredication .
-_:rel10 mrs:predicate "_leaf_n_1" .
-_:rel10 mrs:label mrsi:h21 .
-_:rel10 mrs:variable mrsi:x17 .
-_:rel10 mrs:arguments _:args10 .
-
-_:args10 a rdf:Bag .
 
 
 # describe HCONS
@@ -165,14 +142,14 @@ _:hcons2 mrs:rel "qeq" .
 
 mrsi:hcons rdf:_3 _:hcons3 .
 _:hcons3 a mrs:Constraint .
-_:hcons3 mrs:harg mrsi:h11 .
-_:hcons3 mrs:larg mrsi:h13 .
+_:hcons3 mrs:harg mrsi:h12 .
+_:hcons3 mrs:larg mrsi:h14 .
 _:hcons3 mrs:rel "qeq" .
 
 mrsi:hcons rdf:_4 _:hcons4 .
 _:hcons4 a mrs:Constraint .
-_:hcons4 mrs:harg mrsi:h19 .
-_:hcons4 mrs:larg mrsi:h21 .
+_:hcons4 mrs:harg mrsi:h18 .
+_:hcons4 mrs:larg mrsi:h20 .
 _:hcons4 mrs:rel "qeq" .
 
 # describe ICONS
