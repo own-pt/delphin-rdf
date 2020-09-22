@@ -1,0 +1,155 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mrs: <http://www.w3.org/2020/mrs#> .
+
+# referençe: Michael Wayne Goodman, University of Washington
+# Semantic Operations for Transfer-based Machine Translation
+
+# possibly an owl:Class
+mrs:MRS
+    a rdf:Class ;
+    rdfs:comment "An mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
+
+# possibly an owl:Class
+mrs:Handle
+    a rdfs:Class ;
+    rdfs:comment ""@en-us .
+
+# possibly an owl:Class
+mrs:Variable
+    a rdfs:Literal ;
+    rdfs:comment ""@en-us .
+
+mrs:top
+    a rdfs:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:Handle ;
+    rdfs:comment "The TOP global handle"@en-us .
+    
+mrs:index
+    a rdfs:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:Variable ;
+    rdfs:comment "Global INDEX"@en-us .
+    
+# revisiting redundancy in rels
+mrs:RELS
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "Elementary Predications"@en-us .
+mrs:hasRELS
+    a rdf:Property;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:RELS .
+   
+# revisiting redundancy in hcons
+mrs:HCONS
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "Handle constraints"@en-us .
+mrs:hasHCONS
+    a rdf:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:HCONS ;
+    rdfs:comment ""@en-us .
+    
+# revisiting redundancy in icons
+mrs:ICONS
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "Individual constraints"@en-us .
+mrs:hasICONS
+    a rdf:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:ICONS ;
+    rdfs:comment ""@en-us .
+
+# Elementary predications have structure ⟨p, l, v, A⟩
+mrs:ElementaryPredication
+    a rdfs:Class ;
+    rdfs:comment "Quadruples like ⟨p, l, v, A⟩"@en-us .
+
+mrs:predicate
+    a rdfs:Property ;
+    rdfs:range rdfs:Literal ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment ""@en-us .
+
+mrs:label
+    a rdfs:Property ;
+    rdfs:range rdfs:Handle ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment ""@en-us .
+
+mrs:variable
+    a rdfs:Property ;
+    rdfs:range rdfs:Variable ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment "Its own intrinsec handle"@en-us .
+
+mrs:arguments
+    a rdfs:Property ;
+    rdfs:range rdfs:Bag ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:comment ""@en-us .
+
+# Constraints are simple triples ⟨lhs, rel, rhs⟩
+# There are differences between HCONS and ICONS,
+# but for simplicity, we define in the same way.
+mrs:Constraint
+	rdfs:subClassOf rdf:Bag ;
+    rdfs:comment "simple triples ⟨lhs, rel, rhs⟩"@en-us .
+
+mrs:harg
+	a rdf:Property ;
+    rdfs:range rdfs:Resource ;
+    rdfs:domain mrs:Constraint ;
+    rdfs:comment ""@en-us .
+
+mrs:larg
+	a rdf:Property ;
+    rdfs:range rdfs:Resource ;
+    rdfs:domain mrs:Constraint ;
+    rdfs:comment ""@en-us .
+
+mrs:rel
+	a rdf:Property ;
+    rdfs:range rdfs:Resource ;
+    rdfs:domain mrs:Constraint ;
+    rdfs:comment ""@en-us .
+
+
+# Further ideas from last talk:
+
+# review types of objects defined: Literal, Class,
+# or owl types, for example.
+
+# specify kinds and meaning of arguments such as
+# REST, BODY, etc in RELS
+
+# remove blank nodes of bags and containeres for
+# RELS, HCONS, ICONS, for example
+
+# discuss generation of URIs for identifiation of
+# different rdf nodes: mrs, x12, e9, etc. Should
+# global prefix be defined by user?
+
+# specify meaning to diferent relations defined
+# in vocabulary for ICONS
+
+# specify kinds and meaning of relations wich are
+# qeq, lheq, or outscopes in HCONS
+
+# specify kinds and meaning of nodes types such
+# as x, e, i, u in NODES definition. Besides that,
+# add information about morfology in NODE, such
+# as TENSE, MOOD, PERS, etc
+
+# discuss differences of "abstract" and "surface"
+# predicates, wich are those wich starts or not
+# with undescore: _mouse_n_1 and compound
+
+# define differences between vocabulary defined
+# for mrs structures and erg structures.
+
+# add a supertype Variable defined for Handle and Node
+
+# semantic interface for diferent languages

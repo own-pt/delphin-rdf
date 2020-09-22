@@ -1,0 +1,137 @@
+
+# A man is jumping into an empty pool
+
+# prefixes
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mrs: <http://depin-rdf/2020/mrs#> .
+@prefix mrsi: <http://depin-rdf/2020/mrs-instance#> .
+
+# mrs instance declaration
+mrsi:mrs a mrs:MRS .
+
+# individual nodes declaration
+mrsi:e2 a mrs:Node .
+mrsi:x3 a mrs:Node .
+mrsi:e8 a mrs:Node .
+mrsi:x9 a mrs:Node .
+mrsi:e14 a mrs:Node .
+mrsi:i15 a mrs:Node .
+mrsi:i16 a mrs:Node .
+
+# individual handles declaration
+mrsi:h5 a mrs:Handle .
+mrsi:h6 a mrs:Handle .
+mrsi:h11 a mrs:Handle .
+mrsi:h12 a mrs:Handle .
+mrsi:h0 a mrs:Handle .
+mrsi:h1 a mrs:Handle .
+mrsi:h7 a mrs:Handle .
+mrsi:h13 a mrs:Handle .
+mrsi:h4 a mrs:Handle .
+mrsi:h10 a mrs:Handle .
+
+# describe RELS
+mrsi:rels a mrs:RELS .
+mrsi:mrs mrs:hasRELS mrsi:rels .
+
+mrsi:rels rdf:_1 _:rel1 .
+_:rel1 a mrs:ElementaryPredication .
+_:rel1 mrs:predicate "_a_q" .
+_:rel1 mrs:label mrsi:h4 .
+_:rel1 mrs:variable mrsi:x3 .
+_:rel1 mrs:arguments _:args1 .
+
+_:args1 a rdf:Bag .
+_:args1 rdf:_1 mrsi:h5 .
+_:args1 rdf:_2 mrsi:h6 .
+
+mrsi:rels rdf:_2 _:rel2 .
+_:rel2 a mrs:ElementaryPredication .
+_:rel2 mrs:predicate "_man_n_1" .
+_:rel2 mrs:label mrsi:h7 .
+_:rel2 mrs:variable mrsi:x3 .
+_:rel2 mrs:arguments _:args2 .
+
+_:args2 a rdf:Bag .
+
+
+mrsi:rels rdf:_3 _:rel3 .
+_:rel3 a mrs:ElementaryPredication .
+_:rel3 mrs:predicate "_jump_v_1" .
+_:rel3 mrs:label mrsi:h1 .
+_:rel3 mrs:variable mrsi:e2 .
+_:rel3 mrs:arguments _:args3 .
+
+_:args3 a rdf:Bag .
+_:args3 rdf:_1 mrsi:x3 .
+
+mrsi:rels rdf:_4 _:rel4 .
+_:rel4 a mrs:ElementaryPredication .
+_:rel4 mrs:predicate "_into_p_dir" .
+_:rel4 mrs:label mrsi:h1 .
+_:rel4 mrs:variable mrsi:e8 .
+_:rel4 mrs:arguments _:args4 .
+
+_:args4 a rdf:Bag .
+_:args4 rdf:_1 mrsi:e2 .
+_:args4 rdf:_2 mrsi:x9 .
+
+mrsi:rels rdf:_5 _:rel5 .
+_:rel5 a mrs:ElementaryPredication .
+_:rel5 mrs:predicate "_a_q" .
+_:rel5 mrs:label mrsi:h10 .
+_:rel5 mrs:variable mrsi:x9 .
+_:rel5 mrs:arguments _:args5 .
+
+_:args5 a rdf:Bag .
+_:args5 rdf:_1 mrsi:h11 .
+_:args5 rdf:_2 mrsi:h12 .
+
+mrsi:rels rdf:_6 _:rel6 .
+_:rel6 a mrs:ElementaryPredication .
+_:rel6 mrs:predicate "_empty_a_of" .
+_:rel6 mrs:label mrsi:h13 .
+_:rel6 mrs:variable mrsi:e14 .
+_:rel6 mrs:arguments _:args6 .
+
+_:args6 a rdf:Bag .
+_:args6 rdf:_1 mrsi:x9 .
+_:args6 rdf:_2 mrsi:i15 .
+
+mrsi:rels rdf:_7 _:rel7 .
+_:rel7 a mrs:ElementaryPredication .
+_:rel7 mrs:predicate "_pool_n_of" .
+_:rel7 mrs:label mrsi:h13 .
+_:rel7 mrs:variable mrsi:x9 .
+_:rel7 mrs:arguments _:args7 .
+
+_:args7 a rdf:Bag .
+_:args7 rdf:_1 mrsi:i16 .
+
+# describe HCONS
+mrsi:hcons a mrs:HCONS .
+mrsi:mrs mrs:hasHCONS mrsi:hcons .
+
+mrsi:hcons rdf:_1 _:hcons1 .
+_:hcons1 a mrs:Constraint .
+_:hcons1 mrs:harg mrsi:h0 .
+_:hcons1 mrs:larg mrsi:h1 .
+_:hcons1 mrs:rel "qeq" .
+
+mrsi:hcons rdf:_2 _:hcons2 .
+_:hcons2 a mrs:Constraint .
+_:hcons2 mrs:harg mrsi:h5 .
+_:hcons2 mrs:larg mrsi:h7 .
+_:hcons2 mrs:rel "qeq" .
+
+mrsi:hcons rdf:_3 _:hcons3 .
+_:hcons3 a mrs:Constraint .
+_:hcons3 mrs:harg mrsi:h11 .
+_:hcons3 mrs:larg mrsi:h13 .
+_:hcons3 mrs:rel "qeq" .
+
+# describe ICONS
+mrsi:icons a mrs:ICONS .
+mrsi:mrs mrs:hasICONS mrsi:icons .
