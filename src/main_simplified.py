@@ -3,7 +3,7 @@ from delphin import eds
 from delphin.codecs import eds as edsnative
 
 # defining rdf templates
-import templates as tmp
+import templates_simplified as tmp
 
 def vars_to_rdf(variables):
     """
@@ -22,7 +22,7 @@ def vars_to_rdf(variables):
     
     return {"nodes": nodes, "handles":handles}
     
-def rels_args_to_rdf(index, args, m):
+def rels_args_to_rdf(args, m):
     """
     Turns mrs args into rdf descriptions defined in template.
 
@@ -31,10 +31,9 @@ def rels_args_to_rdf(index, args, m):
     """
 
     res = []
-    for hole in args:
-        if hole == "ARG0": continue
+    for hole, arg in args.items():
+        #if hole == "ARG0": continue
         
-        arg = args[hole]
         # defines the type of argument
         try:
             arg_type = type(eval(arg.title()))
@@ -49,8 +48,7 @@ def rels_args_to_rdf(index, args, m):
             else: template = tmp.rel_args_str
 
         res.append(template.format(
-            i = index,
-            j = len(res) + 1,
+            hole = hole,
             arg = arg))
         
     return res 
@@ -65,9 +63,9 @@ def rels_to_rdf(rels, m):
     """
 
     res = []
-    for i in range(len( rels)):
+    for i in range(len(rels)):
         rel = rels[i]
-        args = rels_args_to_rdf(i + 1, rel.args, m)
+        args = rels_args_to_rdf(rel.args, m)
 
         # formats using template
         res.append(tmp.rel.format(
@@ -179,4 +177,5 @@ for i in range(len(texts)):
     res = parse(texts[i], grm)
 
     # write output to file
-    with open("{}.nt".format(i+1), "w") as file: file.write(res)
+    print(res)
+    # with open("{}.nt".format(i+1), "w") as file: file.write(res)
