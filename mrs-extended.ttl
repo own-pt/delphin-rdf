@@ -12,56 +12,49 @@ mrs:MRS
     a rdf:Class ;
     rdfs:comment "An mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
 
-
-# possibly an owl:Class
-#mrs:Handle
-#    a rdfs:Class ;
-#    rdfs:comment ""@en-us .
-
-
 # making the type variable and its subtypes according to semi.vpm
 # erg?
-mrs:Variable
+mrs:Variable #tipo geral, similar ao tipo u.
     a rdfs:Class ;
     rdfs:comment ""@en-us .
 
-mrs:i
+mrs:ind
  a rdfs:Class ;
  rdfs:subClassOf mrs:Variable ;
  rdfs:comment "The type of individuals"@en-us.
 
-mrs:p
+mrs:pVar
  a rdfs:Class;
  rdfs:subClassOf mrs:Variable .
 # rdfs:comment "The type of non-events" . #definição estranha
 
-mrs:h
+mrs:handle
  a rdfs:Class ;
- rdfs:subClassOf mrs:p ;
+ rdfs:subClassOf mrs:pVar ;
  rdfs:comment "The type of handles"@en-us . 
 
-mrs:e
+mrs:event
  a rdfs:Class ;
- rdfs:subClassOf mrs:i ;
+ rdfs:subClassOf mrs:ind ;
  rdfs:comment "The type of events"@en-us .
 
-mrs:x
+mrs:ref-ind
  a rdfs:Class;
- rdfs:subClassOf mrs:p ;
- rdfs:subClassOf mrs:i ;
+ rdfs:subClassOf mrs:pVar ;
+ rdfs:subClassOf mrs:ind ;
  rdfs:comment "The type of referential indexes"@en-us . 
 
 
 mrs:top
     a rdfs:Property ;
     rdfs:domain mrs:MRS ;
-    rdfs:range mrs:h ;
+    rdfs:range mrs:handle ;
     rdfs:comment "The global TOP handle"@en-us .
     
 mrs:index
     a rdfs:Property ;
     rdfs:domain mrs:MRS ;
-    rdfs:range mrs:Variable ;
+    rdfs:range mrs:event;
     rdfs:comment "Global INDEX"@en-us .
     
 # revisiting redundancy in rels
@@ -100,17 +93,24 @@ mrs:ElementaryPredication
     a rdfs:Class ;
     rdfs:comment "Quadruples like ⟨p, l, v, A⟩"@en-us .
 
-mrs:predicate
-    a rdfs:Property ;
-    rdfs:range rdfs:Literal ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment ""@en-us .
+#review
+#mrs:predicate
+#    a rdfs:Property ;
+#    rdfs:range rdfs:Literal ;
+#    rdfs:domain mrs:ElementaryPredication ;
+#    rdfs:comment ""@en-us .
+
+mrs:hasPredicate
+ a rdfs:Predicate ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range mrs:predicate .
 
 mrs:label
     a rdfs:Property ;
     rdfs:domain mrs:ElementaryPredication ;	
     rdfs:range mrs:h ;
     rdfs:comment "A mapping of a predicate to the variable?"@en-us .
+
 
 # Constraints are simple triples ⟨lhs, rel, rhs⟩
 # There are differences between HCONS and ICONS,
@@ -167,6 +167,97 @@ mrs:eqRHS
  a rdf:Property ;
  rdfs:domain mrs:icons ;
  rdfs:range mrs:i .
+
+# Creating notion of predicate and its types
+# http://moin.delph-in.net/PredicateRfc
+mrs:predicate
+ a rdf:Class .
+
+mrs:surfacePredicate
+ rdfs:subClassOf mrs:predicate;
+ rdfs:comment "Represent overt words of sentence."@en-us .
+#Nem toda palavra que aparece é representada numa predicação também.
+
+mrs:abstractPredicate
+ rdfs:subClassOf mrs:predicate.
+ rdfs:comment "Represent non-lexical information."@en-us .
+
+# Pela "Note for Developers" do link acima, vamos dizer que a estrutura de predicados abstratos é a mesma descrita para os de superfícies
+
+mrs:pos
+ a rdf:Class .
+
+mrs:hasLemma
+ a rdf:Property ;
+ rdfs:domain mrs:predicate ;
+ rdfs:range rdfs:Literal .
+
+mrs:hasPos
+ a rdf:Property ;
+ rdfs:domain mrs:predicate ;
+ rdfs:range rdfs:pos .
+
+mrs:hasSense
+ a rdf:Property ;
+ rdfs:domain mrs:predicate ;
+ rdfs:range rdfs:Literal .
+
+# Defining parts of speech (PoS)
+# Based on http://moin.delph-in.net/RmrsPos
+
+mrs:n
+ a mrs:pos;
+ rdfs:comment "PoS tag dedicated to nouns."@en-us .
+
+mrs:v
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to verbs."@en-us .
+
+mrs:a
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to adjectives or adverbs. (?)"@en-us .
+
+mrs:j
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to adjectives."@en-us .
+
+mrs:r
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to adverbs."@en-us .
+
+mrs:s
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to verbal nouns (Korean and Japanese)."@en-us .
+
+mrs:c
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to conjuntions."@en-us .
+
+mrs:p
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to adpositions."@en-us .
+
+mrs:q
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to quantifiers."@en-us .
+
+mrs:x
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to other classes(?)."@en-us .
+
+mrs:u
+ a mrs:pos ;
+ rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
+
+
+#Defining person of discourse and the number
+
+mrs:pers
+ a rdfs:Property ;
+ rdfs:domain mrs:ref-ind ;
+ rdfs:range rdfs:Literal . #1, 2 e 3, mas talvez uma classe só pra isso?
+
+
 
 
 # Further ideas from last talk:
