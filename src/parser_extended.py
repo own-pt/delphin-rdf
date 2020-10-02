@@ -160,23 +160,3 @@ def parse(text, grm):
         rels = "\n".join(rels),
         hcons = "\n".join(hcons),
         icons = "\n".join(icons))
-
-texts = [
-    "Two dogs are fighting",
-    "A player is running with the ball",
-    "A skilled person is riding a bicycle on one wheel",
-    "A man in a black jacket is doing tricks on a motorbike",
-    "Two young women are sparring in a kickboxing fight",
-    "Kids in red shirts are playing in the leaves",
-    "A little girl is looking at a woman in costume",
-    "A lone biker is jumping in the air",
-    "A man is jumping into an empty pool",
-    "Four kids are doing backbends in the park",
-    "Two groups of people are playing football"]
-
-grm = input("gramatics file: ")
-for i in range(len(texts)):
-    res = parse(texts[i], grm)
-
-    # write output to file
-    with open("{}.nt".format(i+1), "w") as file: file.write(res)

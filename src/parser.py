@@ -3,7 +3,8 @@ from delphin import eds
 from delphin.codecs import eds as edsnative
 
 # defining rdf templates
-import templates_simplified as tmp
+#import templates_simplified as tmpt
+from templates import Simplified
 
 def vars_to_rdf(variables):
     """
@@ -15,14 +16,14 @@ def vars_to_rdf(variables):
     """
 
     nodes = [v for v in variables.keys() if not v[0]=="h"]
-    nodes = [tmp.node.format(var=node) for node in nodes]
+    nodes = [tmpt.node.format(var=node) for node in nodes]
 
     handles = [v for v in variables.keys() if v[0]=="h"]
-    handles = [tmp.handle.format(var=handle) for handle in handles]
+    handles = [tmpt.handle.format(var=handle) for handle in handles]
     
     return {"nodes": nodes, "handles":handles}
     
-def rels_args_to_rdf(args, m):
+def rels_args_to_rdf(args):
     """
     Turns mrs args into rdf descriptions defined in template.
 
@@ -37,15 +38,15 @@ def rels_args_to_rdf(args, m):
         # defines the type of argument
         try:
             arg_type = type(eval(arg.title()))
-            if arg_type == int: template = tmp.rel_args_int
-            elif arg_type == bool: template = tmp.rel_args_boo
-            elif arg_type == float: template = tmp.rel_args_dec
+            if arg_type == int: template = tmpt.rel_args_int
+            elif arg_type == bool: template = tmpt.rel_args_boo
+            elif arg_type == float: template = tmpt.rel_args_dec
             
             # default type in case of other type
-            else: template = tmp.rel_args_def
+            else: template = tmpt.rel_args_def
         except:
-            if arg in m.variables: template = tmp.rel_args_var
-            else: template = tmp.rel_args_str
+            if arg in m.variables: template = tmpt.rel_args_var
+            else: template = tmpt.rel_args_str
 
         res.append(template.format(
             hole = hole,
@@ -53,7 +54,7 @@ def rels_args_to_rdf(args, m):
         
     return res 
         
-def rels_to_rdf(rels, m):
+def rels_to_rdf(rels):
     """
     Turns mrs RELS into rdf descriptions given by the
     rel template defined in acordance with vocabulary.
@@ -65,12 +66,14 @@ def rels_to_rdf(rels, m):
     res = []
     for i in range(len(rels)):
         rel = rels[i]
-        args = rels_args_to_rdf(rel.args, m)
+        args = rels_args_to_rdf(rel.args)
 
         # formats using template
-        res.append(tmp.rel.format(
+        res.append(tmpt.rel.format(
             i = i + 1,
             label = rel.label,
+            cfrom = rel.cfrom,
+            cto = rel.cto,
             variable = rel.iv,
             predicate = rel.predicate,
             args = "\n".join(args)))
@@ -90,7 +93,7 @@ def hcons_to_rdf(hcons):
         cons = hcons[i]
         
         # formats using template
-        res.append(tmp.hcons.format(
+        res.append(tmpt.hcons.format(
             i = i + 1,
             harg = cons.hi,
             larg = cons.lo,
@@ -111,7 +114,7 @@ def icons_to_rdf(icons):
         cons = icons[i]
         
         # formats using template
-        res.append(tmp.hcons.format(
+        res.append(tmpt.hcons.format(
             i = i + 1,
             harg = cons.left,
             larg = cons.right,
@@ -120,19 +123,20 @@ def icons_to_rdf(icons):
     return res
 
 
-def parse(text, grm):
+def parse(text, prefix, identifier, grm):
     """
     Fomats the final rdf receiving all declarations defined
     in main.
 
     text: the original text (phare) parsed
-    prefixes: list of rdf prefixes used 
-    nodex: list of rdf nodes declaration
-    handles: list of rdf handles declaration
-    rels: list of rdf relation desciptions
-    hcons: list of rdf hcons desciptions
-    icons: list of rdf icons desciptions
+    prefix: URI prefixed to RDF output
+    identifier: text/resource identifier
     """
+
+    global m
+    global tmpt
+
+    tmpt = Simplified(prefix,identifier)
 
     response = ace.parse(grm, text)
     m = response.result(0).mrs()
@@ -143,7 +147,7 @@ def parse(text, grm):
     handles = vars["handles"]
 
     # parse rels
-    rels = rels_to_rdf(m.rels, m)
+    rels = rels_to_rdf(m.rels)
 
     # parse hcons
     hcons = hcons_to_rdf(m.hcons)
@@ -151,31 +155,10 @@ def parse(text, grm):
     # parse icons
     icons = icons_to_rdf(m.icons)
 
-    return tmp.main.format(
+    return tmpt.main.format(
         text = text,
         nodes = "\n".join(nodes),
         handles = "\n".join(handles),
         rels = "\n".join(rels),
         hcons = "\n".join(hcons),
         icons = "\n".join(icons))
-
-texts = [
-    "Two dogs are fighting",
-    "A player is running with the ball",
-    "A skilled person is riding a bicycle on one wheel",
-    "A man in a black jacket is doing tricks on a motorbike",
-    "Two young women are sparring in a kickboxing fight",
-    "Kids in red shirts are playing in the leaves",
-    "A little girl is looking at a woman in costume",
-    "A lone biker is jumping in the air",
-    "A man is jumping into an empty pool",
-    "Four kids are doing backbends in the park",
-    "Two groups of people are playing football"]
-
-grm = input("gramatics file: ")
-for i in range(len(texts)):
-    res = parse(texts[i], grm)
-
-    # write output to file
-    print(res)
-    # with open("{}.nt".format(i+1), "w") as file: file.write(res)
