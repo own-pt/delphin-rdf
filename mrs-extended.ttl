@@ -3,7 +3,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix mrs: <http://www.w3.org/2020/mrs#> .
 
-# referençe: Michael Wayne Goodman, University of Washington
+# reference: Michael Wayne Goodman, University of Washington
 # Semantic Operations for Transfer-based Machine Translation
 
 
@@ -56,7 +56,8 @@ mrs:index
     rdfs:domain mrs:MRS ;
     rdfs:range mrs:event;
     rdfs:comment "Global INDEX"@en-us .
-    
+
+
 # revisiting redundancy in rels
 mrs:RELS
 	rdfs:subClassOf rdf:Bag ;
@@ -66,21 +67,6 @@ mrs:hasRELS
     a rdf:Property;
     rdfs:domain mrs:MRS ;
     rdfs:range mrs:RELS .
-   
-# revisiting redundancy in hcons
-mrs:HCONS
-	rdfs:subClassOf rdf:Bag ;
-    rdfs:comment "Handle constraints"@en-us .
-mrs:hasHCONS
-    a rdf:Property ;
-    rdfs:domain mrs:MRS ;
-    rdfs:range mrs:HCONS ;
-    rdfs:comment ""@en-us .
-    
-# revisiting redundancy in icons
-mrs:ICONS
-	rdfs:subClassOf rdf:Bag ;
-    rdfs:comment "Individual constraints"@en-us .
 
 mrs:hasICONS
     a rdf:Property ;
@@ -89,16 +75,10 @@ mrs:hasICONS
     rdfs:comment ""@en-us .
 
 # Elementary predications have structure ⟨p, l, v, A⟩
+# http://moin.delph-in.net/MrsRfc
 mrs:ElementaryPredication
     a rdfs:Class ;
-    rdfs:comment "Quadruples like ⟨p, l, v, A⟩"@en-us .
-
-#review
-#mrs:predicate
-#    a rdfs:Property ;
-#    rdfs:range rdfs:Literal ;
-#    rdfs:domain mrs:ElementaryPredication ;
-#    rdfs:comment ""@en-us .
+    rdfs:comment "Quadruples like <h, p, a, s, c>"@en-us .
 
 mrs:hasPredicate
  a rdfs:Predicate ;
@@ -111,6 +91,10 @@ mrs:label
     rdfs:range mrs:h ;
     rdfs:comment "A mapping of a predicate to the variable?"@en-us .
 
+mrs:hasCarg #?
+ a rdfs:Property ;
+ rdfs:domain mrs:ElementaryPredication;
+ rdfs:range rdfs:Literal . #? O 1 pode ser CARG
 
 # Constraints are simple triples ⟨lhs, rel, rhs⟩
 # There are differences between HCONS and ICONS,
@@ -167,6 +151,7 @@ mrs:eqRHS
  a rdf:Property ;
  rdfs:domain mrs:icons ;
  rdfs:range mrs:i .
+#Pelo formalismo BNF em http://moin.delph-in.net/MrsRfc#Simple, faltou "lheq" e "outscopes". 
 
 # Creating notion of predicate and its types
 # http://moin.delph-in.net/PredicateRfc
@@ -250,14 +235,85 @@ mrs:u
  rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
 
 
-#Defining person of discourse and the number
+# Defining person of discourse and the number (on ref-indexes)
+# http://moin.delph-in.net/RmrsVpm
 
 mrs:pers
  a rdfs:Property ;
  rdfs:domain mrs:ref-ind ;
- rdfs:range rdfs:Literal . #1, 2 e 3, mas talvez uma classe só pra isso?
+ rdfs:range rdfs:Literal . #1, 2 e 3 e ! e *, mas talvez uma classe só pra isso?
+
+mrs:num
+ a rdfs:Property ;
+ rdfs:domain mrs:ref-ind ;
+ rdfs:range rdfs:Literal . # sg, pl e os desconhecidos, fazer uma classe?
+
+mrs:ind
+ a rdfs:Property ;
+ rdfs:domain mrs:ref-ind ;
+ rdfs:range rdfs:Literal . # Não sei o que é, mas parece poder ser +
+
+mrs:gend
+ a rdfs:Property ;
+ rdfs:domain mrs:ref-ind ;
+ rdfs:range rdfs:Literal . # ?, pode ser "n" (exemplo em "Do it.")
+
+mrs:PT
+ a rdfs:Property ;
+ rdfs:domain mrs:ref-ind ;
+ rdfs:range rdfs:Literal . # ?, pode ser "zero" e "std" (exemplo em "Do it.")
+
+# Defining some propoerties of events.
+#  erg? http://moin.delph-in.net/RmrsVpm
+mrs:tense
+ a rdfs:Property ;
+ rdfs:domain mrs:event ;
+ rdfs:range rdfs:Literal . # pres, past, fut, tensed, untensed, *, [e] (?)
+
+mrs:SF
+ a rdfs:Property ;
+ rdfs:domain mrs:event ;
+ rdfs:range rdfs:Literal . #? exemplo: prop, ques
+
+mrs:mood
+ a rdfs:Property ;
+ rdfs:domain mrs:event ;
+ rdfs:range rdfs:Literal . #?provavelmente indicativo, subjuntivo e imperativo.
+
+mrs:PROG
+ a rdfs:Property ;
+ rdfs:domain mrs:event ;
+ rdfs:range rdfs:Literal . #?? pode ser -
+
+mrs:PERF
+ a rdfs:Property ;
+ rdfs:domain mrs:event ;
+ rdfs:range rdfs:Literal . #?? pode ser -
 
 
+
+
+#REVIEW:
+#mrs:predicate
+#    a rdfs:Property ;
+#    rdfs:range rdfs:Literal ;
+#    rdfs:domain mrs:ElementaryPredication ;
+#    rdfs:comment ""@en-us .
+
+# revisiting redundancy in hcons
+#mrs:HCONS
+#	rdfs:subClassOf rdf:Bag ;
+#    rdfs:comment "Handle constraints"@en-us .
+#mrs:hasHCONS
+#    a rdf:Property ;
+#    rdfs:domain mrs:MRS ;
+#    rdfs:range mrs:HCONS ;
+#    rdfs:comment ""@en-us .
+    
+# revisiting redundancy in icons
+#mrs:ICONS
+#	rdfs:subClassOf rdf:Bag ;
+#    rdfs:comment "Individual constraints"@en-us .
 
 
 # Further ideas from last talk:
