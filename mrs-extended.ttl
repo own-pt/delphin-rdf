@@ -187,6 +187,7 @@ mrs:hasSense
  rdfs:domain mrs:predicate ;
  rdfs:range rdfs:Literal .
 
+
 # Defining parts of speech (PoS)
 # Based on http://moin.delph-in.net/RmrsPos
 
@@ -233,6 +234,14 @@ mrs:x
 mrs:u
  a mrs:pos ;
  rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
+
+
+# Creating parts of EP specific to quantifiers
+# Como colocar restrição para somente os predicados que são quantifiers sem OWL?
+mrs:rstr
+ a rdfs:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range mrs:handle .
 
 
 # Defining person of discourse and the number (on ref-indexes)
