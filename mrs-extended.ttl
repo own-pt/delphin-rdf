@@ -151,6 +151,7 @@ mrs:eqRHS
  a rdf:Property ;
  rdfs:domain mrs:icons ;
  rdfs:range mrs:i .
+
 #Pelo formalismo BNF em http://moin.delph-in.net/MrsRfc#Simple, faltou "lheq" e "outscopes". 
 
 # Creating notion of predicate and its types
@@ -187,6 +188,12 @@ mrs:hasSense
  rdfs:domain mrs:predicate ;
  rdfs:range rdfs:Literal .
 
+#Specific of abstract(?)
+mrs:name
+ a rdf:Property ;
+ rdfs:domain mrs:abstractPredicate ;
+ rdfs:range rdfs:Literal .
+ 
 
 # Defining parts of speech (PoS)
 # Based on http://moin.delph-in.net/RmrsPos
@@ -239,6 +246,11 @@ mrs:u
 # Creating parts of EP specific to quantifiers
 # Como colocar restrição para somente os predicados que são quantifiers sem OWL?
 mrs:rstr
+ a rdfs:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range mrs:handle .
+
+mrs:body
  a rdfs:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range mrs:handle .
@@ -299,6 +311,22 @@ mrs:PERF
  rdfs:domain mrs:event ;
  rdfs:range rdfs:Literal . #?? pode ser -
 
+#The rest of things in the EP:
+
+mrs:arg0
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range mrs:Variable .
+
+mrs:arg1
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range mrs:Variable .
+
+mrs:arg2
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range mrs:Variable .
 
 
 
