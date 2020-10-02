@@ -1,86 +1,121 @@
-"""
-We define some usefull templates:
-  main: defines main structure, wich receives all
-  a sort of defiintions such as Nodes, Handles, etc.
-  
-  rels: describes relations, wich receives label,
-  node, predicate, and other arguments.
+# http://example.com/2020/09/sample#1/mrs   -- instancia de MRS
+# http://example.com/2020/09/sample#1/h1    -- instancia de handle
+# http://example.com/2020/09/sample#1/x12   -- instancia de node
 
-  rels_args: describes other arguments in rels.
+# http://example.com/2020/09/sample?text=1#mrs   -- instancia de MRS
+# http://example.com/2020/09/sample?text=1#h1    -- instancia de handle
+# http://example.com/2020/09/sample?text=1#x12   -- instancia de node
 
-  hcons: describes the hcons, receiving arguments
-  and a reasonable relation among qeq, lheq, or outscopes.
+# http://example.com/2020/09/sample/1#mrs   -- instancia de MRS
+# http://example.com/2020/09/sample/1#h1    -- instancia de handle
+# http://example.com/2020/09/sample/1#x12   -- instancia de node
+# ...
 
-  icons: describes the icons, receiving arguments
-  and a reasonable predicate defined by a grammar.
-"""
+# http://example.com/2020/09/sample/1       -- instancia de MRS
+# http://example.com/2020/09/sample/1/h1    -- instancia de handle
+# http://example.com/2020/09/sample/1/x12   -- instancia de node
+# ...
 
-node = """mrsi:{var} a mrs:Node ."""
+#
+# mrsi1:mrs
+# mrsi1:h2
+# mrsi1:x12
+# ...
 
-handle = """mrsi:{var} a mrs:Handle ."""
+class Simplified:
+    """
+    Defines some usefull templates:
+    main: defines main structure, wich receives all
+    a sort of defiintions such as Nodes, Handles, etc.
+    
+    rels: describes relations, wich receives label,
+    node, predicate, and other arguments.
 
-main = """
-# {text}
+    rels_args: describes other arguments in rels.
+
+    hcons: describes the hcons, receiving arguments
+    and a reasonable relation among qeq, lheq, or outscopes.
+
+    icons: describes the icons, receiving arguments
+    and a reasonable predicate defined by a grammar.
+    """
+
+    def __init__(self,prefix,identifier):
+        """
+        Makes a template with prefix and identifier from folowing
+        meta-template.
+
+        prefix: general URI prefix wich attemps to describe
+        the purposes/fonts/repositories/organizations/etc.
+        related to the texts parsing purpose.
+
+        identifier: defines identification for specific text
+        from organization defined in the prefix.
+        """
+
+        self.node = f"""mrsi{identifier}:{{var}} a mrs:Node ."""
+        self.handle = f"""mrsi{identifier}:{{var}} a mrs:Handle ."""
+
+        self.main = f"""
+# {{text}}
 
 # prefixes
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix mrs: <http://depin-rdf/2020/mrs#> .
-@prefix mrsi: <http://depin-rdf/2020/mrs-instance#> .
+@prefix mrs: <http://www.depin-rdf/2020/09/mrs#> .
+
+@prefix  mrsi{identifier}: <{prefix}#{identifier}/> .
 
 # mrs instance declaration
-mrsi:mrs a mrs:MRS .
+mrsi{identifier}:mrs a mrs:MRS .
+
+# the text instance represented
+mrsi{identifier}:mrs mrs:text "{{text}}" .
 
 # individual nodes declaration
-{nodes}
+{{nodes}}
 
 # individual handles declaration
-{handles}
+{{handles}}
 
-# describe RELS
-mrsi:rels a mrs:RELS .
-mrsi:mrs mrs:hasRELS mrsi:rels .
-{rels}
+# describe RELS trough hasEP
+{{rels}}
 
-# describe HCONS
-mrsi:hcons a mrs:HCONS .
-mrsi:mrs mrs:hasHCONS mrsi:hcons .
-{hcons}
+# describe HCONS trough hasHCONS
+{{hcons}}
 
 # describe ICONS
-mrsi:icons a mrs:ICONS .
-mrsi:mrs mrs:hasICONS mrsi:icons .
-{icons}"""
+{{icons}}"""
 
-rel = """
-mrsi:rels rdf:_{i} _:rel{i} .
-_:rel{i} a mrs:ElementaryPredication .
-_:rel{i} mrs:predicate "{predicate}" .
-_:rel{i} mrs:label mrsi:{label} .
-_:rel{i} mrs:variable mrsi:{variable} .
-_:rel{i} mrs:arguments _:args{i} .
+        self.rel = f"""
+mrsi{identifier}:mrs rdf:hasEP mrsi{identifier}:EP{{i}} .
+mrsi{identifier}:EP{{i}} a mrs:ElementaryPredication .
+mrsi{identifier}:EP{{i}} mrs:label mrsi{identifier}:{{label}} .
+mrsi{identifier}:EP{{i}} mrs:predicate "{{predicate}}" .
+mrsi{identifier}:EP{{i}} mrs:cfrom "{{cfrom}}"^^xsd:integer .
+mrsi{identifier}:EP{{i}} mrs:cto "{{cto}}"^^xsd:integer  .
+mrsi{identifier}:EP{{i}} mrs:variable mrsi{identifier}:{{variable}} .
 
-_:args{i} a rdf:Bag .
-{args}"""
+{{args}}"""
 
-rel_args_var = """_:args{i} rdf:_{j} mrsi:{arg} ."""
-rel_args_int = """_:args{i} rdf:_{j} "{arg}"^^xsd:integer ."""
-rel_args_dec = """_:args{i} rdf:_{j} "{arg}"^^xsd:decimal ."""
-rel_args_boo = """_:args{i} rdf:_{j} "{arg}"^^xsd:boolean ."""
-rel_args_str = """_:args{i} rdf:_{j} "{arg}"^^xsd:string ."""
-rel_args_def = """_:args{i} rdf:_{j} "{arg}" .""" # literal as default
+        self.rel_args_var = f"""mrsi{identifier}:mrs rdf:{{hole}} mrsi{identifier}:{{arg}} ."""
+        self.rel_args_int = f"""mrsi{identifier}:mrs rdf:{{hole}} "{{arg}}"^^xsd:integer ."""
+        self.rel_args_dec = f"""mrsi{identifier}:mrs rdf:{{hole}} "{{arg}}"^^xsd:decimal ."""
+        self.rel_args_boo = f"""mrsi{identifier}:mrs rdf:{{hole}} "{{arg}}"^^xsd:boolean ."""
+        self.rel_args_str = f"""mrsi{identifier}:mrs rdf:{{hole}} "{{arg}}"^^xsd:string ."""
+        self.rel_args_def = f"""mrsi{identifier}:mrs rdf:{{hole}} "{{arg}}" .""" # literal as default
 
-hcons = """
-mrsi:hcons rdf:_{i} _:hcons{i} .
-_:hcons{i} a mrs:Constraint .
-_:hcons{i} mrs:harg mrsi:{harg} .
-_:hcons{i} mrs:larg mrsi:{larg} .
-_:hcons{i} mrs:rel "{rel}" ."""
+        self.hcons = f"""
+mrsi{identifier}:mrs mrs:hasHCONS mrsi{identifier}:hcons{{i}} .
+mrsi{identifier}:hcons{{i}} a mrs:HCONS .
+mrsi{identifier}:hcons{{i}} mrs:harg mrsi{identifier}:{{harg}} .
+mrsi{identifier}:hcons{{i}} mrs:larg mrsi{identifier}:{{larg}} .
+mrsi{identifier}:hcons{{i}} mrs:rel mrs:{{rel}} ."""
 
-icons = """
-mrsi:icons rdf:_{i} _:icons{i} .
-_:icons{i} a mrs:Constraint .
-_:icons{i} mrs:harg mrsi:{harg} .
-_:icons{i} mrs:larg mrsi:{larg} .
-_:icons{i} mrs:rel "{rel}" ."""
+        self.icons = f"""
+mrsi{identifier}:mrs mrs:hasICONS mrsi{identifier}:icons{{i}} .
+mrsi{identifier}:icons{{i}} a mrs:ICONS .
+mrsi{identifier}:icons{{i}} mrs:harg mrsi{identifier}:{{harg}} .
+mrsi{identifier}:icons{{i}} mrs:larg mrsi{identifier}:{{larg}} .
+mrsi{identifier}:icons{{i}} mrs:rel "{{rel}}" ."""
