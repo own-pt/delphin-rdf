@@ -6,26 +6,57 @@
 # referençe: Michael Wayne Goodman, University of Washington
 # Semantic Operations for Transfer-based Machine Translation
 
+
 # possibly an owl:Class
 mrs:MRS
     a rdf:Class ;
     rdfs:comment "An mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
 
+
 # possibly an owl:Class
-mrs:Handle
+#mrs:Handle
+#    a rdfs:Class ;
+#    rdfs:comment ""@en-us .
+
+
+# making the type variable and its subtypes according to semi.vpm
+# erg?
+mrs:Variable
     a rdfs:Class ;
     rdfs:comment ""@en-us .
 
-# possibly an owl:Class
-mrs:Variable
-    a rdfs:Literal ;
-    rdfs:comment ""@en-us .
+mrs:i
+ a rdfs:Class ;
+ rdfs:subClassOf mrs:Variable ;
+ rdfs:comment "The type of individuals"@en-us.
+
+mrs:p
+ a rdfs:Class;
+ rdfs:subClassOf mrs:Variable .
+# rdfs:comment "The type of non-events" . #definição estranha
+
+mrs:h
+ a rdfs:Class ;
+ rdfs:subClassOf mrs:p ;
+ rdfs:comment "The type of handles"@en-us . 
+
+mrs:e
+ a rdfs:Class ;
+ rdfs:subClassOf mrs:i ;
+ rdfs:comment "The type of events"@en-us .
+
+mrs:x
+ a rdfs:Class;
+ rdfs:subClassOf mrs:p ;
+ rdfs:subClassOf mrs:i ;
+ rdfs:comment "The type of referential indexes"@en-us . 
+
 
 mrs:top
     a rdfs:Property ;
     rdfs:domain mrs:MRS ;
-    rdfs:range mrs:Handle ;
-    rdfs:comment "The TOP global handle"@en-us .
+    rdfs:range mrs:h ;
+    rdfs:comment "The global TOP handle"@en-us .
     
 mrs:index
     a rdfs:Property ;
@@ -37,6 +68,7 @@ mrs:index
 mrs:RELS
 	rdfs:subClassOf rdf:Bag ;
     rdfs:comment "Elementary Predications"@en-us .
+    
 mrs:hasRELS
     a rdf:Property;
     rdfs:domain mrs:MRS ;
@@ -56,6 +88,7 @@ mrs:hasHCONS
 mrs:ICONS
 	rdfs:subClassOf rdf:Bag ;
     rdfs:comment "Individual constraints"@en-us .
+
 mrs:hasICONS
     a rdf:Property ;
     rdfs:domain mrs:MRS ;
@@ -75,46 +108,65 @@ mrs:predicate
 
 mrs:label
     a rdfs:Property ;
-    rdfs:range rdfs:Handle ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment ""@en-us .
-
-mrs:variable
-    a rdfs:Property ;
-    rdfs:range rdfs:Variable ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment "Its own intrinsec handle"@en-us .
-
-mrs:arguments
-    a rdfs:Property ;
-    rdfs:range rdfs:Bag ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment ""@en-us .
+    rdfs:domain mrs:ElementaryPredication ;	
+    rdfs:range mrs:h ;
+    rdfs:comment "A mapping of a predicate to the variable?"@en-us .
 
 # Constraints are simple triples ⟨lhs, rel, rhs⟩
 # There are differences between HCONS and ICONS,
-# but for simplicity, we define in the same way.
+# but for simplicity/generality we create the class of constraints in a general way. (tirar?)
 mrs:Constraint
-	rdfs:subClassOf rdf:Bag ;
+    a rdf:Class ;
     rdfs:comment "simple triples ⟨lhs, rel, rhs⟩"@en-us .
 
-mrs:harg
-	a rdf:Property ;
-    rdfs:range rdfs:Resource ;
-    rdfs:domain mrs:Constraint ;
-    rdfs:comment ""@en-us .
+mrs:hcons
+ rdfs:subClassOf mrs:Constraint ;
+ rdfs:comment "The class of the handle constraints"@en-us .
 
-mrs:larg
-	a rdf:Property ;
-    rdfs:range rdfs:Resource ;
-    rdfs:domain mrs:Constraint ;
-    rdfs:comment ""@en-us .
+mrs:icons
+ rdfs:subClassOf mrs:Constraint ;
+ rdfs:comment "The class of the individual constraints"@en-us .
 
-mrs:rel
-	a rdf:Property ;
-    rdfs:range rdfs:Resource ;
-    rdfs:domain mrs:Constraint ;
-    rdfs:comment ""@en-us .
+mrs:hashcons
+ a rdf:Property ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range mrs:hcons .
+
+mrs:hasicons
+ a rdf:Property ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range mrs:icons .
+
+mrs:qeqLHS
+ a rdf:Property ;
+ rdfs:domain mrs:hcons ;
+ rdfs:range mrs:h .
+
+mrs:qeqRHS
+ a rdf:Property ;
+ rdfs:domain mrs:hcons ;
+ rdfs:range mrs:h .
+
+# http://moin.delph-in.net/SaarlandIconsErg
+mrs:neqLHS
+ a rdf:Property ;
+ rdfs:domain mrs:icons ;
+ rdfs:range mrs:i .
+
+mrs:neqRHS
+ a rdf:Property ;
+ rdfs:domain mrs:icons ;
+ rdfs:range mrs:i .
+
+mrs:eqLHS
+ a rdf:Property ;
+ rdfs:domain mrs:icons ;
+ rdfs:range mrs:i .
+
+mrs:eqRHS
+ a rdf:Property ;
+ rdfs:domain mrs:icons ;
+ rdfs:range mrs:i .
 
 
 # Further ideas from last talk:
