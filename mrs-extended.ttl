@@ -5,7 +5,7 @@
 
 # reference: Michael Wayne Goodman, University of Washington
 # Semantic Operations for Transfer-based Machine Translation
-
+  
 
 # possibly an owl:Class
 mrs:MRS
@@ -60,8 +60,8 @@ mrs:index
 
 # revisiting redundancy in rels
 mrs:RELS
-	rdfs:subClassOf rdf:Bag ;
-    rdfs:comment "Elementary Predications"@en-us .
+ rdfs:subClassOf rdf:Bag ;
+ rdfs:comment "Elementary Predications"@en-us .
     
 mrs:hasRELS
     a rdf:Property;
@@ -245,12 +245,12 @@ mrs:u
 
 # Creating parts of EP specific to quantifiers
 # Como colocar restrição para somente os predicados que são quantifiers sem OWL?
-mrs:rstr
+mrs:RSTR
  a rdfs:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range mrs:handle .
 
-mrs:body
+mrs:BODY
  a rdfs:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range mrs:handle .
