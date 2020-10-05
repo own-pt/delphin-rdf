@@ -88,14 +88,17 @@ def icons_to_rdf(m, icons, graph, mrsi, ICONS, VARS):
         graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
 
 
-def mrs_to_rdf(m, prefix, identifier, out=None, text=None, format="turtle"):
+def mrs_to_rdf(m, prefix, identifier, graph=None, out=None, text=None, format="turtle"):
     """
     m: a pyldelphin mrs instance to be parsed into rdf.
     prefix: the URI prefixed to RDF representation
     identifier: an identifier for the parsed text
     """
 
-    graph = Graph(identifier=identifier)
+    # it's possible to use the same graph for
+    # different mrs representations if usefull
+    if graph == None: graph = Graph()
+    
     namespace = prefix + "/" + identifier + "/"
 
     mrsi = URIRef(namespace + "mrsi#mrs0")
@@ -111,8 +114,9 @@ def mrs_to_rdf(m, prefix, identifier, out=None, text=None, format="turtle"):
     hcons_to_rdf(m, m.hcons, graph, mrsi, HCONS, VARS)
     icons_to_rdf(m, m.icons, graph, mrsi, ICONS, VARS)
 
-    # add text as parameter
+    # add text as one graph node if it's given
     if text: graph.add((mrsi, MRS.text, Literal(text)))
+    # serializes graph if given an output file
     if out: graph.serialize(destination=out,format=format)
 
     return graph
