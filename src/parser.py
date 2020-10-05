@@ -1,164 +1,118 @@
-from delphin import ace
-from delphin import eds
-from delphin.codecs import eds as edsnative
+from rdflib import Graph
+from rdflib import Literal
+from rdflib import RDF
+from rdflib import RDFS
+from rdflib import URIRef
+from rdflib import Namespace
 
-# defining rdf templates
-#import templates_simplified as tmpt
-from templates import Simplified
+import delphin
+from delphin import mrs
 
-def vars_to_rdf(variables):
-    """
-    Turns mrs variables into rdf descriptions. At this first
-    description, we use only the names for description.
+# some usefull namespaces
+MRS = Namespace("http://delphin-rdf/mrs#")
 
-    variables: a list of defined variabes:. Note that in mrs
-    both, nodes and handles are pushed as varibles.
-    """
+def vars_to_rdf(m, variables, graph, VARS):
+    """"""
 
-    nodes = [v for v in variables.keys() if not v[0]=="h"]
-    nodes = [tmpt.node.format(var=node) for node in nodes]
-
-    handles = [v for v in variables.keys() if v[0]=="h"]
-    handles = [tmpt.handle.format(var=handle) for handle in handles]
-    
-    return {"nodes": nodes, "handles":handles}
-    
-def rels_args_to_rdf(args):
-    """
-    Turns mrs args into rdf descriptions defined in template.
-
-    args: a dicionary of arguments. Consider keys as holes
-    and values as the arguments of each hole.
-    """
-
-    res = []
-    for hole, arg in args.items():
-        #if hole == "ARG0": continue
+    for v in variables.keys():
+        # handle variables
+        if delphin.variable.type(v) == "h":
+            # here we should add the some more information
+            graph.add((VARS[v], RDF.type, MRS.Handle))
         
-        # defines the type of argument
-        try:
-            arg_type = type(eval(arg.title()))
-            if arg_type == int: template = tmpt.rel_args_int
-            elif arg_type == bool: template = tmpt.rel_args_boo
-            elif arg_type == float: template = tmpt.rel_args_dec
-            
-            # default type in case of other type
-            else: template = tmpt.rel_args_def
-        except:
-            if arg in m.variables: template = tmpt.rel_args_var
-            else: template = tmpt.rel_args_str
-
-        res.append(template.format(
-            hole = hole,
-            arg = arg))
+        # node variables
+        else:
+            # here we should add the some more information
+            graph.add((VARS[v], RDF.type, MRS.Node))
         
-    return res 
+def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
+    """"""
+    
+    for rel in range(len(rels)):
+        mrs_rel = rels[rel]
+        rdf_rel = RELS["EP{rel}".format(rel=rel)]
+
+        graph.add((mrsi, MRS.hasEP, rdf_rel))
+        graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
         
-def rels_to_rdf(rels):
-    """
-    Turns mrs RELS into rdf descriptions given by the
-    rel template defined in acordance with vocabulary.
-    
-    rels: a list of EPs objects defined for the text
-    m: the delphin.mrs object generated for the text
-    """
+        graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
+        graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv]))
+        graph.add((rdf_rel, MRS.predicate, Literal(mrs_rel.predicate)))
+        graph.add((rdf_rel, MRS.cto, Literal(mrs_rel.cto)))     # integer
+        graph.add((rdf_rel, MRS.cfrom, Literal(mrs_rel.cfrom))) # integer
 
-    res = []
-    for i in range(len(rels)):
-        rel = rels[i]
-        args = rels_args_to_rdf(rel.args)
-
-        # formats using template
-        res.append(tmpt.rel.format(
-            i = i + 1,
-            label = rel.label,
-            cfrom = rel.cfrom,
-            cto = rel.cto,
-            variable = rel.iv,
-            predicate = rel.predicate,
-            args = "\n".join(args)))
-    
-    return res
-
-def hcons_to_rdf(hcons):
-    """
-    Turns mrs HCONS into rdf descriptions givens by the
-    hcons template defined in acordance with vocabulary.
-    
-    hcons: a list of hcons objects defined for the text
-    """
-    
-    res = []
-    for i in range(len(hcons)):
-        cons = hcons[i]
+        # parse arguments
         
-        # formats using template
-        res.append(tmpt.hcons.format(
-            i = i + 1,
-            harg = cons.hi,
-            larg = cons.lo,
-            rel = cons.relation))
+        for hole, arg in mrs_rel.args.items():
+            #if hole == "ARG0": continue
+            # arg_type = type(eval(arg.title()))
 
-    return res
+            # mrs variables as arguments
+            if arg in m.variables:
+                graph.add((rdf_rel, MRS[hole], VARS[arg]))
+            # any other kind of arguments
+            else:
+                graph.add((rdf_rel, MRS[hole], Literal(arg)))
+    
 
-def icons_to_rdf(icons):
-    """
-    Turns mrs ICONS into rdf descriptions givens by the
-    icons template defined in acordance with vocabulary.
+def hcons_to_rdf(m, hcons, graph, mrsi, HCONS, VARS):
+    """"""
     
-    icons: a list of hcons objects defined for the text
-    """
-    
-    res = []
-    for i in range(len(icons)):
-        cons = icons[i]
+    for hcon in range(len(hcons)):
+        mrs_hcon = hcons[hcon]
+        rdf_hcon = HCONS["hcon{hcon}".format(hcon=hcon)]
         
-        # formats using template
-        res.append(tmpt.hcons.format(
-            i = i + 1,
-            harg = cons.left,
-            larg = cons.right,
-            rel = cons.relation))
+        # adds hcon to graph
+        graph.add((mrsi, MRS.hasHCONS, rdf_hcon))
+        graph.add((rdf_hcon, RDF.type, MRS.HCONS))
+        graph.add((rdf_hcon, MRS.harg, VARS[mrs_hcon.hi]))
+        graph.add((rdf_hcon, MRS.larg, VARS[mrs_hcon.lo]))
 
-    return res
+        # this relation sould be defined in MRS
+        graph.add((rdf_hcon, MRS.rel, MRS[mrs_hcon.relation]))
+
+def icons_to_rdf(m, icons, graph, mrsi, ICONS, VARS):
+    """"""
+    
+    for icon in range(len(icons)):
+        mrs_icon = icons[icon]
+        rdf_icon = ICONS["icon{icon}".format(icon=icon)]
+        
+        # adds hcon to graph
+        graph.add((mrsi, MRS.hasICONS, rdf_icon))
+        graph.add((rdf_icon, RDF.type, MRS.HCONS))
+        graph.add((rdf_icon, MRS.harg, VARS[mrs_icon.hi])) # should be revisited
+        graph.add((rdf_icon, MRS.larg, VARS[mrs_icon.lo])) # should be revisited
+
+        # this relation sould be defined by grammar
+        graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
 
 
-def parse(text, prefix, identifier, grm):
+def mrs_to_rdf(m, prefix, identifier, out=None, text=None, format="turtle"):
     """
-    Fomats the final rdf receiving all declarations defined
-    in main.
-
-    text: the original text (phare) parsed
-    prefix: URI prefixed to RDF output
-    identifier: text/resource identifier
+    m: a pyldelphin mrs instance to be parsed into rdf.
+    prefix: the URI prefixed to RDF representation
+    identifier: an identifier for the parsed text
     """
 
-    global m
-    global tmpt
+    graph = Graph(identifier=identifier)
+    namespace = prefix + "/" + identifier + "/"
 
-    tmpt = Simplified(prefix,identifier)
+    mrsi = URIRef(namespace + "mrsi#mrs0")
+    graph.add((mrsi, RDF.type, mrs.MRS))
 
-    response = ace.parse(grm, text)
-    m = response.result(0).mrs()
+    VARS = Namespace(namespace + "variables#")
+    RELS = Namespace(namespace + "rels#")
+    HCONS = Namespace(namespace + "hcons#")
+    ICONS = Namespace(namespace + "icons#")
 
-    # parse nodes, handles 
-    vars = vars_to_rdf(m.variables)
-    nodes = vars["nodes"]
-    handles = vars["handles"]
+    vars_to_rdf(m, m.variables, graph, VARS)
+    rels_to_rdf(m, m.rels, graph, mrsi, RELS, VARS)
+    hcons_to_rdf(m, m.hcons, graph, mrsi, HCONS, VARS)
+    icons_to_rdf(m, m.icons, graph, mrsi, ICONS, VARS)
 
-    # parse rels
-    rels = rels_to_rdf(m.rels)
+    # add text as parameter
+    if text: graph.add((mrsi, MRS.text, Literal(text)))
+    if out: graph.serialize(destination=out,format=format)
 
-    # parse hcons
-    hcons = hcons_to_rdf(m.hcons)
-
-    # parse icons
-    icons = icons_to_rdf(m.icons)
-
-    return tmpt.main.format(
-        text = text,
-        nodes = "\n".join(nodes),
-        handles = "\n".join(handles),
-        rels = "\n".join(rels),
-        hcons = "\n".join(hcons),
-        icons = "\n".join(icons))
+    return graph
