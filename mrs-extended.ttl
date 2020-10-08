@@ -1,8 +1,8 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix mrs: <http://www.w3.org/2020/mrs#> .
-@prefix vpm: <http://www.w3.org/2020/mrs/vpm#> .
+@prefix mrs: <http://www.delph-in.net/rdf/mrs#> .
+@prefix vpm: <http://www.delph-in.net/rdf/mrs/vpm#> .
 
 
 # reference: Michael Wayne Goodman, University of Washington
