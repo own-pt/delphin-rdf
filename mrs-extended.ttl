@@ -1,155 +1,347 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix mrs: <http://www.w3.org/2020/mrs#> .
+@prefix mrs: <http://www.delph-in.net/schema/mrs#> .
+@prefix erg: <http://www.delph-in.net/schema/erg#> .
+@prefix vpm: <http://www.delph-in.net/schema/mrs/vpm#> .
 
-# referençe: Michael Wayne Goodman, University of Washington
+
+# reference: Michael Wayne Goodman, University of Washington
 # Semantic Operations for Transfer-based Machine Translation
+  
 
 # possibly an owl:Class
 mrs:MRS
-    a rdf:Class ;
+    a rdfs:Class ;
     rdfs:comment "An mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
 
-# possibly an owl:Class
-mrs:Handle
+# making the type variable and its subtypes according to semi.vpm
+# erg?
+vpm:u #tipo geral, similar ao tipo u.
     a rdfs:Class ;
     rdfs:comment ""@en-us .
 
-# possibly an owl:Class
-mrs:Variable
-    a rdfs:Literal ;
-    rdfs:comment ""@en-us .
+vpm:i
+ a rdfs:Class ;
+ rdfs:subClassOf vpm:u ;
+ rdfs:comment "The type of individuals"@en-us .
 
+vpm:p
+ a rdfs:Class;
+ rdfs:subClassOf vpm:u .
+ rdfs:comment "The type of non-events"@en-us .
+
+vpm:h
+ a rdfs:Class ;
+ rdfs:subClassOf vpm:p ;
+ rdfs:comment "The type of handles"@en-us . 
+
+vpm:e
+ a rdfs:Class ;
+ rdfs:subClassOf vpm:i ;
+ rdfs:comment "The type of events"@en-us .
+
+vpm:x
+ a rdfs:Class;
+ rdfs:subClassOf vpm:p ;
+ rdfs:subClassOf vpm:i ;
+ rdfs:comment "The type of referential indexes"@en-us . 
+
+# On MRS:
 mrs:top
     a rdfs:Property ;
     rdfs:domain mrs:MRS ;
-    rdfs:range mrs:Handle ;
-    rdfs:comment "The TOP global handle"@en-us .
+    rdfs:range vpm:h ;
+    rdfs:comment "The global TOP handle"@en-us .
     
 mrs:index
     a rdfs:Property ;
     rdfs:domain mrs:MRS ;
-    rdfs:range mrs:Variable ;
+    rdfs:range vpm:e;
     rdfs:comment "Global INDEX"@en-us .
-    
+
+
+# Creating notion of predicate and its types
+# http://moin.delph-in.net/PredicateRfc
+mrs:Predicate
+ a rdfs:Class .
+
+mrs:SurfacePredicate
+ rdfs:subClassOf mrs:Predicate;
+ rdfs:comment "Represent overt words of sentence."@en-us .
+#Nem toda palavra que aparece é representada numa predicação também.
+
+mrs:AbstractPredicate
+ rdfs:subClassOf mrs:Predicate.
+ rdfs:comment "Represent non-lexical information."@en-us .
+
+# Pela "Note for Developers" do link acima, vamos dizer que a estrutura de predicados abstratos é a mesma descrita para os de superfícies
+
+mrs:Pos
+ a rdfs:Class .
+
+mrs:hasLemma
+ a rdf:Property ;
+ rdfs:domain mrs:Predicate ;
+ rdfs:range rdfs:Literal .
+
+mrs:hasPos
+ a rdf:Property ;
+ rdfs:domain mrs:Predicate ;
+ rdfs:range mrs:Pos .
+
+mrs:hasSense
+ a rdf:Property ;
+ rdfs:domain mrs:Predicate ;
+ rdfs:range rdfs:Literal .
+
+#Specific of abstract(?)
+mrs:name
+ a rdf:Property ;
+ rdfs:domain mrs:AbstractPredicate ;
+ rdfs:range rdfs:Literal .
+
+
+# Elementary predications have structure ⟨p, l, v, A⟩
+# http://moin.delph-in.net/MrsRfc
+mrs:ElementaryPredication
+    a rdfsClass ;
+    rdfs:comment "Quadruples like <h, p, a, s, c>"@en-us .
+
+mrs:hasPredicate
+ a rdfs:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range mrs:Predicate .
+
+mrs:label
+    a rdfs:Property ;
+    rdfs:domain mrs:ElementaryPredication ;	
+    rdfs:range vpm:h ;
+    rdfs:comment "A mapping of a predicate to the variable?"@en-us .
+
+mrs:hasCarg #?
+ a rdfs:Property ;
+ rdfs:domain mrs:ElementaryPredication;
+ rdfs:range rdfs:Literal . #? O 1 pode ser CARG
+
+# Constraints are simple triples ⟨lhs, rel, rhs⟩
+# There are differences between HCONS and ICONS,
+# but for simplicity/generality we create the class of constraints in a general way. (tirar?)
+mrs:Constraint
+    a rdfs:Class ;
+    rdfs:comment "simple triples ⟨lhs, rel, rhs⟩"@en-us .
+
+mrs:Hcons
+ rdfs:subClassOf mrs:Constraint ;
+ rdfs:comment "The class of the handle constraints"@en-us .
+
+mrs:Icons
+ rdfs:subClassOf mrs:Constraint ;
+ rdfs:comment "The class of the individual constraints"@en-us .
+
+mrs:hasHcons
+ a rdf:Property ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range mrs:Hcons .
+
+mrs:hasIcons
+ a rdf:Property ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range mrs:Icons .
+
+mrs:qeqLHS
+ a rdf:Property ;
+ rdfs:domain mrs:Hcons ;
+ rdfs:range vpm:h .
+
+mrs:qeqRHS
+ a rdf:Property ;
+ rdfs:domain mrs:Hcons ;
+ rdfs:range vpm:h .
+
+# http://moin.delph-in.net/SaarlandIconsErg
+mrs:neqLHS
+ a rdf:Property ;
+ rdfs:domain mrs:Icons ;
+ rdfs:range vpm:i .
+
+mrs:neqRHS
+ a rdf:Property ;
+ rdfs:domain mrs:Icons ;
+ rdfs:range vpm:i .
+
+mrs:eqLHS
+ a rdf:Property ;
+ rdfs:domain mrs:Icons ;
+ rdfs:range vpm:i .
+
+mrs:eqRHS
+ a rdf:Property ;
+ rdfs:domain mrs:Icons ;
+ rdfs:range vpm:i .
+
+#According to BNF in http://moin.delph-in.net/MrsRfc#Simple, the "outscopes" and "lheq" are still needed.
+
+# Defining parts of speech (PoS)
+# Based on http://moin.delph-in.net/RmrsPos
+
+mrs:n
+ a mrs:Pos;
+ rdfs:comment "PoS tag dedicated to nouns."@en-us .
+
+mrs:v
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to verbs."@en-us .
+
+mrs:a
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to adjectives or adverbs. (?)"@en-us .
+
+mrs:j
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to adjectives."@en-us .
+
+mrs:r
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to adverbs."@en-us .
+
+mrs:s
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to verbal nouns (Korean and Japanese)."@en-us .
+
+mrs:c
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to conjuntions."@en-us .
+
+mrs:p
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to adpositions."@en-us .
+
+mrs:q
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to quantifiers."@en-us .
+
+mrs:x
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to other classes(?)."@en-us .
+
+mrs:u
+ a mrs:Pos ;
+ rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
+
+
+# Creating parts of EP specific to quantifiers
+# Como colocar restrição para somente os predicados que são quantifiers sem OWL?
+mrs:rstr
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range vpm:h .
+
+mrs:body
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range vpm:h .
+
+
+# Defining person of discourse and the number (on ref-indexes)
+# http://moin.delph-in.net/RmrsVpm
+
+mrs:pers
+ a rdf:Property ;
+ rdfs:domain vpm:x ;
+ rdfs:range rdfs:Literal . #1, 2 e 3 e ! e *, mas talvez uma classe só pra isso?
+
+mrs:num
+ a rdf:Property ;
+ rdfs:domain vpm:x ;
+ rdfs:range rdfs:Literal . # sg, pl e os desconhecidos, fazer uma classe?
+
+mrs:ind
+ a rdf:Property ;
+ rdfs:domain vpm:x ;
+ rdfs:range rdfs:Literal . # Não sei o que é, mas parece poder ser +
+
+mrs:gend
+ a rdf:Property ;
+ rdfs:domain vpm:x ;
+ rdfs:range rdfs:Literal . # genero
+
+mrs:PT
+ a rdf:Property ;
+ rdfs:domain vpm:x ;
+ rdfs:range rdfs:Literal . # ?, pode ser "zero", "std" (exemplo em "Do it.")
+
+# Defining some propoerties of events.
+#  erg? http://moin.delph-in.net/RmrsVpm
+mrs:tense
+ a rdf:Property ;
+ rdfs:domain vpm:e ;
+ rdfs:range rdfs:Literal . # pres, past, fut, tensed, untensed, *, [e] (?)
+
+mrs:SF
+ a rdf:Property ;
+ rdfs:domain vpm:e ;
+ rdfs:range rdfs:Literal . #? exemplo: prop, ques
+
+mrs:mood
+ a rdf:Property ;
+ rdfs:domain vpm:e ;
+ rdfs:range rdfs:Literal . #?provavelmente indicativo, subjuntivo e imperativo.
+
+mrs:prog
+ a rdf:Property ;
+ rdfs:domain vpm:e ;
+ rdfs:range rdfs:Literal . #?? pode ser +, -
+
+mrs:perf
+ a rdf:Property ;
+ rdfs:domain vpm:e ;
+ rdfs:range rdfs:Literal . #?? pode ser -
+
+#The rest of things in the EP:
+
+mrs:arg0
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range vpm:u .
+
+mrs:arg1
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range vpm:u .
+
+mrs:arg2
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range vpm:u .
+
+
+
 # revisiting redundancy in rels
 mrs:RELS
-	rdfs:subClassOf rdf:Bag ;
-    rdfs:comment "Elementary Predications"@en-us .
+ rdfs:subClassOf rdf:Bag ;
+ rdfs:comment "Elementary Predications"@en-us .
+    
 mrs:hasRELS
     a rdf:Property;
     rdfs:domain mrs:MRS ;
     rdfs:range mrs:RELS .
-   
-# revisiting redundancy in hcons
-mrs:HCONS
-	rdfs:subClassOf rdf:Bag ;
-    rdfs:comment "Handle constraints"@en-us .
-mrs:hasHCONS
-    a rdf:Property ;
-    rdfs:domain mrs:MRS ;
-    rdfs:range mrs:HCONS ;
-    rdfs:comment ""@en-us .
-    
-# revisiting redundancy in icons
-mrs:ICONS
-	rdfs:subClassOf rdf:Bag ;
-    rdfs:comment "Individual constraints"@en-us .
+
 mrs:hasICONS
     a rdf:Property ;
     rdfs:domain mrs:MRS ;
     rdfs:range mrs:ICONS ;
     rdfs:comment ""@en-us .
 
-# Elementary predications have structure ⟨p, l, v, A⟩
-mrs:ElementaryPredication
-    a rdfs:Class ;
-    rdfs:comment "Quadruples like ⟨p, l, v, A⟩"@en-us .
-
-mrs:predicate
-    a rdfs:Property ;
-    rdfs:range rdfs:Literal ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment ""@en-us .
-
-mrs:label
-    a rdfs:Property ;
-    rdfs:range rdfs:Handle ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment ""@en-us .
-
-mrs:variable
-    a rdfs:Property ;
-    rdfs:range rdfs:Variable ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment "Its own intrinsec handle"@en-us .
-
-mrs:arguments
-    a rdfs:Property ;
-    rdfs:range rdfs:Bag ;
-    rdfs:domain mrs:ElementaryPredication ;
-    rdfs:comment ""@en-us .
-
-# Constraints are simple triples ⟨lhs, rel, rhs⟩
-# There are differences between HCONS and ICONS,
-# but for simplicity, we define in the same way.
-mrs:Constraint
-	rdfs:subClassOf rdf:Bag ;
-    rdfs:comment "simple triples ⟨lhs, rel, rhs⟩"@en-us .
-
-mrs:harg
-	a rdf:Property ;
-    rdfs:range rdfs:Resource ;
-    rdfs:domain mrs:Constraint ;
-    rdfs:comment ""@en-us .
-
-mrs:larg
-	a rdf:Property ;
-    rdfs:range rdfs:Resource ;
-    rdfs:domain mrs:Constraint ;
-    rdfs:comment ""@en-us .
-
-mrs:rel
-	a rdf:Property ;
-    rdfs:range rdfs:Resource ;
-    rdfs:domain mrs:Constraint ;
-    rdfs:comment ""@en-us .
-
-
-# Further ideas from last talk:
-
-# review types of objects defined: Literal, Class,
-# or owl types, for example.
-
-# specify kinds and meaning of arguments such as
-# REST, BODY, etc in RELS
-
-# remove blank nodes of bags and containeres for
-# RELS, HCONS, ICONS, for example
-
+# TO DO:
+#
+# Differentiate with more caution the SEMI, the ERG, the VPM and the MRS.
+#
 # discuss generation of URIs for identifiation of
 # different rdf nodes: mrs, x12, e9, etc. Should
 # global prefix be defined by user?
-
-# specify meaning to diferent relations defined
-# in vocabulary for ICONS
-
-# specify kinds and meaning of relations wich are
-# qeq, lheq, or outscopes in HCONS
-
-# specify kinds and meaning of nodes types such
-# as x, e, i, u in NODES definition. Besides that,
-# add information about morfology in NODE, such
-# as TENSE, MOOD, PERS, etc
-
-# discuss differences of "abstract" and "surface"
-# predicates, wich are those wich starts or not
-# with undescore: _mouse_n_1 and compound
-
+#
 # define differences between vocabulary defined
 # for mrs structures and erg structures.
-
-# add a supertype Variable defined for Handle and Node
-
+#
 # semantic interface for diferent languages
