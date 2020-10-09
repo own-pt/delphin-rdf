@@ -12,7 +12,7 @@
 # possibly an owl:Class
 mrs:MRS
  a rdfs:Class ;
- rdfs:comment "An mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
+ rdfs:comment "A mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
 
 # making the type variable and its subtypes according to semi.vpm and erg.smi
 # http://svn.delph-in.net/erg/tags/1214/etc/erg.smi
@@ -45,7 +45,7 @@ erg:x
  a rdfs:Class ;
  rdfs:subClassOf erg:p ;
  rdfs:subClassOf erg:i ;
- rdfs:comment "The type of referential indexes"@en-us . 
+rdfs:comment "The type of referential indexes"@en-us . 
 
 # On MRS:
 mrs:top
@@ -80,7 +80,7 @@ mrs:AbstractPredicate
 mrs:Pos
  a rdfs:Class ;
  rdfs:comment "The class dedicated to the possible Parts of Speech (PoS)"@en-us.
-# Putting on MRS not ERG because of http://moin.delph-in.net/RmrsPos.
+ # Putting on MRS not ERG because of http://moin.delph-in.net/RmrsPos.
 
 mrs:hasLemma
  a rdf:Property ;
@@ -192,7 +192,6 @@ mrs:eq
 mrs:neq
  a mrs:Class;
  rdfs:subClassOf mrs:Icons;
-
 
 #According to BNF in http://moin.delph-in.net/MrsRfc#Simple, the "outscopes" and "lheq" are still needed.
 
@@ -323,9 +322,7 @@ mrs:arg0
 mrs:arg1
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:u .
-
-mrs:arg2
+ rdfs:range erg:u .mrs:arg2
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range erg:u .
@@ -345,8 +342,6 @@ mrs:arg
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range erg:u .
-
-
 
 
 # revisiting redundancy in rels
