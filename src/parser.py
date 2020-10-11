@@ -9,7 +9,8 @@ import delphin
 from delphin import mrs
 
 # some usefull namespaces
-MRS = Namespace("http://delphin-rdf/mrs#")
+MRS = Namespace("http://www.delph-in.net/schema/mrs#")
+ERG = Namespace("http://www.delph-in.net/schema/erg#")
 
 def vars_to_rdf(m, variables, graph, VARS):
     """"""
@@ -81,8 +82,13 @@ def icons_to_rdf(m, icons, graph, mrsi, ICONS, VARS):
         # adds hcon to graph
         graph.add((mrsi, MRS.hasICONS, rdf_icon))
         graph.add((rdf_icon, RDF.type, MRS.HCONS))
+<<<<<<< HEAD
         graph.add((rdf_icon, MRS.harg, VARS[mrs_icon.hi])) # should be revisited
         graph.add((rdf_icon, MRS.larg, VARS[mrs_icon.lo])) # should be revisited
+=======
+        graph.add((rdf_icon, MRS.harg, VARS[mrs_icon.left])) # should be revisited
+        graph.add((rdf_icon, MRS.larg, VARS[mrs_icon.right])) # should be revisited
+>>>>>>> rademaker/master
 
         # this relation sould be defined by grammar
         graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
@@ -102,7 +108,11 @@ def mrs_to_rdf(m, prefix, identifier, graph=None, out=None, text=None, format="t
     namespace = prefix + "/" + identifier + "/"
 
     mrsi = URIRef(namespace + "mrsi#mrs0")
+<<<<<<< HEAD
     graph.add((mrsi, RDF.type, mrs.MRS))
+=======
+    graph.add((mrsi, RDF.type, MRS.MRS))
+>>>>>>> rademaker/master
 
     VARS = Namespace(namespace + "variables#")
     RELS = Namespace(namespace + "rels#")
