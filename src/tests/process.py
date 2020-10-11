@@ -6,7 +6,9 @@ from delphin.codecs import eds as edsnative
 from delphin.codecs import simplemrs
 from delphin.codecs import dmrx
 
-import parser as p
+# import parser as p
+from delphin.rdf import parser as p
+ 
 from rdflib import Graph
 from rdflib import Literal
 from rdflib import RDF
