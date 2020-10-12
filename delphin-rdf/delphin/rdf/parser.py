@@ -12,7 +12,7 @@ from delphin import mrs
 MRS = Namespace("http://www.delph-in.net/schema/mrs#")
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 
-def vars_to_rdf(m, variables, graph, VARS):
+def __vars_to_rdf__(m, variables, graph, VARS):
     """"""
 
     for v in variables.keys():
@@ -26,7 +26,7 @@ def vars_to_rdf(m, variables, graph, VARS):
             # here we should add the some more information
             graph.add((VARS[v], RDF.type, MRS.Node))
         
-def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
+def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
     """"""
     
     for rel in range(len(rels)):
@@ -56,7 +56,7 @@ def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
                 graph.add((rdf_rel, MRS[hole], Literal(arg)))
     
 
-def hcons_to_rdf(m, hcons, graph, mrsi, HCONS, VARS):
+def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
     """"""
     
     for hcon in range(len(hcons)):
@@ -72,7 +72,7 @@ def hcons_to_rdf(m, hcons, graph, mrsi, HCONS, VARS):
         # this relation sould be defined in MRS
         graph.add((rdf_hcon, MRS.rel, MRS[mrs_hcon.relation]))
 
-def icons_to_rdf(m, icons, graph, mrsi, ICONS, VARS):
+def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
     """"""
     
     for icon in range(len(icons)):
@@ -110,10 +110,10 @@ def mrs_to_rdf(m, prefix, identifier, graph=None, out=None, text=None, format="t
     HCONS = Namespace(namespace + "hcons#")
     ICONS = Namespace(namespace + "icons#")
 
-    vars_to_rdf(m, m.variables, graph, VARS)
-    rels_to_rdf(m, m.rels, graph, mrsi, RELS, VARS)
-    hcons_to_rdf(m, m.hcons, graph, mrsi, HCONS, VARS)
-    icons_to_rdf(m, m.icons, graph, mrsi, ICONS, VARS)
+    __vars_to_rdf__(m, m.variables, graph, VARS)
+    __rels_to_rdf__(m, m.rels, graph, mrsi, RELS, VARS)
+    __hcons_to_rdf__(m, m.hcons, graph, mrsi, HCONS, VARS)
+    __icons_to_rdf__(m, m.icons, graph, mrsi, ICONS, VARS)
 
     # add text as one graph node if it's given
     if text: graph.add((mrsi, MRS.text, Literal(text)))
