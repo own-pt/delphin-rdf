@@ -8,27 +8,15 @@ from delphin.codecs import dmrx
 
 # import parser as p
 from delphin.rdf import parser as p
- 
 from rdflib import Graph
-from rdflib import Literal
-from rdflib import RDF
-from rdflib import RDFS
-from rdflib import URIRef
-from rdflib import Namespace
+import argparse
 
-
-ts = itsdb.TestSuite('~/hpsg/terg/tsdb/gold/mrs')
+parser = argparse.ArgumentParser()
+parser.add_argument("profile", help="profile path")
+ts = itsdb.TestSuite(parser.parse_args().profile)
 graph = Graph()
 for row in tsql.select('i-id mrs', ts):
     m = simplemrs.decode(row[1])
-    p.mrs_to_rdf(m, "http://example.com", row[0], graph)
+    p.mrs_to_rdf(m, "http://example.com/example", row[0], graph)
 
-graph.serialize(destination="teste.ttl",format="turtle")
-
-
-"""
-http://example.com/{item}/{mrsid}/HCONS/{relid}
-http://example.com/{item}/{mrsid}/ICONS/{relid}
-http://example.com/{item}/{mrsid}/RELS/{relid}
-http://example.com/{item}/{mrsid}/VARIABLES/{varid}
-"""
+graph.serialize(destination="test.ttl",format="turtle")
