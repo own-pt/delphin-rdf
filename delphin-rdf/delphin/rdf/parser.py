@@ -14,10 +14,17 @@ ERG = Namespace("http://www.delph-in.net/schema/erg#")
 
 def __vars_to_rdf__(m, variables, graph, VARS):
     """"""
-    for v in variables.items():
-        graph.add((VARS[v[0]], RDF.type, ERG[delphin.variable.type(v[0])]))
-        for props in v[1].items():
-            graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
+
+    for v in variables.keys():
+        # handle variables
+        if delphin.variable.type(v) == "h":
+            # here we should add the some more information
+            graph.add((VARS[v], RDF.type, MRS.Handle))
+        
+        # node variables
+        else:
+            # here we should add the some more information
+            graph.add((VARS[v], RDF.type, MRS.Node))
         
 def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
     """"""
@@ -25,31 +32,13 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
     for rel in range(len(rels)):
         mrs_rel = rels[rel]
         rdf_rel = RELS["EP{rel}".format(rel=rel)]
-        pred_rel = RELS["EP{rel}#predicate".format(rel=rel)]
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
         
         graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
         graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv]))
-#         graph.add((rdf_rel, MRS.hasPredicate, Literal(mrs_rel.predicate)))
-        #To improve:
-        graph.add((rdf_rel, MRS.hasPredicate, pred_rel))
-        splittedPredicate = mrs_rel.predicate.split('_')
-        #Surface predicates are written as _lemma_PoS_sense
-        #Abstracts are not certain, but don't start with _.
-        if (splittedPredicate[0] == ''):
-            graph.add((pred_rel, RDF.type, MRS.SurfacePredicate))
-            graph.add((pred_rel, MRS.hasLemma, Literal(splittedPredicate[1])))
-            graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[2]]))
-            if len(splittedPredicate) == 4: #nem todos tem sense?
-                graph.add((pred_rel, MRS.hasSense, Literal(splittedPredicate[3])))
-        else:
-            graph.add((pred_rel, RDF.type, MRS.AbstractPredicate))
-            graph.add((pred_rel, MRS.name, Literal(splittedPredicate[0])))
-            if len(splittedPredicate) == 2:
-                graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[1]]))
-
+        graph.add((rdf_rel, MRS.predicate, Literal(mrs_rel.predicate)))
         graph.add((rdf_rel, MRS.cto, Literal(mrs_rel.cto)))     # integer
         graph.add((rdf_rel, MRS.cfrom, Literal(mrs_rel.cfrom))) # integer
 
@@ -61,10 +50,10 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
 
             # mrs variables as arguments
             if arg in m.variables:
-                graph.add((rdf_rel, MRS[hole.lower()], VARS[arg]))
+                graph.add((rdf_rel, MRS[hole], VARS[arg]))
             # any other kind of arguments
             else:
-                graph.add((rdf_rel, MRS[hole.lower()], Literal(arg)))
+                graph.add((rdf_rel, MRS[hole], Literal(arg)))
     
 
 def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
@@ -75,10 +64,10 @@ def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
         rdf_hcon = HCONS["hcon{hcon}".format(hcon=hcon)]
         
         # adds hcon to graph
-        graph.add((mrsi, MRS.hasHcons, rdf_hcon))
-        graph.add((rdf_hcon, RDF.type, MRS[mrs_hcon.relation]))
-        graph.add((rdf_hcon, MRS.leftHcons, VARS[mrs_hcon.hi]))
-        graph.add((rdf_hcon, MRS.rightHcons, VARS[mrs_hcon.lo]))
+        graph.add((mrsi, MRS.hasHCONS, rdf_hcon))
+        graph.add((rdf_hcon, RDF.type, MRS.HCONS))
+        graph.add((rdf_hcon, MRS.harg, VARS[mrs_hcon.hi]))
+        graph.add((rdf_hcon, MRS.larg, VARS[mrs_hcon.lo]))
 
         # this relation sould be defined in MRS
         graph.add((rdf_hcon, MRS.rel, MRS[mrs_hcon.relation]))
@@ -91,10 +80,10 @@ def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
         rdf_icon = ICONS["icon{icon}".format(icon=icon)]
         
         # adds hcon to graph
-        graph.add((mrsi, MRS.hasIcons, rdf_icon))
-        graph.add((rdf_icon, RDF.type, MRS[mrs_icon.relation]))
-        graph.add((rdf_icon, MRS.leftIcons, VARS[mrs_icon.left])) # should be revisited
-        graph.add((rdf_icon, MRS.rightIcons, VARS[mrs_icon.right])) # should be revisited
+        graph.add((mrsi, MRS.hasICONS, rdf_icon))
+        graph.add((rdf_icon, RDF.type, MRS.HCONS))
+        graph.add((rdf_icon, MRS.harg, VARS[mrs_icon.left])) # should be revisited
+        graph.add((rdf_icon, MRS.larg, VARS[mrs_icon.right])) # should be revisited
 
         # this relation sould be defined by grammar
         graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
@@ -141,13 +130,8 @@ def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None
     RELS = Namespace(namespace + "rels#")
     HCONS = Namespace(namespace + "hcons#")
     ICONS = Namespace(namespace + "icons#")
-    
+
     __vars_to_rdf__(m, m.variables, graph, VARS)
-    #Adding top
-    graph.add((mrsi, MRS['top'], VARS[m.top]))
-    #Adding index
-    graph.add((mrsi, MRS['index'], VARS[m.index]))
-    
     __rels_to_rdf__(m, m.rels, graph, mrsi, RELS, VARS)
     __hcons_to_rdf__(m, m.hcons, graph, mrsi, HCONS, VARS)
     __icons_to_rdf__(m, m.icons, graph, mrsi, ICONS, VARS)
