@@ -21,41 +21,38 @@ def __vars_to_rdf__(m, variables, graph, VARS):
         for props in v[1].items():
             graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
 
-        
-def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
-    """
-    Take the bag of EPs of the  MRS
-    """
-    
+def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
+    """"""
     for rel in range(len(rels)):
         mrs_rel = rels[rel]
         rdf_rel = RELS["EP{rel}".format(rel=rel)]
-        pred_rel = RELS["EP{rel}#predicate".format(rel=rel)]
+        pred_rel = RELS["EP{rel}#predicate".format(rel=rel)] #revise
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
         
         graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
-        graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv]))
-        #graph.add((rdf_rel, MRS.hasPredicate, Literal(mrs_rel.predicate)))
-        #To improve:
+        graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv])) #?
         graph.add((rdf_rel, MRS.hasPredicate, pred_rel))
-        splittedPredicate = mrs_rel.predicate.split('_')
-        #Surface predicates are written as _lemma_PoS_sense
-        #Abstracts are not certain, but don't start with _.
-        if (splittedPredicate[0] == ''):
+            
+        splittedPredicate = delphin.predicate.split(delphin.predicate.normalize(mrs_rel.predicate))
+        if (delphin.predicate.is_surface(mrs_rel.predicate)):
             graph.add((pred_rel, RDF.type, MRS.SurfacePredicate))
-            graph.add((pred_rel, MRS.hasLemma, Literal(splittedPredicate[1])))
-            graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[2]]))
-            if len(splittedPredicate) == 4: #nem todos tem sense?
-                graph.add((pred_rel, MRS.hasSense, Literal(splittedPredicate[3])))
-        else:
+            graph.add((pred_rel, MRS.hasLemma, Literal(splittedPredicate[0])))
+        elif (delphin.predicate.is_abstract(mrs_rel.predicate)):
             graph.add((pred_rel, RDF.type, MRS.AbstractPredicate))
             graph.add((pred_rel, MRS.name, Literal(splittedPredicate[0])))
-            if len(splittedPredicate) == 2:
-                graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[1]]))
-        #The problem is that the surface 
-                
+        else: #not(delphin.predicate.is_valid(mrs_rel.predicate))
+            print("{} is an invalid predicate.".format(mrs_rel.predicate)) #revise; maybe something stronger.
+            graph.add((pred_rel, RDF.type, MRS.Predicate)) #revise
+            #put lemma or name?
+         
+        if (splittedPredicate[1]):
+            graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[1]]))
+            
+        if (splittedPredicate[2]):
+            graph.add((pred_rel, MRS.hasSense, Literal(splittedPredicate[2])))
+
         graph.add((rdf_rel, MRS.cto, Literal(mrs_rel.cto)))     # integer
         graph.add((rdf_rel, MRS.cfrom, Literal(mrs_rel.cfrom))) # integer
 
@@ -70,7 +67,8 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
                 graph.add((rdf_rel, MRS[hole.lower()], VARS[arg]))
             # any other kind of arguments
             else:
-                graph.add((rdf_rel, MRS[hole.lower()], Literal(arg)))   
+                graph.add((rdf_rel, MRS[hole.lower()], Literal(arg)))
+        
 
 def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
     """"""
@@ -85,7 +83,7 @@ def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
         graph.add((rdf_hcon, MRS.leftHcons, VARS[mrs_hcon.hi]))
         graph.add((rdf_hcon, MRS.rightHcons, VARS[mrs_hcon.lo]))
 
-        # this relation sould be defined in MRS
+        # this relation sould be defined in MRS #Is it necessary?
         graph.add((rdf_hcon, MRS.rel, MRS[mrs_hcon.relation]))
         
 def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
@@ -101,7 +99,7 @@ def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
         graph.add((rdf_icon, MRS.leftIcons, VARS[mrs_icon.left])) # should be revisited
         graph.add((rdf_icon, MRS.rightIcons, VARS[mrs_icon.right])) # should be revisited
 
-        # this relation sould be defined by grammar
+        # this relation sould be defined by grammar #Is it necessary?
         graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
 
 
