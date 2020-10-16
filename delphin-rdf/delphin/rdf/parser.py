@@ -29,7 +29,8 @@ def __vars_to_rdf__(m, variables, graph, VARS):
         graph.add((VARS[v[0]], RDF.type, ERG[delphin.variable.type(v[0])]))
         for props in v[1].items():
             graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
-
+            #maybe it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
+            
 def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
     """
     Creates nodes and relations of EPs and its parts.
@@ -49,7 +50,7 @@ def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
     """
     for rel in range(len(rels)):
         mrs_rel = rels[rel]
-        rdf_rel = RELS["EP{rel}".format(rel=rel)]
+        rdf_rel = RELS["EP{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
         pred_rel = RELS["EP{rel}#predicate".format(rel=rel)] #revise
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
@@ -121,7 +122,7 @@ def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
         graph.add((rdf_hcon, MRS.leftHcons, VARS[mrs_hcon.hi]))
         graph.add((rdf_hcon, MRS.rightHcons, VARS[mrs_hcon.lo]))
 
-        # this relation sould be defined in MRS
+        # this relation must be defined in MRS
         graph.add((MRS[mrs_hcon.relation], RDF.type, RDFS.Class))
         graph.add((MRS[mrs_hcon.relation], RDFS.subClassOf, MRS.Hcons))
         
@@ -152,12 +153,12 @@ def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
         graph.add((rdf_icon, MRS.leftIcons, VARS[mrs_icon.left])) # should be revisited
         graph.add((rdf_icon, MRS.rightIcons, VARS[mrs_icon.right])) # should be revisited
 
-        # this relation sould be defined in MRS
+        # this relation must be defined in MRS
         graph.add((MRS[mrs_icon.relation], RDF.type, RDFS.Class))
         graph.add((MRS[mrs_icon.relation], RDFS.subClassOf, MRS.Icons))
         
 
-def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None, text=None, format="turtle"):
+def mrs_to_rdf(m, prefix: str, identifier, iname="mrsi#mrs", graph=None, out=None, text=None, format="turtle"):
     """
     Parses a pydelphin mrs into RDF representation.
 
@@ -183,7 +184,12 @@ def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None
 
     format - file format to serialize the output into.
     """
-
+    
+    # making sure of the well formedness of the MRS (remove ?)
+    if not(delphin.mrs.is_well_formed(m)):
+        print("MRS passed is not well formed")
+        return graph
+    
     # same graph for different mrs
     if not graph: graph = Graph()
     if type(identifier) == list:
