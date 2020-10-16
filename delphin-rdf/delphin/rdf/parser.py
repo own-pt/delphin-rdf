@@ -5,7 +5,7 @@ from rdflib import RDFS
 from rdflib import URIRef
 from rdflib import Namespace
 
-import delphin
+import delphin  
 from delphin import mrs
 
 # some usefull namespaces
@@ -89,20 +89,41 @@ def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
         graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
 
 
-def mrs_to_rdf(m, prefix, identifier, graph=None, out=None, text=None, format="turtle"):
+def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None, text=None, format="turtle"):
     """
-    m: a pyldelphin mrs instance to be parsed into rdf.
-    prefix: the URI prefixed to RDF representation
-    identifier: an identifier for the parsed text
+    Parses a pydelphin mrs into RDF reoresentation.
+
+    m - a delphin mrs instance to be parsed into RDF format.
+    
+    prefix - the URI to be prefixed to the RDF formated mrs.
+    
+    identifier - an string or a list of strings identifying
+    the mrs. It should be unique, possibly using a composite
+    identifier, given in list.
+    For instance one may use it as [textid, mrs-id] if the
+    same text admits various mrs interpretations.
+
+    iname - the mrs instance name (the mrs as RDF node name)
+    to be used. As default, it is "mrsi#mrs".
+
+    graph - and rdflib graph. If given, uses it to store the
+    mrs as RDF representation.
+
+    out - filename to serialize the output into.
+
+    text - the text that is represented in mrs as RDF. 
+
+    format - file format to serialize the output into.
     """
 
-    # it's possible to use the same graph for
-    # different mrs representations if usefull
-    if graph == None: graph = Graph()
+    # same graph for different mrs
+    if not graph: graph = Graph()
+    if type(identifier) == list:
+        identifier = "/".join(identifier)
     
     namespace = prefix + "/" + identifier + "/"
 
-    mrsi = URIRef(namespace + "mrsi#mrs0")
+    mrsi = URIRef(namespace + iname)
     graph.add((mrsi, RDF.type, MRS.MRS))
 
     VARS = Namespace(namespace + "variables#")

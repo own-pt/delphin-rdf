@@ -1,4 +1,8 @@
-""""""
+"""
+Receives the path to a profile and attemps trancribe the texts into RDF valid format.
+
+For more details, see: https://github.com/arademaker/delph-in-rdf.
+"""
 
 import argparse
 from delphin.rdf import parser as p
@@ -11,12 +15,12 @@ from delphin import tsql
 from rdflib import Graph
 
 # interface function
-def cli_parse(args):
+def __cli_parse__(args):
     """"""
     # validate IRI prefix
-    # handle with exceptions
-    # handle with invalid profile
-    # handle with output exceptions
+    # handle exceptions
+    # handle invalid profile
+    # handle output exceptions
 
     ts = itsdb.TestSuite(args.profile)
     prefix = args.prefix.strip("/")
@@ -34,14 +38,13 @@ def cli_parse(args):
 
 # sets parser and interface function
 parser = argparse.ArgumentParser(add_help=False)
-parser.set_defaults(func=cli_parse)
+parser.set_defaults(func=__cli_parse__)
 
 # user options
-# parser.add_argument("-s", "--serialize", action="store_true", help="if set, serializes the result")
 parser.add_argument("profile", help="profile path")
-parser.add_argument("prefix", help="valid IRI prefix")
-parser.add_argument("-o", "--output", help="output file name to serialize RDF graph. Default \"output\"", default="output")
-parser.add_argument("-f", "--format", help="output file format. Default \"turtle\"", default="turtle")
+parser.add_argument("-p", dest="prefix", help="valid URI prefix (default example: http://example.com/example)", default="http://example.com/example")
+parser.add_argument("--output", help="output file name to serialize RDF graph")
+parser.add_argument("--format", help="output file format (default: turtle)", default="turtle")
 
 COMMAND_INFO = {
     'name': 'profile-to-rdf',                               # Required
