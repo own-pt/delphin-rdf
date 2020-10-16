@@ -56,7 +56,7 @@ def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
         
         graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
-        graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv])) #?
+        # graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv])) #not needed because ARG0 is already being included at the end of function
         graph.add((rdf_rel, MRS.hasPredicate, pred_rel))
             
         splittedPredicate = delphin.predicate.split(delphin.predicate.normalize(mrs_rel.predicate))
