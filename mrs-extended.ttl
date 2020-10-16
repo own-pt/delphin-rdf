@@ -319,6 +319,12 @@ mrs:cfrom
  rdfs:range rdfs:Literal 
  rdfs:comment "The index of the leftmost character in sent"@en-us.
 
+ mrs:to
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range rdfs:Literal 
+ rdfs:comment "The index of the rightmost character in sent"@en-us.
+ 
 mrs:arg0
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
