@@ -125,8 +125,13 @@ def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None
     RELS = Namespace(namespace + "rels#")
     HCONS = Namespace(namespace + "hcons#")
     ICONS = Namespace(namespace + "icons#")
-
+    
     __vars_to_rdf__(m, m.variables, graph, VARS)
+    #Adding top
+    graph.add((mrsi, MRS.top, VARS[m.top]))
+    #Adding index
+    graph.add((mrsi, MRS.index, VARS[m.index]))
+    
     __rels_to_rdf__(m, m.rels, graph, mrsi, RELS, VARS)
     __hcons_to_rdf__(m, m.hcons, graph, mrsi, HCONS, VARS)
     __icons_to_rdf__(m, m.icons, graph, mrsi, ICONS, VARS)
