@@ -25,13 +25,31 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
     for rel in range(len(rels)):
         mrs_rel = rels[rel]
         rdf_rel = RELS["EP{rel}".format(rel=rel)]
+        pred_rel = RELS["EP{rel}#predicate".format(rel=rel)]
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
         
         graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
         graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv]))
-        graph.add((rdf_rel, MRS.hasPredicate, Literal(mrs_rel.predicate)))
+#         graph.add((rdf_rel, MRS.hasPredicate, Literal(mrs_rel.predicate)))
+        #To improve:
+        graph.add((rdf_rel, MRS.hasPredicate, pred_rel))
+        splittedPredicate = mrs_rel.predicate.split('_')
+        #Surface predicates are written as _lemma_PoS_sense
+        #Abstracts are not certain, but don't start with _.
+        if (splittedPredicate[0] == ''):
+            graph.add((pred_rel, RDF.type, MRS.SurfacePredicate))
+            graph.add((pred_rel, MRS.hasLemma, Literal(splittedPredicate[1])))
+            graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[2]]))
+            if len(splittedPredicate) == 4: #nem todos tem sense?
+                graph.add((pred_rel, MRS.hasSense, Literal(splittedPredicate[3])))
+        else:
+            graph.add((pred_rel, RDF.type, MRS.AbstractPredicate))
+            graph.add((pred_rel, MRS.name, Literal(splittedPredicate[0])))
+            if len(splittedPredicate) == 2:
+                graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[1]]))
+
         graph.add((rdf_rel, MRS.cto, Literal(mrs_rel.cto)))     # integer
         graph.add((rdf_rel, MRS.cfrom, Literal(mrs_rel.cfrom))) # integer
 
