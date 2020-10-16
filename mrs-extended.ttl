@@ -13,6 +13,12 @@
 mrs:MRS
  a rdfs:Class ;
  rdfs:comment "A mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
+ 
+ mrs:text
+  a rdf:Property ;
+  a rdfs:domain mrs:MRS ;
+  a rdfs:range rdfs:Literal
+  rdfs:comment "The sentence that originated the MRS"@en-us.
 
 # making the type variable and its subtypes according to semi.vpm and erg.smi
 # http://svn.delph-in.net/erg/tags/1214/etc/erg.smi
