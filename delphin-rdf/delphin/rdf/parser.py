@@ -72,7 +72,6 @@ def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
 
 def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
     """"""
-    
     for hcon in range(len(hcons)):
         mrs_hcon = hcons[hcon]
         rdf_hcon = HCONS["hcon{hcon}".format(hcon=hcon)]
@@ -83,12 +82,12 @@ def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
         graph.add((rdf_hcon, MRS.leftHcons, VARS[mrs_hcon.hi]))
         graph.add((rdf_hcon, MRS.rightHcons, VARS[mrs_hcon.lo]))
 
-        # this relation sould be defined in MRS #Is it necessary?
-        graph.add((rdf_hcon, MRS.rel, MRS[mrs_hcon.relation]))
+        # this relation sould be defined in MRS
+        graph.add((MRS[mrs_hcon.relation], RDF.type, RDFS.Class))
+        graph.add((MRS[mrs_hcon.relation], RDFS.subClassOf, MRS.Hcons))
         
 def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
     """"""
-    
     for icon in range(len(icons)):
         mrs_icon = icons[icon]
         rdf_icon = ICONS["icon{icon}".format(icon=icon)]
@@ -99,9 +98,10 @@ def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
         graph.add((rdf_icon, MRS.leftIcons, VARS[mrs_icon.left])) # should be revisited
         graph.add((rdf_icon, MRS.rightIcons, VARS[mrs_icon.right])) # should be revisited
 
-        # this relation sould be defined by grammar #Is it necessary?
-        graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
-
+        # this relation sould be defined in MRS
+        graph.add((MRS[mrs_icon.relation], RDF.type, RDFS.Class))
+        graph.add((MRS[mrs_icon.relation], RDFS.subClassOf, MRS.Icons))
+        
 
 def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None, text=None, format="turtle"):
     """
