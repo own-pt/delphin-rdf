@@ -107,9 +107,14 @@ mrs:name
 # Elementary predications have structure ⟨p, l, v, A⟩
 # http://moin.delph-in.net/MrsRfc
 mrs:ElementaryPredication
- a rdfsClass ;
+ a rdfs:Class ;
  rdfs:comment "Quadruples like <h, p, a, s, c>"@en-us .
 
+mrs:hasEP
+ a rdf:Property ;
+ rdfs:domain mrs:MRS;
+ rdfs:range mrs:ElementaryPredication .
+ 
 mrs:hasPredicate
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
