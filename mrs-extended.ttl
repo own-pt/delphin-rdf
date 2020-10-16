@@ -191,16 +191,16 @@ mrs:rightIcons
  rdfs:range erg:i .
 
 mrs:qeq
- a mrs:Class;
+ a rdfs:Class;
  rdfs:subClassOf mrs:Hcons;
 
 # http://moin.delph-in.net/SaarlandIconsErg
 mrs:eq
- a mrs:Class;
+ a rdfs:Class;
  rdfs:subClassOf mrs:Icons;
 
 mrs:neq
- a mrs:Class;
+ a rdfs:Class;
  rdfs:subClassOf mrs:Icons;
 
 #According to BNF in http://moin.delph-in.net/MrsRfc#Simple, the "outscopes" and "lheq" are still needed.
