@@ -58,7 +58,7 @@ def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
         
         # adds hcon to graph
         graph.add((mrsi, MRS.hasHcons, rdf_hcon))
-        graph.add((rdf_hcon, RDF.type, MRS[hcon.relation]))
+        graph.add((rdf_hcon, RDF.type, MRS[mrs_hcon.relation]))
         graph.add((rdf_hcon, MRS.leftHcons, VARS[mrs_hcon.hi]))
         graph.add((rdf_hcon, MRS.rightHcons, VARS[mrs_hcon.lo]))
 
@@ -74,7 +74,7 @@ def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
         
         # adds hcon to graph
         graph.add((mrsi, MRS.hasIcons, rdf_icon))
-        graph.add((rdf_icon, RDF.type, MRS[icon.relation]))
+        graph.add((rdf_icon, RDF.type, MRS[mrs_icon.relation]))
         graph.add((rdf_icon, MRS.leftIcons, VARS[mrs_icon.left])) # should be revisited
         graph.add((rdf_icon, MRS.rightIcons, VARS[mrs_icon.right])) # should be revisited
 
