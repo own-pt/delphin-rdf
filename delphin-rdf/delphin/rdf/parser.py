@@ -61,10 +61,10 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
 
             # mrs variables as arguments
             if arg in m.variables:
-                graph.add((rdf_rel, MRS[hole], VARS[arg]))
+                graph.add((rdf_rel, MRS[hole.lower()], VARS[arg]))
             # any other kind of arguments
             else:
-                graph.add((rdf_rel, MRS[hole], Literal(arg)))
+                graph.add((rdf_rel, MRS[hole.lower()], Literal(arg)))
     
 
 def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
