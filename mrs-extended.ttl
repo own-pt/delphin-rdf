@@ -110,8 +110,7 @@ mrs:ElementaryPredication
  a rdfsClass ;
  rdfs:comment "Quadruples like <h, p, a, s, c>"@en-us .
 
-#equivalent to the bag of rels:
-mrs:hasRel
+mrs:hasPredicate
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range mrs:Predicate .
@@ -154,8 +153,8 @@ mrs:hasIcons
  a rdf:Property ;
  rdfs:domain mrs:MRS ;
  rdfs:range mrs:Icons
- rdfs:comment "Property that links the MRS node to one of its ICONS"@en-us .
-
+ rdfs:comment "Property that links the MRS node to one of its ICONS"@en-us . 
+ 
 mrs:leftHcons
  a rdf:Property ;
  rdfs:domain mrs:Hcons ;
