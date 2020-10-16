@@ -31,7 +31,9 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
         
         graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
         graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv]))
-        graph.add((rdf_rel, MRS.predicate, Literal(mrs_rel.predicate)))
+        if mrs_rel.predicate.startswith("_"):
+            graph.add((rdf_rel, RDF.type, Literal(mrs_rel.predicate)))
+        graph.add((rdf_rel, MRS.hasPredicate, Literal(mrs_rel.predicate)))
         graph.add((rdf_rel, MRS.cto, Literal(mrs_rel.cto)))     # integer
         graph.add((rdf_rel, MRS.cfrom, Literal(mrs_rel.cfrom))) # integer
 
@@ -57,10 +59,10 @@ def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
         rdf_hcon = HCONS["hcon{hcon}".format(hcon=hcon)]
         
         # adds hcon to graph
-        graph.add((mrsi, MRS.hasHCONS, rdf_hcon))
-        graph.add((rdf_hcon, RDF.type, MRS.HCONS))
-        graph.add((rdf_hcon, MRS.harg, VARS[mrs_hcon.hi]))
-        graph.add((rdf_hcon, MRS.larg, VARS[mrs_hcon.lo]))
+        graph.add((mrsi, MRS.hasHcons, rdf_hcon))
+        graph.add((rdf_hcon, RDF.type, MRS.Hcons))
+        graph.add((rdf_hcon, MRS.leftHcons, VARS[mrs_hcon.hi]))
+        graph.add((rdf_hcon, MRS.rightHcons, VARS[mrs_hcon.lo]))
 
         # this relation sould be defined in MRS
         graph.add((rdf_hcon, MRS.rel, MRS[mrs_hcon.relation]))
@@ -73,10 +75,10 @@ def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
         rdf_icon = ICONS["icon{icon}".format(icon=icon)]
         
         # adds hcon to graph
-        graph.add((mrsi, MRS.hasICONS, rdf_icon))
-        graph.add((rdf_icon, RDF.type, MRS.HCONS))
-        graph.add((rdf_icon, MRS.harg, VARS[mrs_icon.left])) # should be revisited
-        graph.add((rdf_icon, MRS.larg, VARS[mrs_icon.right])) # should be revisited
+        graph.add((mrsi, MRS.hasIcons, rdf_icon))
+        graph.add((rdf_icon, RDF.type, MRS.Icons))
+        graph.add((rdf_icon, MRS.leftIcons, VARS[mrs_icon.left])) # should be revisited
+        graph.add((rdf_icon, MRS.rightIcons, VARS[mrs_icon.right])) # should be revisited
 
         # this relation sould be defined by grammar
         graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
