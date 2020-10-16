@@ -313,6 +313,12 @@ mrs:perf
 
 #The rest of things in the EP:
 
+mrs:cfrom
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;
+ rdfs:range rdfs:Literal 
+ rdfs:comment "The index of the leftmost character in sent"@en-us.
+
 mrs:arg0
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
