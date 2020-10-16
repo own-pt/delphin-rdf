@@ -349,7 +349,7 @@ mrs:arg4
  rdfs:range erg:h .
 
 #by erg.smi: ?
-mrs:arg	    
+mrs:arg
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range erg:u .
