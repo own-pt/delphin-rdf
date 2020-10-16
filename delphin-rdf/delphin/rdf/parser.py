@@ -31,7 +31,7 @@ def __vars_to_rdf__(m, variables, graph, VARS):
             graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
             #maybe it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
             
-def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
+def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
     """
     Creates nodes and relations of EPs and its parts.
 
@@ -186,7 +186,7 @@ def mrs_to_rdf(m, prefix: str, identifier, iname="mrsi#mrs", graph=None, out=Non
     """
     
     # making sure of the well formedness of the MRS (remove ?)
-    if not(delphin.mrs.is_well_formed(m)):
+    if (not(delphin.mrs.is_well_formed(m))):
         print("MRS passed is not well formed")
         return graph
     
