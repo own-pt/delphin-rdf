@@ -15,6 +15,15 @@ ERG = Namespace("http://www.delph-in.net/schema/erg#")
 def __vars_to_rdf__(m, variables, graph, VARS):
     """
     Creates nodes of variables and nodes specifying their properties.
+
+    m - a delphin mrs instance to be parsed into RDF format.
+    
+    vars - list of variables of the in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    VARS - the URI namespace dedicated to variables.
     """
     for v in variables.items():
         graph.add((VARS[v[0]], RDF.type, ERG[delphin.variable.type(v[0])]))
@@ -22,7 +31,22 @@ def __vars_to_rdf__(m, variables, graph, VARS):
             graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
 
 def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
-    """"""
+    """
+    Creates nodes and relations of EPs and its parts.
+
+    m - a delphin mrs instance to be parsed into RDF format.
+    
+    rels - list of EPs in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    mrsi - the URI dedicated to the a specific MRS, which is 'm'
+
+    RELS - the URI namespace dedicated to EPs
+
+    VARS - the URI namespace dedicated to variables.
+    """
     for rel in range(len(rels)):
         mrs_rel = rels[rel]
         rdf_rel = RELS["EP{rel}".format(rel=rel)]
@@ -71,7 +95,22 @@ def rels_to_rdf(m, rels, graph, mrsi, RELS, VARS):
         
 
 def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
-    """"""
+    """
+    Creates nodes and relations of handle constraints of a MRS.
+
+    m - a delphin mrs instance to be parsed into RDF format.
+    
+    hcons - list of HCONSs in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    mrsi - the URI dedicated to the a specific MRS, which is 'm'.
+
+    HCONS - the URI namespace dedicated to HCONSs.
+
+    VARS - the URI namespace dedicated to variables.
+    """
     for hcon in range(len(hcons)):
         mrs_hcon = hcons[hcon]
         rdf_hcon = HCONS["hcon{hcon}".format(hcon=hcon)]
@@ -87,7 +126,22 @@ def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
         graph.add((MRS[mrs_hcon.relation], RDFS.subClassOf, MRS.Hcons))
         
 def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
-    """"""
+    """
+    Creates nodes and relations of individual constraints of a MRS.
+
+    m - a delphin mrs instance to be parsed into RDF format.
+    
+    icons - list of ICONSs in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    mrsi - the URI dedicated to the a specific MRS, which is 'm'.
+
+    ICONS - the URI namespace dedicated to ICONSs.
+
+    VARS - the URI namespace dedicated to variables.
+    """    
     for icon in range(len(icons)):
         mrs_icon = icons[icon]
         rdf_icon = ICONS["icon{icon}".format(icon=icon)]
