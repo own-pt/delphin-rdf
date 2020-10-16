@@ -121,7 +121,7 @@ mrs:label
  rdfs:range erg:h ;
  rdfs:comment "A mapping of a predicate to the variable?"@en-us .
 
-mrs:hasCarg #?
+mrs:carg #?
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication;
  rdfs:range rdfs:Literal . #? O 1 pode ser CARG
@@ -318,7 +318,7 @@ mrs:cfrom
  rdfs:range rdfs:Literal 
  rdfs:comment "The index of the leftmost character in sent"@en-us.
 
- mrs:to
+ mrs:cto
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range rdfs:Literal 
