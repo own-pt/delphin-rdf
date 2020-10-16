@@ -31,8 +31,6 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
         
         graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
         graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv]))
-        if mrs_rel.predicate.startswith("_"):
-            graph.add((rdf_rel, RDF.type, Literal(mrs_rel.predicate)))
         graph.add((rdf_rel, MRS.hasPredicate, Literal(mrs_rel.predicate)))
         graph.add((rdf_rel, MRS.cto, Literal(mrs_rel.cto)))     # integer
         graph.add((rdf_rel, MRS.cfrom, Literal(mrs_rel.cfrom))) # integer
