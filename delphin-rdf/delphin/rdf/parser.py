@@ -14,17 +14,10 @@ ERG = Namespace("http://www.delph-in.net/schema/erg#")
 
 def __vars_to_rdf__(m, variables, graph, VARS):
     """"""
-
-    for v in variables.keys():
-        # handle variables
-        if delphin.variable.type(v) == "h":
-            # here we should add the some more information
-            graph.add((VARS[v], RDF.type, MRS.Handle))
-        
-        # node variables
-        else:
-            # here we should add the some more information
-            graph.add((VARS[v], RDF.type, MRS.Node))
+    for v in variables.items():
+        graph.add((VARS[v[0]], RDF.type, ERG[delphin.variable.type(v[0])]))
+        for props in v[1].items():
+            graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
         
 def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
     """"""
