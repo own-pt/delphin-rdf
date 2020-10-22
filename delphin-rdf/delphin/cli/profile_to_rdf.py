@@ -1,5 +1,5 @@
 """
-Receives the path to a profile and attemps trancribe the texts into RDF valid format.
+Receives the path to a profile and attemps transcribe the texts into RDF valid format.
 
 For more details, see: https://github.com/arademaker/delph-in-rdf.
 """
@@ -8,7 +8,6 @@ import argparse
 from delphin.rdf import parser as p
 
 from delphin.codecs import simplemrs
-from delphin import itsdb
 from delphin import itsdb
 from delphin import tsql
 
@@ -31,7 +30,8 @@ def __cli_parse__(args):
         text = row[1]
         m = simplemrs.decode(row[2])
         # parse mrs from profile
-        p.mrs_to_rdf(m, prefix, id, graph, text=text)
+        graph = p.mrs_to_rdf(m=m, prefix=prefix,
+                            identifier=id, graph=graph, text=text)
     # serializes output
     graph.serialize(destination=args.output,format=args.format)
 

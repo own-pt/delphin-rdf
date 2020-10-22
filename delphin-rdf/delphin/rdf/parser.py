@@ -13,32 +13,71 @@ MRS = Namespace("http://www.delph-in.net/schema/mrs#")
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 
 def __vars_to_rdf__(m, variables, graph, VARS):
-    """"""
+    """
+    Creates nodes of variables and nodes specifying their properties.
 
-    for v in variables.keys():
-        # handle variables
-        if delphin.variable.type(v) == "h":
-            # here we should add the some more information
-            graph.add((VARS[v], RDF.type, MRS.Handle))
-        
-        # node variables
-        else:
-            # here we should add the some more information
-            graph.add((VARS[v], RDF.type, MRS.Node))
-        
-def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
-    """"""
+    m - a delphin mrs instance to be parsed into RDF format.
     
+    vars - list of variables of the in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    VARS - the URI namespace dedicated to variables.
+    """
+    for v in variables.items():
+        graph.add((VARS[v[0]], RDF.type, ERG[delphin.variable.type(v[0])]))
+        for props in v[1].items():
+            graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
+            #maybe it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
+            
+def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
+    """
+    Creates nodes and relations of EPs and its parts.
+
+    m - a delphin mrs instance to be parsed into RDF format.
+    
+    rels - list of EPs in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    mrsi - the URI dedicated to the a specific MRS, which is 'm'
+
+    RELS - the URI namespace dedicated to EPs
+
+    VARS - the URI namespace dedicated to variables.
+    """
     for rel in range(len(rels)):
         mrs_rel = rels[rel]
-        rdf_rel = RELS["EP{rel}".format(rel=rel)]
+        rdf_rel = RELS["EP{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
+        pred_rel = RELS["EP{rel}#predicate".format(rel=rel)] #revise
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
         
         graph.add((rdf_rel, MRS.label, VARS[mrs_rel.label]))
-        graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv]))
-        graph.add((rdf_rel, MRS.predicate, Literal(mrs_rel.predicate)))
+        # graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv])) #not needed because ARG0 is already being included at the end of function
+        graph.add((rdf_rel, MRS.hasPredicate, pred_rel))
+            
+        splittedPredicate = delphin.predicate.split(delphin.predicate.normalize(mrs_rel.predicate))
+        if (delphin.predicate.is_surface(mrs_rel.predicate)):
+            graph.add((pred_rel, RDF.type, MRS.SurfacePredicate))
+            graph.add((pred_rel, MRS.hasLemma, Literal(splittedPredicate[0])))
+        elif (delphin.predicate.is_abstract(mrs_rel.predicate)):
+            graph.add((pred_rel, RDF.type, MRS.AbstractPredicate))
+            graph.add((pred_rel, MRS.name, Literal(splittedPredicate[0])))
+        else: #not(delphin.predicate.is_valid(mrs_rel.predicate))
+            print("{} is an invalid predicate.".format(mrs_rel.predicate)) #revise; maybe something stronger.
+            graph.add((pred_rel, RDF.type, MRS.Predicate)) #revise
+            #put lemma or name?
+         
+        if (splittedPredicate[1]):
+            graph.add((pred_rel, MRS.hasPos, MRS[splittedPredicate[1]]))
+            
+        if (splittedPredicate[2]):
+            graph.add((pred_rel, MRS.hasSense, Literal(splittedPredicate[2])))
+
         graph.add((rdf_rel, MRS.cto, Literal(mrs_rel.cto)))     # integer
         graph.add((rdf_rel, MRS.cfrom, Literal(mrs_rel.cfrom))) # integer
 
@@ -50,48 +89,78 @@ def __rels_to_rdf__(m, rels, graph, mrsi, RELS, VARS):
 
             # mrs variables as arguments
             if arg in m.variables:
-                graph.add((rdf_rel, MRS[hole], VARS[arg]))
+                graph.add((rdf_rel, MRS[hole.lower()], VARS[arg]))
             # any other kind of arguments
             else:
-                graph.add((rdf_rel, MRS[hole], Literal(arg)))
-    
+                graph.add((rdf_rel, MRS[hole.lower()], Literal(arg)))
+        
 
 def __hcons_to_rdf__(m, hcons, graph, mrsi, HCONS, VARS):
-    """"""
+    """
+    Creates nodes and relations of handle constraints of a MRS.
+
+    m - a delphin mrs instance to be parsed into RDF format.
     
+    hcons - list of HCONSs in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    mrsi - the URI dedicated to the a specific MRS, which is 'm'.
+
+    HCONS - the URI namespace dedicated to HCONSs.
+
+    VARS - the URI namespace dedicated to variables.
+    """
     for hcon in range(len(hcons)):
         mrs_hcon = hcons[hcon]
         rdf_hcon = HCONS["hcon{hcon}".format(hcon=hcon)]
         
         # adds hcon to graph
-        graph.add((mrsi, MRS.hasHCONS, rdf_hcon))
-        graph.add((rdf_hcon, RDF.type, MRS.HCONS))
-        graph.add((rdf_hcon, MRS.harg, VARS[mrs_hcon.hi]))
-        graph.add((rdf_hcon, MRS.larg, VARS[mrs_hcon.lo]))
+        graph.add((mrsi, MRS.hasHcons, rdf_hcon))
+        graph.add((rdf_hcon, RDF.type, MRS[mrs_hcon.relation]))
+        graph.add((rdf_hcon, MRS.leftHcons, VARS[mrs_hcon.hi]))
+        graph.add((rdf_hcon, MRS.rightHcons, VARS[mrs_hcon.lo]))
 
-        # this relation sould be defined in MRS
-        graph.add((rdf_hcon, MRS.rel, MRS[mrs_hcon.relation]))
-
+        # this relation must be defined in MRS
+        graph.add((MRS[mrs_hcon.relation], RDF.type, RDFS.Class))
+        graph.add((MRS[mrs_hcon.relation], RDFS.subClassOf, MRS.Hcons))
+        
 def __icons_to_rdf__(m, icons, graph, mrsi, ICONS, VARS):
-    """"""
+    """
+    Creates nodes and relations of individual constraints of a MRS.
+
+    m - a delphin mrs instance to be parsed into RDF format.
     
+    icons - list of ICONSs in 'm', maybe redundant.
+    
+    graph - and rdflib graph that is used to store the mrs as RDF
+    representation.
+
+    mrsi - the URI dedicated to the a specific MRS, which is 'm'.
+
+    ICONS - the URI namespace dedicated to ICONSs.
+
+    VARS - the URI namespace dedicated to variables.
+    """    
     for icon in range(len(icons)):
         mrs_icon = icons[icon]
         rdf_icon = ICONS["icon{icon}".format(icon=icon)]
         
         # adds hcon to graph
-        graph.add((mrsi, MRS.hasICONS, rdf_icon))
-        graph.add((rdf_icon, RDF.type, MRS.HCONS))
-        graph.add((rdf_icon, MRS.harg, VARS[mrs_icon.left])) # should be revisited
-        graph.add((rdf_icon, MRS.larg, VARS[mrs_icon.right])) # should be revisited
+        graph.add((mrsi, MRS.hasIcons, rdf_icon))
+        graph.add((rdf_icon, RDF.type, MRS[mrs_icon.relation]))
+        graph.add((rdf_icon, MRS.leftIcons, VARS[mrs_icon.left])) # should be revisited
+        graph.add((rdf_icon, MRS.rightIcons, VARS[mrs_icon.right])) # should be revisited
 
-        # this relation sould be defined by grammar
-        graph.add((rdf_icon, MRS.rel, Literal(mrs_icon.relation)))
+        # this relation must be defined in MRS
+        graph.add((MRS[mrs_icon.relation], RDF.type, RDFS.Class))
+        graph.add((MRS[mrs_icon.relation], RDFS.subClassOf, MRS.Icons))
+        
 
-
-def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None, text=None, format="turtle"):
+def mrs_to_rdf(m, prefix: str, identifier, iname="mrsi#mrs", graph=None, out=None, text=None, format="turtle"):
     """
-    Parses a pydelphin mrs into RDF reoresentation.
+    Parses a pydelphin mrs into RDF representation.
 
     m - a delphin mrs instance to be parsed into RDF format.
     
@@ -115,7 +184,12 @@ def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None
 
     format - file format to serialize the output into.
     """
-
+    
+    # making sure of the well formedness of the MRS (remove ?)
+    if (not(delphin.mrs.is_well_formed(m))):
+        print("MRS passed is not well formed")
+        return graph
+    
     # same graph for different mrs
     if not graph: graph = Graph()
     if type(identifier) == list:
@@ -132,6 +206,11 @@ def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None
     ICONS = Namespace(namespace + "icons#")
 
     __vars_to_rdf__(m, m.variables, graph, VARS)
+    #Adding top
+    graph.add((mrsi, MRS['top'], VARS[m.top]))
+    #Adding index
+    graph.add((mrsi, MRS['index'], VARS[m.index]))
+    
     __rels_to_rdf__(m, m.rels, graph, mrsi, RELS, VARS)
     __hcons_to_rdf__(m, m.hcons, graph, mrsi, HCONS, VARS)
     __icons_to_rdf__(m, m.icons, graph, mrsi, ICONS, VARS)
@@ -139,6 +218,6 @@ def mrs_to_rdf(m, prefix:str, identifier, iname="mrsi#mrs", graph=None, out=None
     # add text as one graph node if it's given
     if text: graph.add((mrsi, MRS.text, Literal(text)))
     # serializes graph if given an output file
-    if out: graph.serialize(destination=out,format=format)
+    if out: graph.serialize(destination=out, format=format)
 
     return graph
