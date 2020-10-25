@@ -11,7 +11,7 @@ DELPHIN-RDF presents the following dependencies:
 - `delphin.cli`: pydelphin standard cli path. Here are modules describing the delphin subcommands. For now, those are `profile-to-rdf` and `to-rdf`. See [delphin.cli](https://pydelphin.readthedocs.io/en/latest/api/delphin.cli.html)
 - `delphin.codecs`: pydelphin standard codecs path. Here are modules responsible for describing pydelphin objects serialization. Those modules are recognized by the library, and may be used as arguments for `delphin convert` subcommand. See [delphin.codecs](https://pydelphin.readthedocs.io/en/latest/api/delphin.codecs.html)
 
-Besides that, there is a `tests` directory, where we add examples and use cases.
+Besides that, there is a `tests` directory, where we add examples and use cases. In `doc` and `vocabularies` are the theorical approachs and some referencies.
 
 ## Command Line Interface
 
@@ -28,7 +28,7 @@ One may be able to install delphin-rdf in developer mode, running
 ```bash
 $ python /path/to/delphin-rdf/setup.py develop
 ```
-or, preferable
+Or, best option, using pip
 ```bash
 $ pip install -e /path/to/delphin-rdf
 ```
