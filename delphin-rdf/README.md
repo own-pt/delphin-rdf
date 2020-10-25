@@ -1,1 +1,0 @@
-Some Delphin/Text to RDF formar utils.

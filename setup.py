@@ -1,5 +1,5 @@
 """
-Some Delphin/Text to RDF formar utils.
+DELPH-IN formats in RDF
 """
 
 from setuptools import setup
@@ -12,7 +12,7 @@ setup(
     # maintainer="",
     # maintainer_email="",
     # url="https://github.com/arademaker/delph-in-rdf",
-    # download_url="https://github.com/arademaker/delph-in-rdf",
+    # download_url="https://github.com/arademaker/delphin-rdf",
     description=__doc__,
     long_description=open("README.md","r").read(),
     long_description_content_type="text/markdown",
@@ -21,7 +21,8 @@ setup(
     packages=[
        "delphin",
        "delphin.rdf",
-       "delphin.cli"],
+       "delphin.cli",
+       "delphin.codecs"],
     # classifiers=[],
     # platforms="",
     # keywords="delphin, pydelphin, rdf, mrs, eds, dm, rmrs"
