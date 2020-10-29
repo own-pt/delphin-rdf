@@ -36,4 +36,4 @@ The second option allows you to remove the package simply running
 ```bash
 $ pip uninstall delphin-rdf
 ```
-It's advertised to install it using a python virtual environment.
+It's advised to install it using a python virtual environment.
