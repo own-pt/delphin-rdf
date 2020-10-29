@@ -14,11 +14,11 @@ mrs:MRS
  a rdfs:Class ;
  rdfs:comment "A mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
  
- mrs:text
-  a rdf:Property ;
-  a rdfs:domain mrs:MRS ;
-  a rdfs:range rdfs:Literal
-  rdfs:comment "The sentence that originated the MRS"@en-us.
+mrs:text
+ a rdf:Property ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The sentence that originated the MRS"@en-us.
 
 # making the type variable and its subtypes according to semi.vpm and erg.smi
 # http://svn.delph-in.net/erg/tags/1214/etc/erg.smi
@@ -51,31 +51,32 @@ erg:x
  a rdfs:Class ;
  rdfs:subClassOf erg:p ;
  rdfs:subClassOf erg:i ;
-rdfs:comment "The type of referential indexes"@en-us . 
+ rdfs:comment "The type of referential indexes"@en-us . 
 
 # On MRS:
 mrs:top
-    a rdfs:Property ;
-    rdfs:domain mrs:MRS ;
-    rdfs:range erg:h ;
-    rdfs:comment "The global TOP handle"@en-us .
+ a rdfs:Property ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range erg:h ;
+ rdfs:comment "The global TOP handle of an MRS"@en-us .
     
 mrs:index
-    a rdfs:Property ;
-    rdfs:domain mrs:MRS ;
-    rdfs:range erg:e;
-    rdfs:comment "Global INDEX"@en-us .
+ a rdfs:Property ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range erg:e;
+ rdfs:comment "Global INDEX of an MRS"@en-us .
 
 
 # Creating notion of predicate and its types
 # http://moin.delph-in.net/PredicateRfc
 mrs:Predicate
- a rdfs:Class .
+ a rdfs:Class ;
+ rdfs:comment "The class of the semantic predicates"@en-us .
 
 mrs:SurfacePredicate
  rdfs:subClassOf mrs:Predicate;
- rdfs:comment "Represent overt words of sentence."@en-us .
- #Nem toda palavra que aparece é representada numa predicação também.
+ rdfs:comment "Represent overt semantic predicates of the sentence."@en-us .
+ #Remembering that not all words are predicates.
 
 mrs:AbstractPredicate
  rdfs:subClassOf mrs:Predicate.
@@ -191,6 +192,14 @@ mrs:rightIcons
  rdfs:range erg:i .
 
 mrs:qeq
+ a rdfs:Class;
+ rdfs:subClassOf mrs:Hcons;
+
+mrs:lheq
+ a rdfs:Class;
+ rdfs:subClassOf mrs:Hcons;
+
+mrs:outscopes
  a rdfs:Class;
  rdfs:subClassOf mrs:Hcons;
 
@@ -316,7 +325,7 @@ erg:prog
  rdfs:domain erg:e ;
  rdfs:range rdfs:Literal . #?? pode ser +, -
 
-mrs:perf
+erg:perf
  a rdf:Property ;
  rdfs:domain erg:e ;
  rdfs:range rdfs:Literal . #?? pode ser -
@@ -326,14 +335,14 @@ mrs:perf
 mrs:cfrom
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range rdfs:Literal 
- rdfs:comment "The index of the leftmost character in sent"@en-us.
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The index of the leftmost character in sent"@en-us .
 
- mrs:cto
+mrs:cto
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range rdfs:Literal 
- rdfs:comment "The index of the rightmost character in sent"@en-us.
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The index of the rightmost character in sent"@en-us .
  
 mrs:arg0
  a rdf:Property ;
@@ -344,7 +353,9 @@ mrs:arg0
 mrs:arg1
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:u .mrs:arg2
+ rdfs:range erg:u .
+
+mrs:arg2
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range erg:u .
