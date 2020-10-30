@@ -1,0 +1,63 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix erg: <http://www.delph-in.net/schema/erg#> .
+@prefix delph: <http://www.delph-in.net/schema/> .
+
+#This document contains the metaspecification of the semantic structures and its parts.
+#Heavily inspired on the classes of PyDelphin objects.
+
+#About Lnks, they will only appear on predications for now, not on the semantic structures. They will be represented only by cfroms and ctos.
+
+delph:SemanticStructure
+ a rdfs:Class ;
+ rdfs:comment "The class dedicated to the skeleton of semantic structures. Those are rooted DAGS with a bag of Predications."@en-us .
+
+delph:ScopedSemanticStructure
+ a rdfs:Class ;
+ rdfs:subClassOf delph:SemanticStructure ;
+ rdfs:comment "The class dedicated to the skeleton of semantic structures that distinguishes scopal and non-scopal arguments."@en-us .
+
+delph:Predication
+ a rdfs:Class ;
+ rdfs:comment "The class for the instantiation of a predicate in a semantic structure"@en-us .
+
+delph:Identifier
+ a rdfs:Class ;
+ rdfs:comment "The class of the identifiers of the predications of a semantic structure"@en-us.
+
+delph:hasTop
+ a rdf:Property ;
+ rdfs:domain delph:SemanticStructure ;
+ rdfs:range delph:Identifier ;
+ rdfs:comment "A mapping of a structure to its top. This represent the root of the graph in the nonscopal structures and the top scope in the scopal structures"@en-us.
+
+delph:hasIndex
+ a rdf:Property ;
+ rdfs:domain delph:ScopedSemanticStructure ;
+ rdfs:range delph:Identifier ;
+ rdfs:comment "A mapping of the scoped semantic structure to its non-scopal top"@en-us.
+
+delph:hasPredication
+ a rdf:Property ;
+ rdfs:domain delph:SemanticStructure ;
+ rdfs:range delph:Predication ;
+ rdfs:comment "A property that links a semantic structure to one of its predications"@en-us.
+
+delph:cfrom
+ a rdf:Property ;
+ rdfs:domain delph:Predication ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The initial character position in the surface string (-1 if it's not a valid value)."@en-us .
+
+delph:cto
+ a rdf:Property ;
+ rdfs:domain delph:Predication ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The final character position in the surface string (-1 if it's not a valid value)."@en-us .
+
+delph:hasPropertyValue
+ a rdf:Property ;
+ rdfs:domain delph:Identifier ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A general property to link an identifier to a morphosemantic property value"@en-us.
