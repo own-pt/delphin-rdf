@@ -81,3 +81,12 @@ erg:perf
  rdfs:comment "A property that states if the event has a perfective aspect"@en-us.
 
 #ICONS:
+erg:Focus
+ a rdfs:Class ;
+ rdfs:subClassOf mrs:Icons .
+
+erg:Topic
+ a rdfs:Class ;
+ rdfs:subClassOf mrs:Icons .
+
+#This is not an exhaustive list of possible Icons on ERG, I couldn't find it.

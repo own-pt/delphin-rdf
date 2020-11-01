@@ -14,14 +14,13 @@
 mrs:MRS
  a rdfs:Class ;
  rdfs:subClassOf delph:ScopedSemanticStructure ;
- rdfs:comment "A mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
+ rdfs:comment "A mrs instance should be a semantic representation with scopes which is characterized by a tuple (top, index, rels, hcons, icons)"@en-us .
 
-# Elementary predications have structure ⟨p, l, v, A⟩
 # http://moin.delph-in.net/MrsRfc
 mrs:ElementaryPredication
  a rdfs:Class ;
  rdfs:subClassOf delph:Predication ;
- rdfs:comment "Quadruples like <h, p, a, s, c>"@en-us .
+ rdfs:comment "MRS way of represeting predication and they are characterized by 5-tuples like <label, predicate, variable arguments, scopal arguments, constant value>"@en-us .
 
 mrs:h
  a rdfs:Class ;
@@ -124,7 +123,6 @@ mrs:body
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range mrs:h .
-#The rest of things in the EP:
 
 mrs:arg0
  a rdf:Property ;

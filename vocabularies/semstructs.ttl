@@ -44,22 +44,53 @@ mrs:AbstractPredicate
 delph:Pos
  a rdf:Class ;
  
-delph:Identifier
+#delph:Identifier
+# a rdfs:Class ;
+# rdfs:comment "The class of the identifiers of the predications of a semantic structure"@en-us .
+
+
+#About types (using :
+# http://svn.delph-in.net/erg/trunk/etc/erg.smi
+# http://svn.delph-in.net/erg/trunk/semi.vpm
+# and pydelphin variable.py):
+
+delph:u
  a rdfs:Class ;
- rdfs:comment "The class of the identifiers of the predications of a semantic structure"@en-us .
+ rdfs:comment "The most underspecific type"@en-us .
+
+delph:i
+ a rdfs:Class ;
+ rdfs:subClassOf delph:u ;
+ rdfs:comment "The type of individuals"@en-us .
+
+delph:p
+ a rdfs:Class ;
+ rdfs:subClassOf delph:u ;
+ rdfs:comment "The type of non-events"@en-us .
+
+delph:e
+ a rdfs:Class ;
+ rdfs:subClassOf delph:i ;
+ rdfs:comment "The type of events"@en-us .
+
+delph:x
+ a rdfs:Class ;
+ rdfs:subClassOf delph:i ;
+ rdfs:subClassOf delph:p ;
+ rdfs:comment "The type of instances"@en-us .
 
 
 #Declaring important relations
 delph:hasTop
  a rdf:Property ;
  rdfs:domain delph:SemanticStructure ;
- rdfs:range delph:Identifier ;
+ rdfs:range delph:u ;
  rdfs:comment "A mapping of a structure to its top. This represent the root of the graph in the nonscopal structures and the top scope in the scopal structures"@en-us.
 
 delph:hasIndex
  a rdf:Property ;
  rdfs:domain delph:ScopedSemanticStructure ;
- rdfs:range delph:Identifier ;
+ rdfs:range delph:u ;
  rdfs:comment "A mapping of the scoped semantic structure to its non-scopal top"@en-us.
 
 delph:hasPredication
@@ -80,17 +111,17 @@ delph:hasPredicate
 #we'll say that they both have the same structure and the name will not be used, we'll use lemma on abstract predicates
 delph:hasLemma
  a rdf:Property ;
- rdfs:domain delph.Predicate ;
+ rdfs:domain delph:Predicate ;
  rdfs:range rdfs:Literal .
 
 delph:hasPos
  a rdf:Property ;
- rdfs:domain delph.Predicate ;
+ rdfs:domain delph:Predicate ;
  rdfs:range delph:Pos .
 
 delph:hasSense
  a rdf:Property ;
- rdfs:domain delph.Predicate ;
+ rdfs:domain delph:Predicate ;
  rdfs:range rdfs:Literal .
 
 delph:cfrom
@@ -118,37 +149,6 @@ delph:text
  rdfs:comment "The property that links a semantic structure to the text that generated it"@en-us.
 
 
-#About types:
-#By now, lets consider those as instances of types, but it may be good to put them as classes to use the subclass.
-#using
-# http://svn.delph-in.net/erg/trunk/etc/erg.smi
-# http://svn.delph-in.net/erg/trunk/semi.vpm
-# and pydelphin variable.py
-
-delph:u
- a rdfs:Class ;
- rdfs:comment "The most underspecific type"@en-us .
-
-delph:i
- a rdfs:Class ;
- rdfs:subClassOf delph:u ;
- rdfs:comment "The type of individuals"@en-us .
-
-delph:p
- a rdfs:Class ;
- rdfs:subClassOf delph:u ;
- rdfs:comment "The type of non-events"@en-us .
-
-delph:e
- a rdfs:Class ;
- rdfs:subClassOf delph:i ;
- rdfs:comment "The type of events"@en-us .
-
-delph:x
- a rdfs:Class ;
- rdfs:subClassOf delph:i ;
- rdfs:subClassOf delph:p ;
- rdfs:comment "The type of instances"@en-us .
 
 
 # Defining the Parts of speech

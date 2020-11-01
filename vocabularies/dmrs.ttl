@@ -2,45 +2,55 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dmrs: <http://www.delph-in.net/schema/dmrs#> .
-@prefix dmrstype: <http://www.delph-in.net/schema/dmrs#type#> .
 @prefix erg: <http://www.delph-in.net/schema/erg#> .
+@prefix delph: <http://www.delph-in.net/schema/> 
+
 
 dmrs:DMRS
  a rdfs:Class ;
- rdfs:comment "Has nodes and links"@en-us .
+ rdfs:subClassOf delph:ScopedSemanticStructure ;
+ rdfs:comment "A DAG with nodes being predications and edges representing the roles and the scopal relation between the predications"@en-us .
  
 dmrs:Node
  a rdfs:Class ;
- rdfs:comment ""@en-us .
+ rdfs:subClassOf delph:Predication ;
+ rdfs:comment "The predications on DMRS"@en-us .
 
 dmrs:Link
  a rdfs:Class ;
- rdfs:comment ""@en-us .
+ rdfs:comment "DMRS way to represent arguments without variables"@en-us .
 
 dmrs:ScopalRelation
- a rdfs:Class .
+ a rdfs:Class
+ rdfs:comment "The class of the scopal relationships between DMRS nodes"@en-us.
 
 dmrs:Role
- a rdfs:Class .
+ a rdfs:Class ;
+ rdfs:comment "The class of the roles of a link in DMRS"@en-us.
 
 dmrs:hasNode
  a rdf:Property ;
+ rdfs:subProperty delph:hasPredication ;
  rdfs:domain dmrs:DMRS ;
- rdfs:range dmrs:Node .
+ rdfs:range dmrs:Node ;
+ rdfs:comment "The property that links a DMRS to one of its nodes"@en-us .
 
 dmrs:hasLink
  a rdf:Property ;
  rdfs:domain dmrs:DMRS ;
- rdfs:range dmrs:Link .
+ rdfs:range dmrs:Link ;
+ rdfs:comment "The property that links a DMRS to one of its links"@en-us .
 
 dmrs:hasId
  a rdf:Property ;
  rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The property that links a DMRS node to its ID"@en-us .
+ 
 
 #------------------------------
 # REVIEW
+# About links:
 dmrs:hasFrom
  a rdf:Property .
  rdfs:domain dmrs:Link ;
@@ -63,7 +73,6 @@ dmrs:hasRole
 
 
 #About roles:
-#Use testsuite to find the others.
 dmrs:arg1
  a dmrs:Role .
 
@@ -94,17 +103,20 @@ dmrs:r-index
 dmrs:mod
  a dmrs:Role .
 
-
+#Scopal relations
 dmrs:h
- a dmrs:ScopalRelation .
+ a dmrs:ScopalRelation ;
+ rdfs:comment "Indicates a 'qeq' relationship between the predications"@en-us.
 
 dmrs:neq
- a dmrs:ScopalRelation .
+ a dmrs:ScopalRelation ;
+ rdfs:comment "Indicates a label inequality"@en-us.
 
 dmrs:eq
- a dmrs:ScopalRelation .
+ a dmrs:ScopalRelation ;
+ rdfs:comment "Indicates a label equality"@en-us.
 
 dmrs:heq
  a dmrs:ScopalRelation .
 
-
+#Couldn't find all scopal relations and roles.

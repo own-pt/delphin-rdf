@@ -8,7 +8,7 @@
 
 # Most design choices were made based on
 # moin.delph-in.net/EdsTop ,
-# the way pyDelphin works (ellaborate) and
+# the way pyDelphin works and
 # 'Discriminant-Based MRS Banking' paper
 
 
@@ -26,10 +26,13 @@ eds:Node
 eds:edge
  a rdfs:Property ;
  rdfs:domain eds:Node ;
- rdfs:range eds:Node .
+ rdfs:range eds:Node ;
+ rdfs:comment "EDS way to explicit the role between predications"@en-us.
+#Is it?
 
 eds:hasNode
  a rdf:Property ;
+ rdfs:subProperty delph:hasPredication ;
  rdfs:domain eds:EDS ;
  rdfs:range eds:Node ;
  rdfs:comment "Property that links the EDS instance to its nodes"@en-us .
@@ -79,7 +82,3 @@ eds:arg4
 # Check whick properties are about the Node in the EDS or about the predicate it represents.
 
 # Understand what is the ideia of "distinguished variable" and how it influences the interpretation of EDS.
-
-# Minimize redundancies with EDS schema if possible.
-
-# Replace cfrom and cto by lnk (?)
