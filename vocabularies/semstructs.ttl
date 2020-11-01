@@ -109,6 +109,7 @@ delph:hasPredicate
 #Surface predicates are of the form _lemma_pos_sense
 #Abstract predicates don't have a specific form, but they have a name
 #we'll say that they both have the same structure and the name will not be used, we'll use lemma on abstract predicates
+
 delph:hasLemma
  a rdf:Property ;
  rdfs:domain delph:Predicate ;

@@ -30,10 +30,12 @@ def __cli_parse__(args):
         text = row[1]
         m = simplemrs.decode(row[2])
         # parse mrs from profile
+        if args.verbosity > 0 :
+            print("Parsing sentence {}".format(id))
         graph = p.mrs_to_rdf(m=m, prefix=prefix,
                             identifier=id, graph=graph, text=text)
     # serializes output
-    graph.serialize(destination=args.output,format=args.format)
+    graph.serialize(destination=args.output, format=args.format)
 
 
 # sets parser and interface function
