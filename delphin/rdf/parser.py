@@ -26,7 +26,7 @@ def __vars_to_rdf__(m, graph, VARS):
     VARS - the URI namespace dedicated to variables.
     """
     for v in m.variables.items():
-        if delphin.variable.is_valid():
+        if delphin.variable.is_valid(v[0]):
             if delphin.variable.type(v[0]) != 'h':
                 graph.add((VARS[v[0]], RDF.type, DELPH[delphin.variable.type(v[0])]))
             else :
@@ -114,7 +114,7 @@ def __hcons_to_rdf__(m, graph, mrsi, HCONS, VARS):
     VARS - the URI namespace dedicated to variables.
     """
     for hcon in range(len(m.hcons)):
-        mrs_hcon = hcons[hcon]
+        mrs_hcon = m.hcons[hcon]
         rdf_hcon = HCONS["hcons{hcon}".format(hcon=hcon)]
         
         # adds hcon to graph
@@ -140,7 +140,7 @@ def __icons_to_rdf__(m, graph, mrsi, ICONS, VARS):
     VARS - the URI namespace dedicated to variables.
     """    
     for icon in range(len(m.icons)):
-        mrs_icon = icons[icon]
+        mrs_icon = m.icons[icon]
         rdf_icon = ICONS["icon{icon}".format(icon=icon)]
         
         # adds icon to graph
