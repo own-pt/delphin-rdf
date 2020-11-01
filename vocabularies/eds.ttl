@@ -3,8 +3,8 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix eds: <http://www.delph-in.net/schema/eds#> .
-@prefix edstype: <http://www.delph-in.net/schema/eds#type#> .
-
+@prefix erg: <http://www.delph-in.net/schema/erg#> .
+@prefix delph: <http://www.delph-in.net/schema/> .
 
 # Most design choices were made based on
 # moin.delph-in.net/EdsTop ,
@@ -15,29 +15,18 @@
 #The skeleton of the EDS:
 eds:EDS
  a rdfs:Class ;
+ rdfs:subClassOf delph:SemanticStructure ;
  rdfs:comment "An EDS instance is a directed graph with nodes labelled with its semantic predicates and edges labelled with the semantic roles"@en-us .
-
-eds:text
- a rdf:Property ;
- rdfs:domain eds:EDS ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "The sentence that originated the EDS"@en-us.
 
 eds:Node
  a rdfs:Class ;
+ rdfs:subClassOf delph:Predication ;
  rdfs:comment "The class of the nodes that forms an EDS graph"@en-us .
 
 eds:edge
  a rdfs:Property ;
  rdfs:domain eds:Node ;
  rdfs:range eds:Node .
-
-#Properties
-eds:hasTop
- a rdf:Property ;
- rdfs:domain eds:EDS ;
- rdfs:range eds:Node ;
- rdfs:comment "Property that links the EDS instance to its top node"@en-us .
 
 eds:hasNode
  a rdf:Property ;
@@ -50,146 +39,6 @@ eds:nodeIdentifier
  rdfs:domain eds:Node ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "Property that links a node to its identifier"@en-us .
-
-eds:carg
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "Property that links a node to its constant argument if it exists"@en-us .
-
-eds:NodeType
- a rdfs:Class ;
- rdfs:comment "The class for the node types"@en-us.
-
-eds:hasNodeType
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range eds:NodeType ;
- rdfs:comment "Property that links a node to its type if declared"@en-us .
-
-#-------------
-# This probably needs to change:
-edstype:x
- a eds:NodeType .
-
-edstype:e
- a eds:NodeType .
- 
-edstype:i
- a eds:NodeType .
-
-edstype:p 
- a eds:NodeType .
-
-edstype:u
- a eds:NodeType .
-#-------------
-
-eds:NodePredicate
- a rdfs:Class ;
- rdfs:comment "The class of the semantic predicates"@en-us .
-
-eds:SurfacePredicate
- rdfs:subClassOf eds:NodePredicate;
- rdfs:comment "Represent overt semantic predicates of the sentence."@en-us .
- #Remembering that not all words are predicates.
-
-eds:AbstractPredicate
- rdfs:subClassOf eds:NodePredicate.
- rdfs:comment "Represent non-lexical information."@en-us .
-
-eds:hasNodePredicate
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range eds:NodePredicate .
-
-eds:cfrom
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "The index of the rightmost character of the pred represented by the node"@en-us .
-
-eds:cto
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "The index of the rightmost character of the pred represented by the node"@en-us .
-
-
-# About mapping properties:
-
-eds:pers
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal . #by now, this and all the others will be literal
-
-eds:num
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal .
-
-eds:ind
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal . 
-
-eds:gend
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal .
-
-eds:pt
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal .
-
-# http://moin.delph-in.net/RmrsVpm
-# specific to events (the way the schema is, I can't say this)
-eds:tense
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal .
-
-eds:sf
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal .
- 
-eds:mood
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal . 
-
-eds:prog
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal . 
-
-eds:perf
- a rdf:Property ;
- rdfs:domain eds:Node ;
- rdfs:range rdfs:Literal .
-
-# About predicates
-# Not differentiating surface predicates and abstract in this.
-
-eds:Pos
- a rdfs:Class .
-
-eds:hasLemma
- a rdf:Property ;
- rdfs:domain eds:NodePredicate ;
- rdfs:range rdfs:Literal .
-
-eds:hasPos
- a rdf:Property ;
- rdfs:domain eds:NodePredicate ;
- rdfs:range eds:Pos .
-
-eds:hasSense
- a rdf:Property ;
- rdfs:domain eds:NodePredicate ;
- rdfs:range rdfs:Literal .
 
 # About the possible arcs/edges of the graph:
 
@@ -222,53 +71,6 @@ eds:arg4
  rdfs:subPropertyOf eds:edge ;
  rdfs:domain eds:Node ;
  rdfs:range eds:Node .
-
-
-#Defining the Parts of speech (Pos)
-
-eds:n
- a eds:Pos;
- rdfs:comment "PoS tag dedicated to nouns."@en-us .
-
-eds:v
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to verbs."@en-us .
-
-eds:a
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to adjectives or adverbs."@en-us .
-
-eds:j
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to adjectives."@en-us .
-
-eds:r
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to adverbs."@en-us .
-
-eds:s
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to verbal nouns (Korean and Japanese)."@en-us .
-
-eds:c
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to conjuntions."@en-us .
-
-eds:p
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to adpositions."@en-us .
-
-eds:q
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to quantifiers."@en-us .
-
-eds:x
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to other classes(?)."@en-us .
-
-eds:u
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
 
 
 #--------------------------------------------------------

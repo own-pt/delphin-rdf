@@ -8,17 +8,8 @@
 dmrs:DMRS
  a rdfs:Class ;
  rdfs:comment "Has nodes and links"@en-us .
-
-dmrs:text
- a rdfs:Property ;
- rdfs:domain dmrs:DMRS ;
- rdfs:range rdfs:Literal .
  
 dmrs:Node
- a rdfs:Class ;
- rdfs:comment ""@en-us .
-
-dmrs:NodeType
  a rdfs:Class ;
  rdfs:comment ""@en-us .
 
@@ -32,33 +23,6 @@ dmrs:ScopalRelation
 dmrs:Role
  a rdfs:Class .
 
-dmrs:Predicate
- a rdfs:Class ;
- rdfs:comment ""@en-us .
-
-dmrs:AbstractPredicate
- a rdfs:Class ;
- rdfs:subClassOf dmrs:Predicate;
- rdfs:comment ""@en-us .
-
-dmrs:SurfacePredicate
- a rdfs:Class ;
- rdfs:subClassOf dmrs:Predicate;
- rdfs:comment ""@en-us .
-
-dmrs:Pos
- a rdfs:Class .
-
-dmrs:hasTop
- a rdf:Property ;
- rdfs:domain dmrs:DMRS ;
- rdfs:range dmrs:Node .
-
-dmrs:hasIndex
- a rdf:Property ;
- rdfs:domain dmrs:DMRS ;
- rdfs:range dmrs:Node .
-
 dmrs:hasNode
  a rdf:Property ;
  rdfs:domain dmrs:DMRS ;
@@ -70,31 +34,6 @@ dmrs:hasLink
  rdfs:range dmrs:Link .
 
 dmrs:hasId
- a rdf:Property ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:hasPredicate
- a rdf:Property ;
- rdfs:domain dmrs:Node ;
- rdfs:range dmrs:Predicate .
-
-dmrs:hasSortInfo #?
- a rdf:Property ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:cfrom
- a rdf:Property ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
- 
-dmrs:cto
- a rdf:Property ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:hasCarg
  a rdf:Property ;
  rdfs:domain dmrs:Node ;
  rdfs:range rdfs:Literal .
@@ -121,29 +60,6 @@ dmrs:hasRole
  a rdf:Property ;
  rdfs:domain dmrs:Link ;
  rdfs:range dmrs:Role .
-
-#------------------------------
-
-#About predicates:
-dmrs:hasLemma
- a rdf:Property ;
- rdfs:domain dmrs:SurfacePredicate ;
- rdfs:range dmrs:Literal .
-
-dmrs:hasPos
- a rdf:Property ;
- rdfs:domain dmrs:Predicate ;
- rdfs:range dmrs:Pos .
-
-dmrs:hasSense
- a rdf:Property ;
- rdfs:domain dmrs:Predicate ;
- rdfs:range dmrs:Literal .
-
-dmrs:hasName
- a rdf:Property ;
- rdfs:domain dmrs:AbstractPredicate ;
- rdfs:range dmrs:Literal .
 
 
 #About roles:
@@ -192,134 +108,3 @@ dmrs:heq
  a dmrs:ScopalRelation .
 
 
-# About properties
-
-dmrs:pers
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:num
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:ind
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:gend
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:pt
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-
-dmrs:tense
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:sf
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:mood
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:prog
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:perf
- a rdf:Property ;
- rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range rdfs:Literal .
-
-dmrs:cvarsort
- a rdf:Property ;
- # rdfs:subPropertyOf dmrs:hasSortInfo ;
- rdfs:domain dmrs:Node ;
- rdfs:range dmrs:NodeType .
-
-# Node types:
-dmrstype:x
- a dmrs:NodeType .
-
-dmrstype:e
- a dmrs:NodeType .
- 
-dmrstype:i
- a dmrs:NodeType .
- 
-dmrstype:p
- a dmrs:NodeType .
- 
-dmrstype:u
- a dmrs:NodeType .
-
-
-# About Pos(parts of speech)
-
-dmrs:n
- a dmrs:Pos;
- rdfs:comment "PoS tag dedicated to nouns."@en-us .
-
-dmrs:v
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to verbs."@en-us .
-
-dmrs:a
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to adjectives or adverbs."@en-us .
-
-dmrs:j
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to adjectives."@en-us .
-
-dmrs:r
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to adverbs."@en-us .
-
-dmrs:s
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to verbal nouns (Korean and Japanese)."@en-us .
-
-dmrs:c
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to conjuntions."@en-us .
-
-dmrs:p
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to adpositions."@en-us .
-
-dmrs:q
- a eds:Pos ;
- rdfs:comment "PoS tag dedicated to quantifiers."@en-us .
-
-dmrs:x
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to other classes(?)."@en-us .
-
-dmrs:u
- a dmrs:Pos ;
- rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
