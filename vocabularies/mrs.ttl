@@ -3,157 +3,50 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix mrs: <http://www.delph-in.net/schema/mrs#> .
 @prefix erg: <http://www.delph-in.net/schema/erg#> .
+@prefix delph: <http://www.delph-in.net/schema/> .
 
 
 # reference: Michael Wayne Goodman, University of Washington
 # Semantic Operations for Transfer-based Machine Translation
-  
+
 
 # possibly an owl:Class
 mrs:MRS
  a rdfs:Class ;
+ rdfs:subClassOf delph:ScopedSemanticStructure
  rdfs:comment "A mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
- 
-mrs:text
- a rdf:Property ;
- rdfs:domain mrs:MRS ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "The sentence that originated the MRS"@en-us.
-
-# making the type variable and its subtypes according to semi.vpm and erg.smi
-# http://svn.delph-in.net/erg/tags/1214/etc/erg.smi
-# http://svn.delph-in.net/erg/trunk/semi.vpm
-erg:u 
- a rdfs:Class ;
- rdfs:comment "The most underspecific type."@en-us .
-
-erg:i
- a rdfs:Class ;
- rdfs:subClassOf erg:u ;
- rdfs:comment "The type of individuals"@en-us .
-
-erg:p
- a rdfs:Class;
- rdfs:subClassOf erg:u .
- rdfs:comment "The type of non-events"@en-us .
-
-erg:h
- a rdfs:Class ;
- rdfs:subClassOf erg:p ;
- rdfs:comment "The type of handles"@en-us . 
-
-erg:e
- a rdfs:Class ;
- rdfs:subClassOf erg:i ;
- rdfs:comment "The type of events"@en-us .
-
-erg:x
- a rdfs:Class ;
- rdfs:subClassOf erg:p ;
- rdfs:subClassOf erg:i ;
- rdfs:comment "The type of referential indexes"@en-us . 
-
-# On MRS:
-mrs:top
- a rdfs:Property ;
- rdfs:domain mrs:MRS ;
- rdfs:range erg:h ;
- rdfs:comment "The global TOP handle of an MRS"@en-us .
-    
-mrs:index
- a rdfs:Property ;
- rdfs:domain mrs:MRS ;
- rdfs:range erg:e;
- rdfs:comment "Global INDEX of an MRS"@en-us .
-
-
-# Creating notion of predicate and its types
-# http://moin.delph-in.net/PredicateRfc
-mrs:Predicate
- a rdfs:Class ;
- rdfs:comment "The class of the semantic predicates"@en-us .
-
-mrs:SurfacePredicate
- rdfs:subClassOf mrs:Predicate;
- rdfs:comment "Represent overt semantic predicates of the sentence."@en-us .
- #Remembering that not all words are predicates.
-
-mrs:AbstractPredicate
- rdfs:subClassOf mrs:Predicate.
- rdfs:comment "Represent non-lexical information."@en-us .
-
-# Pela "Note for Developers" do link acima, vamos dizer que a estrutura de predicados abstratos é a mesma descrita para os de superfícies
-
-mrs:Pos
- a rdfs:Class ;
- rdfs:comment "The class dedicated to the possible Parts of Speech (PoS)"@en-us.
- # Putting on MRS not ERG because of http://moin.delph-in.net/RmrsPos.
-
-mrs:hasLemma
- a rdf:Property ;
- rdfs:domain mrs:Predicate ;
- rdfs:range rdfs:Literal .
-
-mrs:hasPos
- a rdf:Property ;
- rdfs:domain mrs:Predicate ;
- rdfs:range mrs:Pos .
-
-mrs:hasSense
- a rdf:Property ;
- rdfs:domain mrs:Predicate ;
- rdfs:range rdfs:Literal .
-
-#Specific of abstract(?)
-mrs:name
- a rdf:Property ;
- rdfs:domain mrs:AbstractPredicate ;
- rdfs:range rdfs:Literal .
-
 
 # Elementary predications have structure ⟨p, l, v, A⟩
 # http://moin.delph-in.net/MrsRfc
 mrs:ElementaryPredication
  a rdfs:Class ;
+ rdfs:subClassOf delph:Predication ;
  rdfs:comment "Quadruples like <h, p, a, s, c>"@en-us .
 
-mrs:hasEP
- a rdf:Property ;
- rdfs:domain mrs:MRS;
- rdfs:range mrs:ElementaryPredication .
+mrs:h
+ a rdfs:Class ;
+ rdfs:subClassOf delph:p ;
+ rdfs:comment "The type of handles"@en-us .
+ #and holes?
  
-mrs:hasPredicate
- a rdf:Property ;
- rdfs:domain mrs:ElementaryPredication ;
- rdfs:range mrs:Predicate .
 
-mrs:label
- a rdf:Property ;
- rdfs:domain mrs:ElementaryPredication ;	
- rdfs:range erg:h ;
- rdfs:comment "A mapping of a predicate to the variable?"@en-us .
-
-mrs:carg #?
- a rdf:Property ;
- rdfs:domain mrs:ElementaryPredication;
- rdfs:range rdfs:Literal . #? O 1 pode ser CARG
 
 # Constraints are simple triples ⟨lhs, rel, rhs⟩
 # There are differences between HCONS and ICONS,
 # but for simplicity/generality we create the class of constraints in a general way. (tirar?)
 mrs:Constraint
  a rdfs:Class ;
- rdfs:comment "simple triples ⟨lhs, rel, rhs⟩"@en-us .
+ rdfs:comment "A generic constraint between two parts of a semantic structure"@en-us .
 
 mrs:Hcons
  a rdfs:Class ;
  rdfs:subClassOf mrs:Constraint ;
- rdfs:comment "The class of the handle constraints"@en-us .
+ rdfs:comment "The class of the relations between two handles"@en-us .
 
 mrs:Icons
  a rdfs:Class ;
  rdfs:subClassOf mrs:Constraint ;
- rdfs:comment "The class of the individual constraints"@en-us .
+ rdfs:comment "The class of the relations between two variables"@en-us .
 
 mrs:hasHcons
  a rdf:Property ;
@@ -164,218 +57,111 @@ mrs:hasHcons
 mrs:hasIcons
  a rdf:Property ;
  rdfs:domain mrs:MRS ;
- rdfs:range mrs:Icons
+ rdfs:range mrs:Icons ;
  rdfs:comment "Property that links the MRS node to one of its ICONS"@en-us . 
  
-mrs:leftHcons
+mrs:highHcons
  a rdf:Property ;
  rdfs:domain mrs:Hcons ;
- rdfs:range erg:h ;
- rdfs:comment "Property that links a handle constraint to the handle at the left hand side"@en-us.
+ rdfs:range mrs:h ;
+ rdfs:comment "The higher scoped handle, which is in left hand side"@en-us.
 
-mrs:rightHcons
+mrs:lowHcons
  a rdf:Property ;
  rdfs:domain mrs:Hcons ;
- rdfs:range erg:h ;
- rdfs:comment "Property that links a handle constraint to the handle at the right hand side"@en-us .
+ rdfs:range mrs:h ;
+ rdfs:comment "The lower scoped handle, which is in right hand side"@en-us .
 
 # http://moin.delph-in.net/SaarlandIconsErg
 mrs:leftIcons
  a rdf:Property ;
  rdfs:domain mrs:Icons ;
- rdfs:range erg:i ;
- rdfs:comment "Property that links a individual constraint to the variable at the left hand side"@en-us.
+ rdfs:range delph:u ;
+ rdfs:comment "The left hand side intrinsic variable of the constraining EP"@en-us.
 
 mrs:rightIcons
  a rdf:Property ;
  rdfs:domain mrs:Icons ;
- rdfs:range erg:i .
+ rdfs:range delph:u .
+ rdfs:comment "The right hand side intrinsic variable of the constraining EP"@en-us.
 
-mrs:qeq
+mrs:Qeq
  a rdfs:Class;
  rdfs:subClassOf mrs:Hcons;
 
-mrs:lheq
+mrs:Lheq
  a rdfs:Class;
  rdfs:subClassOf mrs:Hcons;
 
-mrs:outscopes
+mrs:Outscopes
  a rdfs:Class;
  rdfs:subClassOf mrs:Hcons;
 
-# http://moin.delph-in.net/SaarlandIconsErg
-mrs:eq
- a rdfs:Class;
- rdfs:subClassOf mrs:Icons;
-
-mrs:neq
- a rdfs:Class;
- rdfs:subClassOf mrs:Icons;
-
-#According to BNF in http://moin.delph-in.net/MrsRfc#Simple, the "outscopes" and "lheq" are still needed.
+# The Icons types are grammar dependent, so they are declared on erg namespace
 
 
-# Defining parts of speech (PoS)
-# Based on http://moin.delph-in.net/RmrsPos
+#Defining properties
+mrs:hasEP
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPredication ;
+ rdfs:domain mrs:MRS ;
+ rdfs:range mrs:ElementaryPredication ;
+ rdfs:comment "A property that links a MRS to one element of its bag of Elementary Predications (EPs)"@en-us .
 
-mrs:n
- a mrs:Pos;
- rdfs:comment "PoS tag dedicated to nouns."@en-us .
+mrs:hasLabel
+ a rdf:Property ;
+ rdfs:domain mrs:ElementaryPredication ;	
+ rdfs:range mrs:h ;
+ rdfs:comment "A mapping of an EP to its scope handle"@en-us .
 
-mrs:v
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to verbs."@en-us .
-
-mrs:a
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to adjectives or adverbs."@en-us .
-
-mrs:j
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to adjectives."@en-us .
-
-mrs:r
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to adverbs."@en-us .
-
-mrs:s
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to verbal nouns (Korean and Japanese)."@en-us .
-
-mrs:c
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to conjuntions."@en-us .
-
-mrs:p
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to adpositions."@en-us .
-
-mrs:q
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to quantifiers."@en-us .
-
-mrs:x
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to other classes(?)."@en-us .
-
-mrs:u
- a mrs:Pos ;
- rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
-
-
-# Creating parts of EP specific to quantifiers
-# Como colocar restrição para somente os predicados que são quantifiers sem OWL?
+# by http://svn.delph-in.net/erg/trunk/etc/erg.smi
 mrs:rstr
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:h .
+ rdfs:range mrs:h .
 
 mrs:body
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:h .
-
-# http://moin.delph-in.net/RmrsVpm
-# http://svn.delph-in.net/erg/trunk/semi.vpm
-
-erg:pers
- a rdf:Property ;
- rdfs:domain erg:x ;
- rdfs:range rdfs:Literal . #by now, this and all the rests will be literal
-
-erg:num
- a rdf:Property ;
- rdfs:domain erg:x ;
- rdfs:range rdfs:Literal .
-
-erg:ind
- a rdf:Property ;
- rdfs:domain erg:x ;
- rdfs:range rdfs:Literal . 
-
-erg:gend
- a rdf:Property ;
- rdfs:domain erg:x ;
- rdfs:range rdfs:Literal . # genero
-
-erg:pt
- a rdf:Property ;
- rdfs:domain erg:x ;
- rdfs:range rdfs:Literal . # ?, pode ser "zero", "std" (exemplo em "Do it.")
-
-# http://moin.delph-in.net/RmrsVpm
-# specific to events
-erg:tense
- a rdf:Property ;
- rdfs:domain erg:e ;
- rdfs:range rdfs:Literal .
-
-erg:sf
- a rdf:Property ;
- rdfs:domain erg:e ;
- rdfs:range rdfs:Literal . #? exemplo: prop, ques
-
-erg:mood
- a rdf:Property ;
- rdfs:domain erg:e ;
- rdfs:range rdfs:Literal . #?provavelmente indicativo, subjuntivo e imperativo.
-
-erg:prog
- a rdf:Property ;
- rdfs:domain erg:e ;
- rdfs:range rdfs:Literal . #?? pode ser +, -
-
-erg:perf
- a rdf:Property ;
- rdfs:domain erg:e ;
- rdfs:range rdfs:Literal . #?? pode ser -
-
+ rdfs:range mrs:h .
 #The rest of things in the EP:
 
-mrs:cfrom
- a rdf:Property ;
- rdfs:domain mrs:ElementaryPredication ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "The index of the leftmost character in sent"@en-us .
-
-mrs:cto
- a rdf:Property ;
- rdfs:domain mrs:ElementaryPredication ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "The index of the rightmost character in sent"@en-us .
- 
 mrs:arg0
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:i . # according to erg.smi
+ rdfs:range delph:i . # according to erg.smi
 
-#using erg.smi:
 mrs:arg1
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:u .
+ rdfs:range delph:u .
 
 mrs:arg2
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:u .
+ rdfs:range delph:u .
 
 mrs:arg3
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:u .
+ rdfs:range delph:u .
 
 mrs:arg4
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:h .
+ rdfs:range mrs:h .
 
 #by erg.smi: ?
 mrs:arg
  a rdf:Property ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range erg:u .
+ rdfs:range delph:u .
 
+
+# TO DO:
+
+# Differentiate with more caution the SEMI, the ERG, the VPM and the MRS;
+# semantic interface for diferent languages;
 
 # revisiting redundancy in rels
 # mrs:RELS
@@ -387,15 +173,3 @@ mrs:arg
 #    rdfs:domain mrs:MRS ;
 #    rdfs:range mrs:RELS .
 
-# TO DO:
-#
-# Differentiate with more caution the SEMI, the ERG, the VPM and the MRS.
-#
-# discuss generation of URIs for identifiation of
-# different rdf nodes: mrs, x12, e9, etc. Should
-# global prefix be defined by user?
-#
-# define differences between vocabulary defined
-# for mrs structures and erg structures.
-#
-# semantic interface for diferent languages

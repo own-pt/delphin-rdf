@@ -3,12 +3,16 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix erg: <http://www.delph-in.net/schema/erg#> .
 @prefix delph: <http://www.delph-in.net/schema/> .
+@prefix pos: <http://www.delph-in.net/schema/pos#> . # maybe use "/pos/"
+@prefix mrs: <http://www.delph-in.net/schema/mrs#> .
 
 #This document contains the metaspecification of the semantic structures and its parts.
 #Heavily inspired on the classes of PyDelphin objects.
 
 #About Lnks, they will only appear on predications for now, not on the semantic structures. They will be represented only by cfroms and ctos.
 
+
+#Declaring the classes:
 delph:SemanticStructure
  a rdfs:Class ;
  rdfs:comment "The class dedicated to the skeleton of semantic structures. Those are rooted DAGS with a bag of Predications."@en-us .
@@ -22,10 +26,30 @@ delph:Predication
  a rdfs:Class ;
  rdfs:comment "The class for the instantiation of a predicate in a semantic structure"@en-us .
 
+delph:Predicate
+ a rdfs:Class ;
+ rdfs:comment "The class for the symbols representing semantic entities or constructions, and its predication gives its semantic arguments and constraints"@en-us .
+ 
+mrs:SurfacePredicate
+ a rdfs:Class ;
+ rdfs:subClassOf delph:Predicate;
+ rdfs:comment "The class of the semantic predicates that represents the overt words in a sentence"@en-us .
+ #Remembering that not all words are predicates.
+
+mrs:AbstractPredicate
+ a rdfs:Class ;
+ rdfs:subClassOf delph:Predicate;
+ rdfs:comment "The class of the semantic predicates that represents the overt words in a sentence"@en-us .
+
+delph:Pos
+ a rdf:Class ;
+ 
 delph:Identifier
  a rdfs:Class ;
- rdfs:comment "The class of the identifiers of the predications of a semantic structure"@en-us.
+ rdfs:comment "The class of the identifiers of the predications of a semantic structure"@en-us .
 
+
+#Declaring important relations
 delph:hasTop
  a rdf:Property ;
  rdfs:domain delph:SemanticStructure ;
@@ -44,6 +68,31 @@ delph:hasPredication
  rdfs:range delph:Predication ;
  rdfs:comment "A property that links a semantic structure to one of its predications"@en-us.
 
+delph:hasPredicate
+ a rdf:Property ;
+ rdfs:domain delph:Predication ;
+ rdfs:range delph:Predicate ;
+ rdfs:comment "A property that links a predication to its semantic predicate"@en-us.
+
+#http://moin.delph-in.net/PredicateRfc
+#Surface predicates are of the form _lemma_pos_sense
+#Abstract predicates don't have a specific form, but they have a name
+#we'll say that they both have the same structure and the name will not be used, we'll use lemma on abstract predicates
+delph:hasLemma
+ a rdf:Property ;
+ rdfs:domain delph.Predicate ;
+ rdfs:range rdfs:Literal .
+
+delph:hasPos
+ a rdf:Property ;
+ rdfs:domain delph.Predicate ;
+ rdfs:range delph:Pos .
+
+delph:hasSense
+ a rdf:Property ;
+ rdfs:domain delph.Predicate ;
+ rdfs:range rdfs:Literal .
+
 delph:cfrom
  a rdf:Property ;
  rdfs:domain delph:Predication ;
@@ -61,3 +110,110 @@ delph:hasPropertyValue
  rdfs:domain delph:Identifier ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A general property to link an identifier to a morphosemantic property value"@en-us.
+
+delph:text
+ a rdf:Property ;
+ rdfs:domain delph:SemanticStructure ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The property that links a semantic structure to the text that generated it"@en-us.
+
+
+#About types:
+#By now, lets consider those as instances of types, but it may be good to put them as classes to use the subclass.
+#using
+# http://svn.delph-in.net/erg/trunk/etc/erg.smi
+# http://svn.delph-in.net/erg/trunk/semi.vpm
+# and pydelphin variable.py
+
+delph:u
+ a rdfs:Class ;
+ rdfs:comment "The most underspecific type"@en-us .
+
+delph:i
+ a rdfs:Class ;
+ rdfs:subClassOf delph:u ;
+ rdfs:comment "The type of individuals"@en-us .
+
+delph:p
+ a rdfs:Class ;
+ rdfs:subClassOf delph:u ;
+ rdfs:comment "The type of non-events"@en-us .
+
+delph:e
+ a rdfs:Class ;
+ rdfs:subClassOf delph:i ;
+ rdfs:comment "The type of events"@en-us .
+
+delph:x
+ a rdfs:Class ;
+ rdfs:subClassOf delph:i ;
+ rdfs:subClassOf delph:p ;
+ rdfs:comment "The type of instances"@en-us .
+
+
+# Defining the Parts of speech
+# Based on http://moin.delph-in.net/RmrsPos
+
+pos:n
+ a delph:Pos;
+ rdfs:comment "PoS tag dedicated to nouns."@en-us .
+
+pos:v
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to verbs."@en-us .
+
+pos:a
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to adjectives or adverbs."@en-us .
+
+pos:j
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to adjectives."@en-us .
+
+pos:r
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to adverbs."@en-us .
+
+pos:s
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to verbal nouns (Korean and Japanese)."@en-us .
+
+pos:c
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to conjuntions."@en-us .
+
+pos:p
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to adpositions."@en-us .
+
+pos:q
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to quantifiers."@en-us .
+
+pos:x
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to other closed classes."@en-us .
+#
+
+pos:u
+ a delph:Pos ;
+ rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
+
+#Not including the "discourse" PoS as its discouraged.
+
+
+#The roles will be specified in each semantic representation as its not trivial to generalize:
+#In MRS, the role links an Predication (EP) to a variable(delph:u)
+#In EDS, the role is a link between two nodes (predications)
+#In DMRS, the role relates two nodes (predication) but they are followed by a scopal relationship.
+#The only role which will be put here is the Carg.
+
+
+#By now, we'll consider the roles not ERG-specific, but maybe we should.
+
+delph:carg
+ a rdf:Property ;
+ rdfs:domain delph:Predication ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "The property that links a Predication to its constant argument"@en-us .
+ 

@@ -12,34 +12,34 @@
 erg:pers
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:x ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the grammatical person"@en-us.
 
 erg:num
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:x ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the grammatical number"@en-us.
 
 erg:gend
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:x ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the grammatical gender"@en-us.
 
 erg:ind
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:x ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states if the referenced is individuated"@en-us.
 
 erg:pt
  a rdf:Property ;
- rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:subPropertyOf delph:x ;
  rdfs:domain delph:Identifier ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the pronoum type"@en-us.
@@ -48,35 +48,35 @@ erg:pt
 erg:sf
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:e ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the sentential-force"@en-us.
 
 erg:tense
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:e ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the grammatical tense of the event"@en-us.
 
 erg:mood
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:e ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the grammatical mood of the event"@en-us.
 
 erg:prog
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:e ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states if the event has a progressive aspect"@en-us.
 
 erg:perf
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPropertyValue ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:e ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states if the event has a perfective aspect"@en-us.
 
