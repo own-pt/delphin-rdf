@@ -1,6 +1,6 @@
 # DELPH-IN formats in RDF
 
-DELPHIN-RDF's is a plugin for [pydelphin](https://github.com/delph-in/pydelphin/) for representing textual based semantics as RDF graphs. Here we discuss how DELPH-IN formats can be represented in RDF.  This can be consider a continuation of some discussion started [here](http://moin.delph-in.net/WeSearch/Rdf).
+DELPHIN-RDF is a plugin for [pydelphin](https://github.com/delph-in/pydelphin/) for representing textual based semantics as RDF graphs. Here we discuss how DELPH-IN formats can be represented in RDF.  This can be consider a continuation of some discussion started [here](http://moin.delph-in.net/WeSearch/Rdf).
 
 The [pydelphin](https://pypi.org/project/PyDelphin/) and [rdflib](https://pypi.org/project/rdflib/) libraries are required.
 
