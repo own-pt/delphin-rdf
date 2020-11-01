@@ -70,7 +70,7 @@ def __rels_to_rdf__(m, graph, mrsi, RELS, VARS):
             print("{} is an invalid predicate.".format(mrs_rel.predicate)) #revise; maybe something stronger.
             graph.add((pred_rel, RDF.type, DELPH.Predicate)) #revise
 
-        graph.add((rdf_rel, MRS.hasPredicate, pred_rel))
+        graph.add((rdf_rel, DELPH.hasPredicate, pred_rel))
             
         if splittedPredicate[0] is not None: #here, lemma = name by now.
             graph.add((pred_rel, DELPH.hasLemma, Literal(splittedPredicate[0])))
@@ -80,10 +80,12 @@ def __rels_to_rdf__(m, graph, mrsi, RELS, VARS):
             
         if splittedPredicate[2] is not None:
             graph.add((pred_rel, MRS.hasSense, Literal(splittedPredicate[2])))
-
-        graph.add((rdf_rel, DELPH.cto, Literal(mrs_rel.cto)))     # integer
-        graph.add((rdf_rel, DELPH.cfrom, Literal(mrs_rel.cfrom))) # integer
-
+        #lnk:
+        if mrs_rel.cfrom is not None:
+            graph.add((rdf_rel, DELPH.cfrom, Literal(mrs_rel.cfrom))) #integer
+        if mrs_rel.cto is not None:
+            graph.add((rdf_rel, DELPH.cto, Literal(mrs_rel.cto))) #integer
+     
         # parse arguments
         
         for hole, arg in mrs_rel.args.items():
@@ -190,7 +192,7 @@ def mrs_to_rdf(m, prefix: str, identifier, iname="mrsi#mrs", graph=None, out=Non
         return graph
     
     # same graph for different mrs
-    if not graph: graph = Graph()
+    if graph is None: graph = Graph()
     if type(identifier) == list:
         identifier = "/".join(identifier)
 
@@ -214,15 +216,14 @@ def mrs_to_rdf(m, prefix: str, identifier, iname="mrsi#mrs", graph=None, out=Non
     #Adding top
     graph.add((mrsi, DELPH['hasTop'], VARS[m.top]))
     #Adding index
-    graph.add((mrsi, DELPH['hasIndex'], VARS[m.index]))
-    
+    graph.add((mrsi, DELPH['hasIndex'], VARS[m.index]))    
     __rels_to_rdf__(m, graph, mrsi, RELS, VARS)
     __hcons_to_rdf__(m, graph, mrsi, HCONS, VARS)
     __icons_to_rdf__(m, graph, mrsi, ICONS, VARS)
 
     # add text as one graph node if it's given
-    if text: graph.add((mrsi, DELPH.text, Literal(text)))
+    if text is not None: graph.add((mrsi, DELPH.text, Literal(text)))
     # serializes graph if given an output file
-    if out: graph.serialize(destination=out, format=format)
+    if out is not None: graph.serialize(destination=out, format=format)
 
     return graph

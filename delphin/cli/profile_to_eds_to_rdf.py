@@ -28,12 +28,12 @@ def __cli_parse__(args):
     for row in tsql.select('i-id i-input mrs', ts):
         id = row[0]
         text = row[1]
-        if args.verbosity > 0:
-            print("Parsing sentence {}".format(id))
         # parse mrs from profile
         m = simplemrs.decode(row[2])
         # transform to eds:
         e = eds.from_mrs(m)
+        if args.verbosity > 0:
+            print("Parsing sentence {}".format(id))
         graph = p.eds_to_rdf(e=e, prefix=prefix,
                              identifier=id, graph=graph, text=text)
     # serializes output
