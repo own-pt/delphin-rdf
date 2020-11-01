@@ -13,7 +13,7 @@
 # possibly an owl:Class
 mrs:MRS
  a rdfs:Class ;
- rdfs:subClassOf delph:ScopedSemanticStructure
+ rdfs:subClassOf delph:ScopedSemanticStructure ;
  rdfs:comment "A mrs instance should be a tuple (top, index, rels, hcons, icons)"@en-us .
 
 # Elementary predications have structure ⟨p, l, v, A⟩
@@ -87,15 +87,15 @@ mrs:rightIcons
 
 mrs:Qeq
  a rdfs:Class;
- rdfs:subClassOf mrs:Hcons;
+ rdfs:subClassOf mrs:Hcons .
 
 mrs:Lheq
  a rdfs:Class;
- rdfs:subClassOf mrs:Hcons;
+ rdfs:subClassOf mrs:Hcons .
 
 mrs:Outscopes
  a rdfs:Class;
- rdfs:subClassOf mrs:Hcons;
+ rdfs:subClassOf mrs:Hcons .
 
 # The Icons types are grammar dependent, so they are declared on erg namespace
 
