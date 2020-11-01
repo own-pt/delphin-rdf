@@ -1,0 +1,92 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix delph: <http://www.delph-in.net/schema/> .
+@prefix erg: <http://www.delph-in.net/schema/erg#> .
+
+# The erg namespace is supposed to be the namespace
+# reserved for ERG-specific things, like the properties
+# The ICONS should be added here.
+
+# specific of identifiers of type x/referential indexes:
+erg:pers
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:x ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states the grammatical person"@en-us.
+
+erg:num
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:x ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states the grammatical number"@en-us.
+
+erg:gend
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:x ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states the grammatical gender"@en-us.
+
+erg:ind
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:x ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states if the referenced is individuated"@en-us.
+
+erg:pt
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:x ;
+ rdfs:domain delph:Identifier ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states the pronoum type"@en-us.
+
+# specific of identifiers of type e/events:
+erg:sf
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:e ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states the sentential-force"@en-us.
+
+erg:tense
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:e ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states the grammatical tense of the event"@en-us.
+
+erg:mood
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:e ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states the grammatical mood of the event"@en-us.
+
+erg:prog
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:e ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states if the event has a progressive aspect"@en-us.
+
+erg:perf
+ a rdf:Property ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:e ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A property that states if the event has a perfective aspect"@en-us.
+
+#ICONS:
+erg:Focus
+ a rdfs:Class ;
+ rdfs:subClassOf mrs:Icons .
+
+erg:Topic
+ a rdfs:Class ;
+ rdfs:subClassOf mrs:Icons .
+
+#This is not an exhaustive list of possible Icons on ERG, I couldn't find it.
