@@ -5,7 +5,7 @@ For more details, see: https://github.com/arademaker/delph-in-rdf.
 """
 
 import argparse
-from delphin.rdf import eds_parser as p
+from delphin.rdf import eds_to_rdf
 
 from delphin.codecs import simplemrs
 from delphin import itsdb
@@ -34,8 +34,7 @@ def __cli_parse__(args):
         e = eds.from_mrs(m)
         if args.verbosity > 0:
             print("Parsing sentence {}".format(id))
-        graph = p.eds_to_rdf(e=e, prefix=prefix,
-                             identifier=id, graph=graph, text=text)
+        graph = eds_to_rdf(e=e, prefix=prefix, identifier=id, graph=graph, text=text)
     # serializes output
     graph.serialize(destination=args.output,format=args.format)
 
