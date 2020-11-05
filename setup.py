@@ -19,7 +19,7 @@ setup(
     description=about["__summary__"],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    license=about["__licence__"],
+    license=about["__license__"],
     packages=[
        "delphin",
        "delphin.rdf",

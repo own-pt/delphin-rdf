@@ -7,8 +7,8 @@ __name__ = "Delphin RDF"
 __summary__ = "DELPH-IN formats in RDF"
 __version__ = "1.0.0"
 
-__author__ = ""
-__email__ = ""
-__url__ = ""
+__author__ = "foo"
+__email__ = "foo"
+__url__ = "foo"
 
 __license__ = "MIT"
