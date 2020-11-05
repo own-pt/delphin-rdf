@@ -1,7 +1,7 @@
 """
-Receives the path to a profile and attemps transcribe the texts into RDF valid format.
+Transcribes an profile intro a MRS-RDF graph.
 
-For more details, see: https://github.com/arademaker/delph-in-rdf.
+For more details, see: {https://github.com/arademaker/delph-in-rdf}.
 """
 
 from os.path import isdir
@@ -65,10 +65,14 @@ def __cli_parse__(args):
                 # continue
 
             # parse mrs from profile
-            logger.debug(f"Item {id}: \n\t{text}\n\t{encoded}\n\t{m}")
+            logger.debug(f"Item {id}: \n\t{text}\n\t{m}\n\t{encoded}")
 
-            mrs_to_rdf(m=m,
-                prefix=prefix, identifier=id, graph=graph, text=text)
+            graph = mrs_to_rdf(
+                        m=m,
+                        prefix=prefix,
+                        identifier=id,
+                        graph=graph,
+                        text=text)
 
         # serializes results
         logger.info(f"Serializing results to {args.output}.")
