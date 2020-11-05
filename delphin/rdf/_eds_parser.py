@@ -110,12 +110,8 @@ def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=Non
 
     graph - and rdflib graph. If given, uses it to store the
     mrs as RDF representation.
-
-    out - filename to serialize the output into.
-
-    text - the text that is represented in eds as RDF. 
-
-    format - file format to serialize the output into.
+    
+    text - the text that is represented in eds as RDF.
     """
     
     # Before running this, use delphin.eds.make_ids_unique(e, m) if possible
