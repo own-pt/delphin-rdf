@@ -1,5 +1,5 @@
 """
-Transcribes an profile intro a DMRS-RDF graph.
+Transcribes a profile intro a RDF graph.
 
 For more details, see: {https://github.com/arademaker/delph-in-rdf}.
 """
