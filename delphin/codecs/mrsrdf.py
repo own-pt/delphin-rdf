@@ -4,7 +4,7 @@ from typing import Iterator
 from itertools import repeat, count
 
 from rdflib import Graph
-from delphin.rdf import parser as p
+from delphin.rdf import mrs_to_rdf
 
 CODEC_INFO = {
     'representation': 'mrs',
@@ -119,8 +119,9 @@ def _encode(ms, prefix:str, identifiers, texts:str=None, properties=True,
         text = next(texts)
         identifier = str(next(identifiers))
 
-        graph = p.mrs_to_rdf(m=m, prefix=prefix, graph=graph,
-                    identifier=identifier,iname="mrs",text=text)
+        graph = mrs_to_rdf(
+            m=m, prefix=prefix, graph=graph,
+            identifier=identifier, iname="mrs", text=text)
 
     return graph
 ##############################################################################

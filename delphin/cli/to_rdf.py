@@ -6,7 +6,7 @@ For more details, see: https://github.com/arademaker/delph-in-rdf.
 
 import os, sys
 import argparse
-from delphin.rdf import parser as p
+from delphin.rdf import mrs_to_rdf
 from delphin.codecs import simplemrs
 from rdflib import Graph
 
@@ -30,7 +30,7 @@ def __cli_parse__(args):
 
     if fmt == "simplemrs":
         m = simplemrs.decode(input_text)
-        g = p.mrs_to_rdf(m, pref, idtf)
+        g = mrs_to_rdf(m, pref, idtf)
     elif fmt == "eds":
         pass
     elif fmt == "simpledmrs":
