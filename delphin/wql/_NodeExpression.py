@@ -1,5 +1,3 @@
-PREDICATE = "predicate"
-
 BRACKETS_BGN = "["
 BRACKETS_END = "]"
 IDENTIFIER_OUT = "[{^"
@@ -20,12 +18,12 @@ class NodeExpression():
         self.id = self._trim_id(expression)
         self.roles = self._trim_roles(expression) 
 
-        # Processes the expression between ID and ROLES
-        expression = re.sub(".*:", "", expression)
-        expression = re.sub("\[.*\]", "", expression)
-        self.body = None if len(expression) == 0 else expression
-        
-        self.values = {PREDICATE:self.body}
+        # consumes the rest of expression
+        self.values = dict()
+
+        expression = re.sub(r".*:", "", expression)
+        expression = re.sub(r"\[.*\]", "", expression)
+        self._consume_text(expression.strip())
 
     def _trim_id(self,expression):
         """Separates expresion ID if given"""
@@ -41,6 +39,22 @@ class NodeExpression():
                 raise Exception(f"Check identifiers in {expression}")
 
         return identifier
+
+    def _consume_text(self, expression):
+        """"""
+        # * what about patterns in consumeText
+        # * define patterns as future feature
+
+        if len(expression) == 0: return
+
+        # a container of patterns in expression
+        found = None
+
+        # {...} define patterns feature
+
+        if len(expression) > 0: 
+            if found == None:
+                self.values["predicate"] = expression.strip()
 
     def _trim_roles(self,expression):
         """Separates the roles from expression"""

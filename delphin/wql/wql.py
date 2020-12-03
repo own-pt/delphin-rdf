@@ -37,7 +37,7 @@ def generate_sparql(query:str):
         query : a WQL formated query to be parsed
     
     Output:
-        a string containing MRS  SPARQL query
+        a string containing the MRS SPARQL query
     """
 
     # format query and evaluate query tree

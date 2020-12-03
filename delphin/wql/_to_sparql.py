@@ -1,13 +1,24 @@
-from _NodeExpression import PREDICATE
+from _TempData import TempData
+
 from _NodeExpression import NodeExpression
+
 from _QEQExpression import QEQExpression
 
 from _OperationExpression import OPERATOR_CON as CONOP
 from _OperationExpression import OPERATOR_DIS as DISOP
 from _OperationExpression import OPERATOR_NEG as NEGOP
 
-NEQLEVEL = 20
+ID_LEVEL = 5
 QEQLEVEL = 6
+TYPE_LEVEL = 7
+NEQLEVEL = 20
+
+TOP = "top"
+LBL = "lbl"
+CARG = "carg"
+ROLE = "properties"
+PREDICATE = "predicate"
+
 
 prefixes = (
     '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .',
@@ -25,8 +36,7 @@ def _to_sparql_structure(expression, ordered = False):
         - toSparqlNode()
     - adicionamos sufixos, ordenacao, variaveis, etc
     """
-    # * qual a utilizade/significado de aux/temp
-    # * qual a substituto para "SELECT GRAPH"
+    # * qual o substituto para "SELECT GRAPH"
     # * completar e entender _to_sparql_body
     # * maneira de atualizar/ajustar a query
     # * entender melhor o sparql gerado
@@ -38,23 +48,25 @@ def _to_sparql_structure(expression, ordered = False):
 
     # generate structures sparql and
     # converts it to a string sparql
-    auxiliar_variables = []         # a container for generated variables
-    auxiliar_variables += ["aux0", "aux1", "aux2", "aux3", "aux4", "aux5"]
-    sparql_where = _to_sparql(expression,auxiliar_variables).to_sparql_string()
+    variables = TempData()
+    sparql_where = _to_sparql(expression,variables).to_sparql_string()
 
     # add other elements
-    sparql += "SELECT \n\t?GRAPH "
-    for var in auxiliar_variables:
+    # sparql += "SELECT \n\t?GRAPH "
+    sparql += "SELECT ?graph "
+    for var in variables.variables:
         sparql += f"?{var} "
-    sparql += "\nWHERE\n\t{" + sparql_where+" }"
+    sparql += "WHERE {" + sparql_where + " } "
+    
+    # * add_unique_filter and other features
 
-    # add_unique_filter
+    sparql += "GROUP BY GROUP BY ?graph"
 
     return sparql
 
 def _to_sparql(expression, temp):
     """
-    Modela a query-tree como uma Weighted String,
+    Modela a query-tree como uma WeightedString,
     o que é feito recursivamente.
     """
     if expression.is_leaf():
@@ -63,10 +75,6 @@ def _to_sparql(expression, temp):
 
 def _to_sparql_node(expression, temp):
     """"""
-    
-    # * needs a complete definition
-    # * define a general parser based on
-    # classes: MRS.to_sparql(temp)
 
     # if a QEQExpresion
     if type(expression) == QEQExpression:
@@ -81,32 +89,136 @@ def _to_sparql_node(expression, temp):
 def _to_sparql_qeqs(expression,temp):
     """"""
     # * use vocalbularie definition of QEQ relations
+    # * meaning constants of such as QEQLEVEL
 
     qeqs = expression.qeqs
     output = ["?{} mrs:Qeq ?{} .".format(*qeq) for qeq in qeqs]
-    output = "\n".join(output)
+    output = " ".join(output)
 
     return WeightedString(QEQLEVEL, 0, output)
 
 def _to_sparql_body(expression,temp):
-    """"""
-    # * need to understand almost everything
-    # * review vocabularie
+    """
+    Parses the body of a expression: the nodes
+    aside from HConstraints or IConstraints.
+    """
+    # * understand _to_sparql_body/toSparqlNode
+    # * review vocabularies to transcribe
+    # * TempData to a more informative name
+    # * what are CARG, TOP, etc
+    # * roles may receive a new_variable
 
-    return WeightedString(QEQLEVEL, 0, expression.expression)
+    out = []
+    id_ = temp.new_variable()
+    temp.variables.append(id_)
+
+    # processing PREDICATE
+    if PREDICATE in expression.values:
+        # * back here to implement
+        predicate = expression.values[PREDICATE]
+        out += _add_data_value(id_, _level(PREDICATE), predicate, PREDICATE)
+    
+    # processing CARG
+    if CARG in expression.values:
+        # * back here to implement
+        carg = expression.values[CARG]
+        out += _add_data_value(id_, _level(carg), carg, carg)
+
+    # # processing TOP
+    # if TOP in expression.values:
+    #     # * understand original code
+    #     s = f"?{id} {namespace_prefix()}:{TOP} \"true\"^^xsd:boolean"
+    #     out += _add_data_value(id, _level(carg), carg, carg)
+    
+    # adding roles
+    for role in expression.roles:
+        if role[1] == None:
+            role[1] = temp.new_variable()
+        temp.variables.append(role[1])
+        out.append(_add_role(id_, role, "role"))
+
+        mrs_type = _add_mrs_type(role[1])
+        if not mrs_type == None: out.append(mrs_type)
+
+    # processing ID
+    if not expression.id == None:
+        s = f"?{id_} {namespace_prefix()}:{LBL} ?{expression.id}"
+        out.append(WeightedString(ID_LEVEL, 0, s))
+
+        mrs_type = _add_mrs_type(role[1])
+        if not mrs_type == None: out.append(mrs_type)
+
+    return WeightedString(values=out)
+
+def namespace_prefix():
+    """"""
+    # * add new vocabularies definitions
+    return "mrs"
 
 def _level(name):
     """"""
-    pass
+    # map is just a simplification
+    map_ = {CARG:1, PREDICATE:2,TOP:3,ROLE:4}
+    return map_[name]
 
-def _add_data_value(id,level,value,type):
+def _add_mrs_type(variable):
     """"""
-    pass
+    # * care about the new vocabulary
+
+    # a generated variable
+    if variable[:3] == "aux" and variable[3:].isnumeric():
+        return None
+
+    first = variable[0]
+    # not a mrs type
+    if first not in ["X","E","I","P","H"]:
+        return None
+
+    # mount a type constraint
+    out = f"?{variable} rdfs:type {namespace_prefix()}:{first} ."
+    return WeightedString(TYPE_LEVEL, 0, out)
+
+def _add_role(id, role, topEdge):
+    """"""
+    # * revisit for idexed expressions
+    # * better understand different cases
+    # * understand use of regular expressions
+
+    var = role[1]
+    rel = role[0].lower()
+    regexp = _is_regexp(rel)
+
+    # differs if marker "+" is in role name
+    if not "+" in rel:
+        rel = f"{namespace_prefix()}:{rel}"
+    else:
+        rel = f"<{namespace_prefix()}#{rel}>"
+
+    rel = f"?{id} {rel} ?{var} ."
+    return WeightedString(_level(ROLE),1,rel)
+
+def _add_data_value(id,level,value,type_):
+    """"""
+    # * return to understando about the regexp
+    # * original code handles possible quoted
+
+    # out = []
+    regexp = _is_regexp(value)
+
+    # returns a void list
+    if regexp and len(value) == 1: return out
+    
+    s = f"?{id} {namespace_prefix()}:{type_} \"{value}\"^^xsd:string ."
+    return [WeightedString(level,1,s)]
+
+def _is_regexp(expression):
+    return False
 
 def _to_sparql_operator(expression, temp):
     """"""
-    # * meaning of a Weighted String
-    # * code reuse on OROP
+    # * code reuse on DISOP
+    # * meaning of a WeightedString
+    # * ordering meaning in DISOP and CONOP
     # * code reuse for lambda x: (x.level,x.weight)
 
     # NEGOP tranforms and add FILTER
@@ -120,7 +232,7 @@ def _to_sparql_operator(expression, temp):
     left = _to_sparql(expression.left,temp)
     right = _to_sparql(expression.right,temp)
 
-    # DISOP
+    # DISOP 
     if expression.operator == DISOP:
         if left.value == None:
             # sorts by level than weight
@@ -157,7 +269,7 @@ class WeightedString:
         """
         A Weighted String contains an expression
         os a sequence of Weighted Strings, wich,
-        in this second case, define the weight
+        in this second case, defines the weight
         """
 
         self.level = level
@@ -179,7 +291,8 @@ class WeightedString:
         for value in values:
             if not value.values == None:
                 weight += self._weight(value.values)
-            else: weight += value.weight
+            else:
+                weight += value.weight
         return weight
     
     def _level(self, values):
@@ -204,7 +317,7 @@ class WeightedString:
     
     def to_sparql_string(self):
         """
-        Converte a Weighted String, na forma sparql
+        Converte a WeightedString, na forma sparql
         representada. Para isso considera aspectos
         como peso, nivel valor e valores.
         """
