@@ -1,3 +1,7 @@
+"""
+Tests if a given profile is parsed.
+"""
+
 from delphin import ace
 from delphin import itsdb
 from delphin import tsql
@@ -19,4 +23,5 @@ for row in tsql.select('i-id mrs', ts):
     m = simplemrs.decode(row[1])
     p.mrs_to_rdf(m, "http://example.com/example", row[0], graph)
 
-graph.serialize(destination="test.ttl",format="turtle")
+# seralizes the results
+graph.serialize(destination="test.ttl", format="turtle")
