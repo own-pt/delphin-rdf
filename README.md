@@ -10,7 +10,7 @@ DELPHIN-RDF presents the following dependencies:
 - `delphin.rdf`: the main module responsible for mrs/eds/dmrs parsing to RDF.
 - `delphin.cli`: pydelphin standard cli path. Here are modules describing the delphin subcommands. See [delphin.cli](https://pydelphin.readthedocs.io/en/latest/api/delphin.cli.html)
 
-Besides that, in `tests` there are examples and use cases. In `doc` there are some references. In `vocabularies` there is the modelling of the semantic representations in RDF.
+Besides that, in `tests` there are use examples. In `doc` there are some references. In `vocabularies` there is the modelling of the semantic representations in RDF.
 
 ## Command Line Interface
 
@@ -27,7 +27,7 @@ One may be able to install delphin-rdf in developer mode, running
 ```bash
 $ pip install -e /path/to/delphin-rdf
 ```
-The second option allows you to remove the package simply by running
+Wich allows you to remove the package simply by running
 ```bash
 $ pip uninstall delphin-rdf
 ```
