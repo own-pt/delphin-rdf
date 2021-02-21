@@ -58,6 +58,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
             graph.add((nodePredIRI, DELPH.hasSense, Literal(splittedPredicate[2])))    
             
         graph.add((nodeIRI, DELPH.hasPredicate, nodePredIRI))
+        graph.add((nodePredIRI, DELPH.predText, Literal(delphin.predicate.normalize(node.predicate))))
         
         #lnk
         if node.cfrom is not None:

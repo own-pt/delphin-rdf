@@ -46,6 +46,7 @@ def __nodes_to_rdf__(e, graph, edsi, NODES):
             
         #Declaring the node predicate
         graph.add((nodeIRI, DELPH.hasPredicate, nodePredIRI))
+        graph.add((nodePredIRI, DELPH.predText, Literal(delphin.predicate.normalize(node.predicate))))
         
         # surface and its parts:
         splittedPredicate = delphin.predicate.split(delphin.predicate.normalize(node.predicate))

@@ -11,7 +11,7 @@ from rdflib import Namespace
 import delphin  
 from delphin import mrs
 
-# some usefull namespaces
+# some useful namespaces
 MRS = Namespace("http://www.delph-in.net/schema/mrs#")
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
@@ -30,12 +30,15 @@ def _vars_to_rdf(m, graph, VARS):
 
     for v in m.variables.items():
         if delphin.variable.is_valid(v[0]):
+            # typing variables
             if delphin.variable.type(v[0]) != 'h':
                 graph.add((VARS[v[0]], RDF.type, DELPH[delphin.variable.type(v[0])]))
             else :
                 graph.add((VARS[v[0]], RDF.type, MRS['h']))
-                for props in v[1].items():
-                    graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
+
+            # adding the properties of the variables
+            for props in v[1].items():
+                graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
             #maybe it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
         else:
             print("Invalid predicate")
@@ -72,7 +75,8 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
             graph.add((pred_rel, RDF.type, DELPH.Predicate)) #revise
 
         graph.add((rdf_rel, DELPH.hasPredicate, pred_rel))
-            
+        graph.add((pred_rel, DELPH.predText, Literal(delphin.predicate.normalize(mrs_rel.predicate))))
+        
         if splittedPredicate[0] is not None: #here, lemma = name by now.
             graph.add((pred_rel, DELPH.hasLemma, Literal(splittedPredicate[0])))
         
@@ -80,7 +84,7 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
             graph.add((pred_rel, DELPH.hasPos, POS[splittedPredicate[1]]))
             
         if splittedPredicate[2] is not None:
-            graph.add((pred_rel, MRS.hasSense, Literal(splittedPredicate[2])))
+            graph.add((pred_rel, DELPH.hasSense, Literal(splittedPredicate[2])))
         #lnk:
         if mrs_rel.cfrom is not None:
             graph.add((rdf_rel, DELPH.cfrom, Literal(mrs_rel.cfrom))) #integer
