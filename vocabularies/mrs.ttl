@@ -114,46 +114,65 @@ mrs:hasLabel
  rdfs:comment "A mapping of an EP to its scope handle"@en-us .
 
 # by http://svn.delph-in.net/erg/trunk/etc/erg.smi
+mrs:role -- make it a subProperty like in EDS?
+ a rdfs:Property ;
+ rdfs:comment "The class of the roles in MRS"@en-us .
+
 mrs:rstr
- a rdf:Property ;
+ a rdfs:subPropertyOf mrs:role ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range mrs:h .
+ rdfs:range mrs:h ;
+ rdfs:label "RSTR" .
 
 mrs:body
  a rdf:Property ;
+ a mrs:Role ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range mrs:h .
+ rdfs:range mrs:h ;
+ rdfs:label "BODY" .
 
 mrs:arg0
  a rdf:Property ;
+ a mrs:Role ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range delph:i . # according to erg.smi
+ rdfs:range delph:i ; # according to erg.smi
+ rdfs:label "ARG0" .
 
 mrs:arg1
  a rdf:Property ;
+ a mrs:Role ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range delph:u .
+ rdfs:range delph:u ;
+ rdfs:label "ARG1" .
 
 mrs:arg2
  a rdf:Property ;
+ a mrs:Role ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range delph:u .
+ rdfs:range delph:u ;
+ rdfs:label "ARG2" .
 
 mrs:arg3
  a rdf:Property ;
+ a mrs:Role ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range delph:u .
+ rdfs:range delph:u ; 
+ rdfs:label "ARG3" .
 
 mrs:arg4
  a rdf:Property ;
+ a mrs:Role ;
  rdfs:domain mrs:ElementaryPredication ;
- rdfs:range mrs:h .
+ rdfs:range mrs:h ;
+ rdfs:label "ARG4" .
 
 #by erg.smi: ?
-mrs:arg
- a rdf:Property ;
- rdfs:domain mrs:ElementaryPredication ;
- rdfs:range delph:u .
+#mrs:arg
+# a rdf:Property ;
+# rdfs:label "ARG0" ;
+# a mrs:Role ;
+# rdfs:domain mrs:ElementaryPredication ;
+# rdfs:range delph:u .
 
 
 # TO DO:

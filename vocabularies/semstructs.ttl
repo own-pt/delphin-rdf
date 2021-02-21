@@ -30,13 +30,13 @@ delph:Predicate
  a rdfs:Class ;
  rdfs:comment "The class for the symbols representing semantic entities or constructions, and its predication gives its semantic arguments and constraints"@en-us .
  
-mrs:SurfacePredicate
+delph:SurfacePredicate
  a rdfs:Class ;
  rdfs:subClassOf delph:Predicate;
  rdfs:comment "The class of the semantic predicates that represents the overt words in a sentence"@en-us .
  #Remembering that not all words are predicates.
 
-mrs:AbstractPredicate
+delph:AbstractPredicate
  a rdfs:Class ;
  rdfs:subClassOf delph:Predicate;
  rdfs:comment "The class of the semantic predicates that represents the overt words in a sentence"@en-us .
@@ -121,6 +121,11 @@ delph:hasPos
  rdfs:range delph:Pos .
 
 delph:hasSense
+ a rdf:Property ;
+ rdfs:domain delph:Predicate ;
+ rdfs:range rdfs:Literal .
+
+delph:predText
  a rdf:Property ;
  rdfs:domain delph:Predicate ;
  rdfs:range rdfs:Literal .

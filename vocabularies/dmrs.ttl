@@ -74,34 +74,44 @@ dmrs:hasRole
 
 #About roles:
 dmrs:arg1
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "ARG1" .
 
 dmrs:arg2
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "ARG2" .
 
 dmrs:arg3
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "ARG3" .
 
 dmrs:arg4
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "ARG4" .
 
 dmrs:rstr
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "RSTR" .
 
 dmrs:l-hndl
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "L-HNDL" .
 
 dmrs:r-hndl
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "R-HNDL" .
 
 dmrs:l-index
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "L-INDEX" .
 
 dmrs:r-index
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "R-INDEX" .
 
 dmrs:mod
- a dmrs:Role .
+ a dmrs:Role ;
+ rdfs:label "MOD" .
 
 #Scopal relations
 dmrs:h

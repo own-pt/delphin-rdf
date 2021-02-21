@@ -49,31 +49,36 @@ eds:bv
  a rdf:Property ;
  rdfs:subPropertyOf eds:edge ;
  rdfs:domain eds:Node ;
- rdfs:range eds:Node .
+ rdfs:range eds:Node ;
+ rdfs:label "BV" .
 
 eds:arg1
  a rdf:Property ;
  rdfs:subPropertyOf eds:edge ;
  rdfs:domain eds:Node ;
- rdfs:range eds:Node .
+ rdfs:range eds:Node ;
+ rdfs:label "ARG1" .
 
 eds:arg2
  a rdf:Property ;
  rdfs:subPropertyOf eds:edge ;
  rdfs:domain eds:Node ;
- rdfs:range eds:Node .
+ rdfs:range eds:Node ;
+ rdfs:label "ARG2" .
 
 eds:arg3
  a rdf:Property ;
  rdfs:subPropertyOf eds:edge ;
  rdfs:domain eds:Node ;
- rdfs:range eds:Node .
+ rdfs:range eds:Node ;
+ rdfs:label "ARG3" .
 
 eds:arg4
  a rdf:Property ;
  rdfs:subPropertyOf eds:edge ;
  rdfs:domain eds:Node ;
- rdfs:range eds:Node .
+ rdfs:range eds:Node ;
+ rdfs:label "ARG4" .
 
 
 #--------------------------------------------------------
