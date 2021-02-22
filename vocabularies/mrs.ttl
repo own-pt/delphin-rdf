@@ -115,7 +115,7 @@ mrs:hasLabel
 
 # by http://svn.delph-in.net/erg/trunk/etc/erg.smi
 mrs:role -- make it a subProperty like in EDS?
- a rdfs:Property ;
+ a rdf:Property ;
  rdfs:comment "The class of the roles in MRS"@en-us .
 
 mrs:rstr
@@ -126,42 +126,42 @@ mrs:rstr
 
 mrs:body
  a rdf:Property ;
- a mrs:Role ;
+ rdfs:subPropertyOf mrs:role ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range mrs:h ;
  rdfs:label "BODY" .
 
 mrs:arg0
  a rdf:Property ;
- a mrs:Role ;
+ rdfs:subPropertyOf mrs:role ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range delph:i ; # according to erg.smi
  rdfs:label "ARG0" .
 
 mrs:arg1
  a rdf:Property ;
- a mrs:Role ;
+ rdfs:subPropertyOf mrs:role ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range delph:u ;
  rdfs:label "ARG1" .
 
 mrs:arg2
  a rdf:Property ;
- a mrs:Role ;
+ rdfs:subPropertyOf mrs:role ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range delph:u ;
  rdfs:label "ARG2" .
 
 mrs:arg3
  a rdf:Property ;
- a mrs:Role ;
+ rdfs:subPropertyOf mrs:role ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range delph:u ; 
  rdfs:label "ARG3" .
 
 mrs:arg4
  a rdf:Property ;
- a mrs:Role ;
+ rdfs:subPropertyOf mrs:role ;
  rdfs:domain mrs:ElementaryPredication ;
  rdfs:range mrs:h ;
  rdfs:label "ARG4" .
