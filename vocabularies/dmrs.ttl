@@ -116,17 +116,21 @@ dmrs:mod
 #Scopal relations
 dmrs:h
  a dmrs:ScopalRelation ;
+ rdfs:label "H" ;
  rdfs:comment "Indicates a 'qeq' relationship between the predications"@en-us.
 
 dmrs:neq
  a dmrs:ScopalRelation ;
+ rdfs:label "NEQ" ;
  rdfs:comment "Indicates a label inequality"@en-us.
 
 dmrs:eq
  a dmrs:ScopalRelation ;
+ rdfs:label "EQ" ;
  rdfs:comment "Indicates a label equality"@en-us.
 
 dmrs:heq
+ rdfs:label "HEQ" ;
  a dmrs:ScopalRelation .
 
 #Couldn't find all scopal relations and roles.
