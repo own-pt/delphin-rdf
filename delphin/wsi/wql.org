@@ -1,0 +1,19 @@
+# WeSearch Query Language (WQL) into Sparql for RDF queries.
+
+We discuss the reimplementation of the WQL query language for Delphin-RDF semantic representations, in python.
+
+ - : (colon), separates optional node identifier from node content;
+ - [ (left square bracket), separates node properties from outgoing arcs;
+ - ] (right square bracket), terminates a list of outgoing arcs;
+ - (whitespace), separates role labels and values in list of arcs;
+ - , (comma), separates role–value pairs within list of outgoing arcs;
+ - + (plus sign), indicates (optional) lemma object property;
+ - / (slash), indicates (optional) pos property;
+ - ? (question mark), Lucene-style single-character wildcard;
+ - * (asterisk), Lucene-style arbitrary sub-string wildcard;
+ - | (vertical bar), logical disjunction (see below);
+ - ( and ) (left and right parentheses), grouping of sub-expressions (see below);
+ - ! (exclamation mark), reserved for negation (to be defined);
+ - \ (backslash), escape character, suppressing operator status for all of the above.
+
+For details see [Query Language](http://moin.delph-in.net/WeSearch/QueryLanguage).
