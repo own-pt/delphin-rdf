@@ -114,9 +114,9 @@ mrs:hasLabel
  rdfs:comment "A mapping of an EP to its scope handle"@en-us .
 
 # by http://svn.delph-in.net/erg/trunk/etc/erg.smi
-mrs:role -- make it a subProperty like in EDS?
+mrs:role 
  a rdf:Property ;
- rdfs:comment "The class of the roles in MRS"@en-us .
+ rdfs:comment "The general property of roles in MRS"@en-us .
 
 mrs:rstr
  a rdfs:subPropertyOf mrs:role ;
