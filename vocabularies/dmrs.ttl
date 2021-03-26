@@ -75,62 +75,62 @@ dmrs:hasRole
 #About roles:
 dmrs:arg1
  a dmrs:Role ;
- rdfs:label "ARG1" .
+ rdfs:label "arg1" .
 
 dmrs:arg2
  a dmrs:Role ;
- rdfs:label "ARG2" .
+ rdfs:label "arg2" .
 
 dmrs:arg3
  a dmrs:Role ;
- rdfs:label "ARG3" .
+ rdfs:label "arg3" .
 
 dmrs:arg4
  a dmrs:Role ;
- rdfs:label "ARG4" .
+ rdfs:label "arg4" .
 
 dmrs:rstr
  a dmrs:Role ;
- rdfs:label "RSTR" .
+ rdfs:label "rstr" .
 
 dmrs:l-hndl
  a dmrs:Role ;
- rdfs:label "L-HNDL" .
+ rdfs:label "l-hndl" .
 
 dmrs:r-hndl
  a dmrs:Role ;
- rdfs:label "R-HNDL" .
+ rdfs:label "r-hndl" .
 
 dmrs:l-index
  a dmrs:Role ;
- rdfs:label "L-INDEX" .
+ rdfs:label "l-index" .
 
 dmrs:r-index
  a dmrs:Role ;
- rdfs:label "R-INDEX" .
+ rdfs:label "r-index" .
 
 dmrs:mod
  a dmrs:Role ;
- rdfs:label "MOD" .
+ rdfs:label "mod" .
 
 #Scopal relations
 dmrs:h
  a dmrs:ScopalRelation ;
- rdfs:label "H" ;
+ rdfs:label "h" ;
  rdfs:comment "Indicates a 'qeq' relationship between the predications"@en-us.
 
 dmrs:neq
  a dmrs:ScopalRelation ;
- rdfs:label "NEQ" ;
+ rdfs:label "neq" ;
  rdfs:comment "Indicates a label inequality"@en-us.
 
 dmrs:eq
  a dmrs:ScopalRelation ;
- rdfs:label "EQ" ;
+ rdfs:label "eq" ;
  rdfs:comment "Indicates a label equality"@en-us.
 
 dmrs:heq
- rdfs:label "HEQ" ;
+ rdfs:label "heq" ;
  a dmrs:ScopalRelation .
 
 #Couldn't find all scopal relations and roles.
