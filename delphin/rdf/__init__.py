@@ -5,7 +5,7 @@ DELPHIN.RDF is a plugin for representing textual based semantics
 as RDF graphs. We discuss how DELPH-IN formats can be represented
 in RDF.
 
-For more details: https://github.com/arademaker/delph-rdf
+For more details: https://github.com/own-pt/delphin-rdf
 """
 
 from delphin.rdf._dmrs_parser import dmrs_to_rdf
