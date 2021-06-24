@@ -1,7 +1,7 @@
 """
 Transcribes an profile intro a DMRS-RDF graph.
 
-For more details, see: {https://github.com/arademaker/delph-in-rdf}.
+For more details, see: {https://github.com/own-pt/delphin-rdf}.
 """
 
 from os.path import isdir
