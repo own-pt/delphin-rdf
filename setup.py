@@ -23,8 +23,7 @@ setup(
     packages=[
        "delphin",
        "delphin.rdf",
-       "delphin.cli",
-       "delphin.codecs"],
+       "delphin.cli"],
     keywords="delphin pydelphin rdf mrs eds dmrs",
     install_requires=[
        "pydelphin",
