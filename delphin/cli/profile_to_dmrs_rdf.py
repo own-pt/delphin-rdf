@@ -53,25 +53,25 @@ def __cli_parse__(args):
         items = len(ts['item'])
         logger.info(f"Converting {items} items from {args.profile}")
 
-        for row in tsql.select('i-id i-input mrs', ts):
-            id = row[0]
-            text = row[1]
-            encoded = row[2]
-            m = simplemrs.decode(encoded)
-
+        sents_map = {sents['i-id']: sents['i-input'] for sents in ts['item']}
+        mrs_map = {(sent["parse-id"], sent["result-id"]): sent['mrs'] for sent in ts['result']}
+        
+        for ((parses_id, result_id), mrs_string) in mrs_map.items():
+            m = simplemrs.decode(mrs_string)
+            text = sents_map[parses_id]
             # making sure of the well formedness of "m"
             if not is_well_formed(m):
-                logger.warning(f"Item {id} not well formed.")
+                logger.warning(f"Result {result_id} of item {parses_id} not well formed.")
                 # continue
 
             # parse mrs to dmrs and parse it
-            d = from_mrs(m)
-            logger.debug(f"Item {id}: \n\t{text}\n\t{d}\n\t{encoded}")
+            d = from_mrs(m) # TODO: change to make sure it exists.
+            logger.debug(f"Result {result_id} from item {parses_id}: \n\t{text}\n\t{d}\n\t{mrs_string}")
             
             graph = dmrs_to_rdf(
                         d=d,
                         prefix=prefix,
-                        identifier=id,
+                        identifier=[str(parses_id), str(result_id)],
                         graph=graph,
                         text=text)
 
