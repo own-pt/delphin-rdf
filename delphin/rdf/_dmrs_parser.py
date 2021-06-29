@@ -8,7 +8,7 @@ from rdflib import Namespace
 import delphin  
 from delphin import dmrs
 
-# some usefull namespaces
+# some useful namespaces
 DMRS = Namespace("http://www.delph-in.net/schema/dmrs#")
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
@@ -151,8 +151,8 @@ def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrsi#dmrs", graph=None, out=
     #creating the instance URI and the namespaces
     dmrsi = URIRef(namespace + iname)
     graph.add((dmrsi, RDF.type, DMRS.DMRS))
-    NODES = Namespace(namespace + "nodes#")
-    LINKS = Namespace(namespace + "links#")
+    NODES = Namespace(namespace + "nodes/")
+    LINKS = Namespace(namespace + "links/")
     
     #creating the prefixes of the output
     graph.bind("dmrs", DMRS)
