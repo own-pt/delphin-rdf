@@ -194,10 +194,10 @@ def mrs_to_rdf(
     namespace = prefix + "/" + identifier + "/"
     mrsi = URIRef(namespace + iname)
     graph.add((mrsi, RDF.type, MRS.MRS))
-    VARS = Namespace(namespace + "variables#")
-    RELS = Namespace(namespace + "rels#")
-    HCONS = Namespace(namespace + "hcons#")
-    ICONS = Namespace(namespace + "icons#")
+    VARS = Namespace(namespace + "variables/")
+    RELS = Namespace(namespace + "rels/")
+    HCONS = Namespace(namespace + "hcons/")
+    ICONS = Namespace(namespace + "icons/")
     
     # creating the prefixes of the output
     graph.bind("mrs", MRS)
