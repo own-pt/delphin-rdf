@@ -127,7 +127,7 @@ def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=Non
     #creating the instance URI and the namespace of nodes
     edsi = URIRef(namespace + iname)
     graph.add((edsi, RDF.type, EDS.EDS))
-    NODES = Namespace(namespace + "nodes#")
+    NODES = Namespace(namespace + "nodes/")
 
     #creating the prefixes of the output
     graph.bind("eds", EDS)
