@@ -53,24 +53,23 @@ def __cli_parse__(args):
         items = len(ts['item'])
         logger.info(f"Converting {items} items from {args.profile}")
 
-        for row in tsql.select('i-id i-input mrs', ts):
-            id = row[0]
-            text = row[1]
-            encoded = row[2]
-            m = simplemrs.decode(encoded)
+
+        for ((parses_id, result_id), mrs_string) in mrs_map.items():
+            m = simplemrs.decode(mrs_string)
+            text = sents_map[parses_id]
 
             # making sure of the well formedness of "m"
             if not is_well_formed(m):
-                logger.warning(f"Item {id} not well formed.")
+                logger.warning(f"Result {result_id} of item {parses_id} not well formed.")
                 # continue
 
             # parse mrs from profile
-            logger.debug(f"Item {id}: \n\t{text}\n\t{m}\n\t{encoded}")
-
+            logger.debug(f"Result {result_id} from item {parses_id}: \n\t{text}\n\t{m}\n\t{mrs_string}")
+            
             graph = mrs_to_rdf(
                         m=m,
                         prefix=prefix,
-                        identifier=id,
+                        identifier=[str(parses_id), str(result_id)],
                         graph=graph,
                         text=text)
 
