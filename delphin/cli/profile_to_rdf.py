@@ -58,28 +58,26 @@ def __cli_parse__(args):
         
         # open Test Suite and start conversion
         ts = itsdb.TestSuite(path)
-        items = len(ts['item'])
-        logger.info(f"Converting {items} items from {args.profile}")
-
-        for row in tsql.select('i-id i-input mrs', ts):
-            id = row[0]
-            text = row[1]
-            encoded = row[2]
-            m = simplemrs.decode(encoded)
+        logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
+        
+        # The tsql takes some time to be processed:
+        logger.info(f"Loading the profile")
+        for (parse_id, result_id, text, mrs_string) in tsql.select('parse-id result-id i-input mrs', ts):
+            m = simplemrs.decode(mrs_string)
 
             # making sure of the well formedness of "m"
             if not is_well_formed(m):
-                logger.warning(f"Item {id} not well formed")
+                logger.warning(f"Result {result_id} of sentence {parse_id} is not well formed")
                 # continue
 
-            # parse mrs to dmrs and parse it
+            # converting the MRS object to the representation intended to be converted
             obj = from_mrs(m)
-            logger.debug(f"Item {id}: \n\t{text}\n\t{obj}\n\t{encoded}")
+            logger.debug(f"Result {result_id} of item {parse_id}: \n\t{text}\n\t{obj}\n\t{mrs_string}")
             
             graph = to_rdf(
                         obj,
                         prefix=prefix,
-                        identifier=id,
+                        identifier=[str(result_id), str(parse_id)],
                         graph=graph,
                         text=text)
 
