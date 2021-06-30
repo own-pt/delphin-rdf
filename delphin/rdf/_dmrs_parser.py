@@ -29,7 +29,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
     """
     for i in range(len(d.nodes)):
         node = d.nodes[i]
-        nodeIRI = NODES["node{}".format(node.id)] #era i, mas não da pra fazer link assim. Rever.
+        nodeIRI = NODES["{}".format(node.id)] #era i, mas não da pra fazer link assim. Rever.
         nodePredIRI = nodeIRI + "#predicate"
         
         #putting it's id 
@@ -98,15 +98,15 @@ def __links_to_rdf__(d, graph, dmrsi, NODES, LINKS):
 
     for i in range(len(d.links)):
         link = d.links[i]
-        linkIRI = LINKS["link{}".format(i)]
+        linkIRI = LINKS["{}".format(i)]
         
         #declaring the link node
         graph.add((linkIRI, RDF.type, DMRS.Link))
         graph.add((dmrsi, DMRS.hasLink, linkIRI))
         
         #the directions
-        graph.add((linkIRI, DMRS.hasFrom, NODES["node{}".format(link.start)]))
-        graph.add((linkIRI, DMRS.hasTo, NODES["node{}".format(link.end)]))
+        graph.add((linkIRI, DMRS.hasFrom, NODES["{}".format(link.start)]))
+        graph.add((linkIRI, DMRS.hasTo, NODES["{}".format(link.end)]))
         
         #adding roles and posts and creating (just to make sure, maybe remove the last one)
         graph.add((linkIRI, DMRS.hasRole, DMRS[link.role.lower()]))
@@ -163,9 +163,9 @@ def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrsi#dmrs", graph=None, out=
     #Creating RDF triples
     __nodes_to_rdf__(d, graph, dmrsi, NODES)
     #Adding top
-    graph.add((dmrsi, DMRS['hasTop'], NODES["node{}".format(d.top)]))
+    graph.add((dmrsi, DMRS['hasTop'], NODES["{}".format(d.top)]))
     #Adding index
-    graph.add((dmrsi, DMRS['hasIndex'], NODES["node{}".format(d.index)]))
+    graph.add((dmrsi, DMRS['hasIndex'], NODES["{}".format(d.index)]))
     __links_to_rdf__(d, graph, dmrsi, NODES, LINKS)
 
     # add text as one graph node if it's given

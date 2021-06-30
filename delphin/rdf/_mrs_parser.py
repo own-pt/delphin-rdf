@@ -120,7 +120,7 @@ def _hcons_to_rdf(m, graph, mrsi, HCONS, VARS):
 
     for hcon in range(len(m.hcons)):
         mrs_hcon = m.hcons[hcon]
-        rdf_hcon = HCONS["hcons{hcon}".format(hcon=hcon)]
+        rdf_hcon = HCONS["{hcon}".format(hcon=hcon)]
         
         # adds hcon to graph
         graph.add((mrsi, MRS.hasHcons, rdf_hcon))
@@ -144,7 +144,7 @@ def _icons_to_rdf(m, graph, mrsi, ICONS, VARS):
 
     for icon in range(len(m.icons)):
         mrs_icon = m.icons[icon]
-        rdf_icon = ICONS["icon{icon}".format(icon=icon)]
+        rdf_icon = ICONS["{icon}".format(icon=icon)]
         
         # adds icon to graph
         graph.add((mrsi, MRS.hasIcons, rdf_icon))
