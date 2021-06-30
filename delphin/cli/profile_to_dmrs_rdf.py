@@ -64,10 +64,11 @@ def __cli_parse__(args):
                 logger.warning(f"Result {result_id} of item {parses_id} not well formed.")
                 # continue
 
-            # parse mrs to dmrs and parse it
+            # Convert an MRS object to a DMRS objetct:
             d = from_mrs(m) # TODO: change to make sure it exists.
             logger.debug(f"Result {result_id} from item {parses_id}: \n\t{text}\n\t{d}\n\t{mrs_string}")
             
+            # Convert the DMRS object into the RDF graph:
             graph = dmrs_to_rdf(
                         d=d,
                         prefix=prefix,

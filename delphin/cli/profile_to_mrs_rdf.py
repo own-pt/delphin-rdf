@@ -63,9 +63,10 @@ def __cli_parse__(args):
                 logger.warning(f"Result {result_id} of item {parses_id} not well formed.")
                 # continue
 
-            # parse mrs from profile
+            # Reporting each parse of the profile:
             logger.debug(f"Result {result_id} from item {parses_id}: \n\t{text}\n\t{m}\n\t{mrs_string}")
             
+            # Convert the MRS object into the RDF graph:
             graph = mrs_to_rdf(
                         m=m,
                         prefix=prefix,
