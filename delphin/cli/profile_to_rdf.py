@@ -77,7 +77,7 @@ def __cli_parse__(args):
             graph = to_rdf(
                         obj,
                         prefix=prefix,
-                        identifier=[str(result_id), str(parse_id)],
+                        identifier=[str(parse_id), str(result_id)],
                         graph=graph,
                         text=text)
 
