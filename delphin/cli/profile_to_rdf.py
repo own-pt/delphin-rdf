@@ -63,6 +63,7 @@ def __cli_parse__(args):
         # The tsql takes some time to be processed:
         logger.info(f"Loading the profile")
         for (parse_id, result_id, text, mrs_string) in tsql.select('parse-id result-id i-input mrs', ts):
+            logger.info(f"Converting the result {result_id} of sentence {parse_id}")
             m = simplemrs.decode(mrs_string)
 
             # making sure of the well formedness of "m"
@@ -154,5 +155,5 @@ parser.add_argument(
     # "-t",
     "--to",
     dest="semrep",
-    help=f"modeled semantic representation (default: {_default_delphin})",
+    help=f"(mrs|eds|dmrs) modeled semantic representation (default: {_default_delphin})",
     default=_default_delphin)
