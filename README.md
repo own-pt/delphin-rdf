@@ -14,12 +14,7 @@ Besides that, in `tests` there are use examples. In `doc` there are some referen
 
 ## Command Line Interface
 
-All the modules in this package can be imported and used as a python module, but DELPHIN-RDF describes the following delphin subcommands/options:
-
-- `$ delphin profile-to-mrs-rdf`: converts the MRS of a profile to RDF;
-- `$ delphin profile-to-eds-rdf`: converts the MRS of a profile to EDS and this one to RDF;
-- `$ delphin profile-to-dmrs-rdf`: converts the MRS of a profile to DMRS and this one to RDF;
-- `$ delphin to-rdf`: should be a general purpose parser for convertion into a RDF graph;
+All the modules in this package can be imported and used as a python module, but DELPHIN-RDF declares `profile-to-rdf` a delphin subcommands of the PyDelphin CLI.
 
 ## Development
 
