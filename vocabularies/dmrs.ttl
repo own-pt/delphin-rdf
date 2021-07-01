@@ -48,18 +48,15 @@ dmrs:hasId
  rdfs:comment "The property that links a DMRS node to its ID"@en-us .
  
 
-#------------------------------
-# REVIEW
-# About links:
 dmrs:hasFrom
  a rdf:Property .
  rdfs:domain dmrs:Link ;
- rdfs:range dmrs:Node . #Node or its id?
+ rdfs:range dmrs:Node . 
 
 dmrs:hasTo
  a rdf:Property .
  rdfs:domain dmrs:Link ;
- rdfs:range dmrs:Node . #Node or its id?
+ rdfs:range dmrs:Node .
 
 dmrs:hasScopalRelation
  a rdf:Property ;
@@ -72,7 +69,6 @@ dmrs:hasRole
  rdfs:range dmrs:Role .
 
 
-#About roles:
 dmrs:arg1
  a dmrs:Role ;
  rdfs:label "arg1" .
@@ -113,7 +109,8 @@ dmrs:mod
  a dmrs:Role ;
  rdfs:label "mod" .
 
-#Scopal relations
+
+
 dmrs:h
  a dmrs:ScopalRelation ;
  rdfs:label "h" ;
@@ -133,4 +130,4 @@ dmrs:heq
  rdfs:label "heq" ;
  a dmrs:ScopalRelation .
 
-#Couldn't find all scopal relations and roles.
+

@@ -34,6 +34,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
         
         #putting it's id 
         graph.add((nodeIRI, DMRS.hasId, Literal(node.id)))
+        graph.add((nodeIRI, RDFS.label, Literal("{}<{},{}>".format(node.predicate,node.cfrom,node.cto))))
         
         #Instantiate the Node and putting into the DMRS
         graph.add((nodeIRI, RDF.type, DMRS.Node))
@@ -60,7 +61,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
         graph.add((nodeIRI, DELPH.hasPredicate, nodePredIRI))
         graph.add((nodePredIRI, DELPH.predText, Literal(delphin.predicate.normalize(node.predicate))))
         
-        #lnk
+        # links
         if node.cfrom is not None:
             graph.add((nodeIRI, DELPH.cfrom, Literal(node.cfrom)))
         if node.cto is not None:
@@ -100,20 +101,21 @@ def __links_to_rdf__(d, graph, dmrsi, NODES, LINKS):
         link = d.links[i]
         linkIRI = LINKS["{}".format(i)]
         
-        #declaring the link node
+        # declaring the link node
         graph.add((linkIRI, RDF.type, DMRS.Link))
+        graph.add((linkIRI, RDFS.label, Literal("{}/{}".format(link.role,link.post))))
         graph.add((dmrsi, DMRS.hasLink, linkIRI))
         
-        #the directions
+        # the directions
         graph.add((linkIRI, DMRS.hasFrom, NODES["{}".format(link.start)]))
         graph.add((linkIRI, DMRS.hasTo, NODES["{}".format(link.end)]))
         
-        #adding roles and posts and creating (just to make sure, maybe remove the last one)
+        # adding roles and posts and creating (just to make sure, maybe remove the last one)
         graph.add((linkIRI, DMRS.hasRole, DMRS[link.role.lower()]))
         graph.add((linkIRI, DMRS.hasScopalRelation, DMRS[link.post.lower()]))
         graph.add((DMRS[link.post.lower()], RDF.type, DMRS.ScopalRelation))
         graph.add((DMRS[link.role.lower()], RDF.type, DMRS.Role)) 
-        #Ad-hoc
+
 
 def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrsi#dmrs", graph=None, out=None, text=None, format="turtle"):
     """
