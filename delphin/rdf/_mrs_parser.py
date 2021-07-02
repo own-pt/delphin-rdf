@@ -42,7 +42,7 @@ def _vars_to_rdf(m, graph, VARS):
             # it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
         else:
             print("Invalid predicate")
-def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
+def _rels_to_rdf(m, graph, mrsi, RELS, VARS, namespace):
     """
     Describes EPs "RELS" in an MRS-RDF format
 
@@ -53,13 +53,14 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
         mrsi: the mrs instance name (the MRS as RDF node name)
         RELS: the URI namespace dedicated to EPs
         VARS: the URI namespace dedicated to variables
+        namespace - the string namespace of a result of the profile.
     """
 
     for rel in range(len(m.rels)):
         mrs_rel = m.rels[rel]
-        rdf_rel = RELS["EP{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
-        pred_rel = RELS["EP{rel}-predicate".format(rel=rel)]
-        sortinfo_rel = RELS["EP{rel}-sortinfo".format(rel=rel)]
+        rdf_rel = RELS["{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
+        pred_rel = URIRef(f"{namespace}predicate-{rel}")
+        sortinfo_rel = URIRef(f"{namespace}sortinfo-{rel}")
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
@@ -197,7 +198,7 @@ def mrs_to_rdf(
     mrsi = URIRef(namespace + iname)
     graph.add((mrsi, RDF.type, MRS.MRS))
     VARS = Namespace(namespace + "variables-")
-    RELS = Namespace(namespace + "rels-")
+    RELS = Namespace(namespace + "EP-")
     HCONS = Namespace(namespace + "hcons-")
     ICONS = Namespace(namespace + "icons-")
     
@@ -209,7 +210,7 @@ def mrs_to_rdf(
     
     # creating the RDF triples
     _vars_to_rdf(m, graph, VARS)
-    _rels_to_rdf(m, graph, mrsi, RELS, VARS)
+    _rels_to_rdf(m, graph, mrsi, RELS, VARS, namespace)
     _hcons_to_rdf(m, graph, mrsi, HCONS, VARS)
     _icons_to_rdf(m, graph, mrsi, ICONS, VARS)
     # adding top

@@ -14,7 +14,7 @@ ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
 POS = Namespace("http://www.delph-in.net/schema/pos#")
 
-def __nodes_to_rdf__(d, graph, dmrsi, NODES):
+def __nodes_to_rdf__(d, graph, dmrsi, NODES, namespace):
     """
     Creates nodes of variables and nodes specifying their properties.
 
@@ -26,12 +26,14 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
     representation.
 
     NODES - the URI namespace dedicated to nodes.
+
+    namespace - the string namespace of a result of the profile.
     """
     for i in range(len(d.nodes)):
         node = d.nodes[i]
         nodeIRI = NODES["{}".format(node.id)] #era i, mas não da pra fazer link assim. Rever.
-        nodePredIRI = nodeIRI + "-predicate"
-        nodeSortInfoIRI = nodeIRI + "-sortinfo"
+        nodePredIRI = URIRef(f"{namespace}predicate-{node.id}")
+        nodeSortInfoIRI = URIRef(f"{namespace}sortinfo-{node.id}")
         
         #putting it's id 
         graph.add((nodeIRI, DMRS.hasId, Literal(node.id)))
@@ -166,7 +168,7 @@ def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrs", graph=None, out=None, 
     graph.bind("pos", POS)
     
     #Creating RDF triples
-    __nodes_to_rdf__(d, graph, dmrsi, NODES)
+    __nodes_to_rdf__(d, graph, dmrsi, NODES, namespace)
     #Adding top
     graph.add((dmrsi, DMRS['hasTop'], NODES["{}".format(d.top)]))
     #Adding index
