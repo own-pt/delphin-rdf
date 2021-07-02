@@ -156,7 +156,7 @@ delph:hasPropertyValue
  a rdf:Property ;
  rdfs:domain delph:SortInfo ;
  rdfs:range rdfs:Literal ;
- rdfs:comment "A general property to link an SortInfo node to the morphosemantic property value"@en-us.
+ rdfs:comment "A general property to link an SortInfo node to a morphosemantic property value"@en-us.
 
 delph:text
  a rdf:Property ;
