@@ -31,6 +31,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
         node = d.nodes[i]
         nodeIRI = NODES["{}".format(node.id)] #era i, mas não da pra fazer link assim. Rever.
         nodePredIRI = nodeIRI + "-predicate"
+        nodeSortInfoIRI = nodeIRI + "-sortinfo"
         
         #putting it's id 
         graph.add((nodeIRI, DMRS.hasId, Literal(node.id)))
@@ -68,8 +69,10 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
             graph.add((nodeIRI, DELPH.cto, Literal(node.cto)))
 
         #properties / sortinfo
+        graph.add((nodeIRI, DELPH.hasSortInfo, nodeSortInfoIRI))
+        graph.add((nodeSortInfoIRI, RDF.type, DELPH.SortInfo))
         for prop, val in node.properties.items():
-            graph.add((nodeIRI, ERG[prop.lower()], Literal(val.lower())))
+            graph.add((nodeSortInfoIRI, ERG[prop.lower()], Literal(val.lower())))
         
         #type:
         if node.type is not None:
@@ -78,7 +81,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
             
         # carg
         if node.carg is not None:
-            graph.add((nodeIRI, DELPH.carg, Literal(node.carg)))
+            graph.add((nodeSortInfoIRI, DELPH.carg, Literal(node.carg)))
 
 
 def __links_to_rdf__(d, graph, dmrsi, NODES, LINKS):

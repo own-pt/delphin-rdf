@@ -59,6 +59,7 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
         mrs_rel = m.rels[rel]
         rdf_rel = RELS["EP{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
         pred_rel = RELS["EP{rel}-predicate".format(rel=rel)]
+        sortinfo_rel = RELS["EP{rel}-sortinfo".format(rel=rel)]
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
@@ -92,7 +93,8 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
             graph.add((rdf_rel, DELPH.cto, Literal(mrs_rel.cto))) #integer
      
         # parse arguments
-        
+        graph.add((rdf_rel, DELPH.hasSortInfo, sortinfo_rel))
+        graph.add((sortinfo_rel, RDF.type, DELPH.SortInfo))
         for hole, arg in mrs_rel.args.items():
             #if hole == "ARG0": continue
             # arg_type = type(eval(arg.title()))
@@ -100,9 +102,9 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
             
             # mrs variables as arguments
             if hole.lower() != "carg" :
-                graph.add((rdf_rel, MRS[hole.lower()], VARS[arg]))
+                graph.add((sortinfo_rel, MRS[hole.lower()], VARS[arg]))
             else :
-                graph.add((rdf_rel, DELPH.carg, Literal(arg)))
+                graph.add((sortinfo_rel, DELPH.carg, Literal(arg)))
                 
 
 def _hcons_to_rdf(m, graph, mrsi, HCONS, VARS):

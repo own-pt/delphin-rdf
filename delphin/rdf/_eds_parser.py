@@ -30,6 +30,7 @@ def __nodes_to_rdf__(e, graph, edsi, NODES):
     for node in e.nodes:
         nodeIRI = NODES[node.id]
         nodePredIRI = NODES[node.id + "-predicate"]
+        nodeSortInfoIRI = NODES[node.id + "-sortinfo"]
         
         #Instantiate the Node
         graph.add((nodeIRI, RDF.type, EDS.Node))
@@ -68,12 +69,13 @@ def __nodes_to_rdf__(e, graph, edsi, NODES):
             graph.add((nodeIRI, RDF.type, DELPH[node.type]))
         
         # properties
+        graph.add((nodeIRI, DELPH.hasSortInfo, nodeSortInfoIRI))
+        graph.add((nodeSortInfoIRI, RDF.type, DELPH.SortInfo))
         for prop in node.properties.items():
-            graph.add((nodeIRI, ERG[prop[0].lower()], Literal(prop[1].lower())))
-            
+            graph.add((nodeSortInfoIRI, ERG[prop[0].lower()], Literal(prop[1].lower())))
         # carg
         if node.carg:
-            graph.add((nodeIRI, DELPH.carg, Literal(node.carg)))
+            graph.add((nodeSortInfoIRI, DELPH.carg, Literal(node.carg)))
 
 
 def __edges_to_rdf__(e, graph, NODES):
