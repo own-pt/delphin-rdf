@@ -29,7 +29,7 @@ def __nodes_to_rdf__(e, graph, edsi, NODES):
     """
     for node in e.nodes:
         nodeIRI = NODES[node.id]
-        nodePredIRI = NODES[node.id + "#predicate"]
+        nodePredIRI = NODES[node.id + "-predicate"]
         
         #Instantiate the Node
         graph.add((nodeIRI, RDF.type, EDS.Node))
@@ -92,7 +92,7 @@ def __edges_to_rdf__(e, graph, NODES):
         
 
         
-def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=None, text=None, format="turtle"):
+def eds_to_rdf(e, prefix: str, identifier, iname="eds", graph=None, out=None, text=None, format="turtle"):
     """
     Parses a pydelphin EDS into RDF representation.
 
@@ -107,7 +107,7 @@ def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=Non
     same text admits various eds interpretations.
 
     iname - the eds instance name (the eds as RDF node name)
-    to be used. As default, it is "edsi#eds".
+    to be used. As default, it is "eds".
 
     graph - and rdflib graph. If given, uses it to store the
     mrs as RDF representation.
@@ -122,12 +122,12 @@ def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=Non
     if type(identifier) == list:
         identifier = "/".join(identifier)
     
-    namespace = prefix + "/" + identifier + "/"
+    namespace = prefix + "/" + identifier + "#"
 
     #creating the instance URI and the namespace of nodes
     edsi = URIRef(namespace + iname)
     graph.add((edsi, RDF.type, EDS.EDS))
-    NODES = Namespace(namespace + "nodes/")
+    NODES = Namespace(namespace + "nodes-")
 
     #creating the prefixes of the output
     graph.bind("eds", EDS)

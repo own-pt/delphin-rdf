@@ -39,7 +39,7 @@ def _vars_to_rdf(m, graph, VARS):
             # adding the properties of the variables
             for props in v[1].items():
                 graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
-            #maybe it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
+            # it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
         else:
             print("Invalid predicate")
 def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
@@ -58,7 +58,7 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
     for rel in range(len(m.rels)):
         mrs_rel = m.rels[rel]
         rdf_rel = RELS["EP{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
-        pred_rel = RELS["EP{rel}#predicate".format(rel=rel)] #revise
+        pred_rel = RELS["EP{rel}-predicate".format(rel=rel)]
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
@@ -164,7 +164,7 @@ def mrs_to_rdf(
         m:delphin.mrs._mrs.MRS,
         prefix:str,
         identifier:Union[str, list],
-        iname:str ="mrsi#mrs",
+        iname:str ="mrs",
         graph:rdflib.graph.Graph=None,
         text:str=None) -> rdflib.graph.Graph:
     """
@@ -191,13 +191,13 @@ def mrs_to_rdf(
         identifier = "/".join(identifier)
 
     # creating the namespaces for this MRS instance
-    namespace = prefix + "/" + identifier + "/"
+    namespace = prefix + "/" + identifier + "#"
     mrsi = URIRef(namespace + iname)
     graph.add((mrsi, RDF.type, MRS.MRS))
-    VARS = Namespace(namespace + "variables/")
-    RELS = Namespace(namespace + "rels/")
-    HCONS = Namespace(namespace + "hcons/")
-    ICONS = Namespace(namespace + "icons/")
+    VARS = Namespace(namespace + "variables-")
+    RELS = Namespace(namespace + "rels-")
+    HCONS = Namespace(namespace + "hcons-")
+    ICONS = Namespace(namespace + "icons-")
     
     # creating the prefixes of the output
     graph.bind("mrs", MRS)
