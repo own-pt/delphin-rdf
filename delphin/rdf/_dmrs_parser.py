@@ -48,7 +48,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
         elif delphin.predicate.is_abstract(node.predicate):
             graph.add((nodePredIRI, RDF.type, DELPH.AbstractPredicate))
         else:
-            graph.add((nodePredIRI, RDF.type, DMRS.Predicate))
+            graph.add((nodePredIRI, RDF.type, DELPH.Predicate))
             print("An invalid predicate")
 
         if splittedPredicate[0] is not None:
