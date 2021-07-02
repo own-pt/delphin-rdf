@@ -41,6 +41,10 @@ delph:AbstractPredicate
  rdfs:subClassOf delph:Predicate;
  rdfs:comment "The class of the semantic predicates that represents the overt words in a sentence"@en-us .
 
+delph:SortInfo
+ a rdfs:Class ;
+ rdfs:comment "The class for nodes which represents the morphosemantic information of a predication"@en-us .
+
 delph:Pos
  a rdf:Class ;
  
@@ -99,6 +103,12 @@ delph:hasPredication
  rdfs:range delph:Predication ;
  rdfs:comment "A property that links a semantic structure to one of its predications"@en-us.
 
+delph:hasSortInfo
+ a rdf:Property ;
+ rdfs:domain delph:Predication ;
+ rdfs:range delph:SortInfo ;
+ rdfs:comment "A property that links a predication to its information"@en-us.
+
 delph:hasPredicate
  a rdf:Property ;
  rdfs:domain delph:Predication ;
@@ -144,7 +154,7 @@ delph:cto
 
 delph:hasPropertyValue
  a rdf:Property ;
- rdfs:domain delph:Identifier ;
+ rdfs:domain delph:SortInfo ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A general property to link an identifier to a morphosemantic property value"@en-us.
 
