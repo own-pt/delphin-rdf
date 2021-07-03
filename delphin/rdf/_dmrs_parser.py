@@ -14,7 +14,7 @@ ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
 POS = Namespace("http://www.delph-in.net/schema/pos#")
 
-def __nodes_to_rdf__(d, graph, dmrsi, NODES):
+def __nodes_to_rdf__(d, graph, dmrsi, NODES, namespace):
     """
     Creates nodes of variables and nodes specifying their properties.
 
@@ -26,15 +26,18 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
     representation.
 
     NODES - the URI namespace dedicated to nodes.
+
+    namespace - the string namespace of a result of the profile.
     """
     for i in range(len(d.nodes)):
         node = d.nodes[i]
         nodeIRI = NODES["{}".format(node.id)] #era i, mas não da pra fazer link assim. Rever.
-        nodePredIRI = nodeIRI + "#predicate"
+        nodePredIRI = URIRef(f"{namespace}predicate-{node.id}")
+        nodeSortInfoIRI = URIRef(f"{namespace}sortinfo-{node.id}")
         
         #putting it's id 
         graph.add((nodeIRI, DMRS.hasId, Literal(node.id)))
-        graph.add((nodeIRI, RDFS.label, Literal("{}<{},{}>".format(node.predicate,node.cfrom,node.cto))))
+        graph.add((nodeIRI, RDFS.label, Literal(f"{node.predicate}<{node.cfrom},{node.cto}>")))
         
         #Instantiate the Node and putting into the DMRS
         graph.add((nodeIRI, RDF.type, DMRS.Node))
@@ -47,7 +50,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
         elif delphin.predicate.is_abstract(node.predicate):
             graph.add((nodePredIRI, RDF.type, DELPH.AbstractPredicate))
         else:
-            graph.add((nodePredIRI, RDF.type, DMRS.Predicate))
+            graph.add((nodePredIRI, RDF.type, DELPH.Predicate))
             print("An invalid predicate")
 
         if splittedPredicate[0] is not None:
@@ -61,15 +64,17 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
         graph.add((nodeIRI, DELPH.hasPredicate, nodePredIRI))
         graph.add((nodePredIRI, DELPH.predText, Literal(delphin.predicate.normalize(node.predicate))))
         
-        # links
+        # lnk
         if node.cfrom is not None:
             graph.add((nodeIRI, DELPH.cfrom, Literal(node.cfrom)))
         if node.cto is not None:
             graph.add((nodeIRI, DELPH.cto, Literal(node.cto)))
 
         #properties / sortinfo
+        graph.add((nodeIRI, DELPH.hasSortInfo, nodeSortInfoIRI))
+        graph.add((nodeSortInfoIRI, RDF.type, DELPH.SortInfo))
         for prop, val in node.properties.items():
-            graph.add((nodeIRI, ERG[prop.lower()], Literal(val.lower())))
+            graph.add((nodeSortInfoIRI, ERG[prop.lower()], Literal(val.lower())))
         
         #type:
         if node.type is not None:
@@ -78,7 +83,7 @@ def __nodes_to_rdf__(d, graph, dmrsi, NODES):
             
         # carg
         if node.carg is not None:
-            graph.add((nodeIRI, DELPH.carg, Literal(node.carg)))
+            graph.add((nodeSortInfoIRI, DELPH.carg, Literal(node.carg)))
 
 
 def __links_to_rdf__(d, graph, dmrsi, NODES, LINKS):
@@ -107,8 +112,8 @@ def __links_to_rdf__(d, graph, dmrsi, NODES, LINKS):
         graph.add((dmrsi, DMRS.hasLink, linkIRI))
         
         # the directions
-        graph.add((linkIRI, DMRS.hasFrom, NODES["{}".format(link.start)]))
-        graph.add((linkIRI, DMRS.hasTo, NODES["{}".format(link.end)]))
+        graph.add((linkIRI, DMRS.hasFrom, NODES[f"{link.start}"]))
+        graph.add((linkIRI, DMRS.hasTo, NODES[f"{link.end}"]))
         
         # adding roles and posts and creating (just to make sure, maybe remove the last one)
         graph.add((linkIRI, DMRS.hasRole, DMRS[link.role.lower()]))
@@ -117,7 +122,7 @@ def __links_to_rdf__(d, graph, dmrsi, NODES, LINKS):
         graph.add((DMRS[link.role.lower()], RDF.type, DMRS.Role)) 
 
 
-def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrsi#dmrs", graph=None, out=None, text=None, format="turtle"):
+def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrs", graph=None, out=None, text=None, format="turtle"):
     """
     Parses a pydelphin DMRS into RDF representation.
 
@@ -132,7 +137,7 @@ def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrsi#dmrs", graph=None, out=
     same text admits various mrs interpretations.
 
     iname - the dmrs instance name (the dmrs as RDF node name)
-    to be used. As default, it is "dmrsi#dmrs".
+    to be used. As default, it is "dmrs".
 
     graph - and rdflib graph. If given, uses it to store the
     dmrs as RDF representation.
@@ -148,13 +153,13 @@ def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrsi#dmrs", graph=None, out=
     if type(identifier) == list:
         identifier = "/".join(identifier)
 
-    namespace = prefix + "/" + identifier + "/"
+    namespace = prefix + "/" + identifier + "#"
 
     #creating the instance URI and the namespaces
     dmrsi = URIRef(namespace + iname)
     graph.add((dmrsi, RDF.type, DMRS.DMRS))
-    NODES = Namespace(namespace + "nodes/")
-    LINKS = Namespace(namespace + "links/")
+    NODES = Namespace(namespace + "node-")
+    LINKS = Namespace(namespace + "link-")
     
     #creating the prefixes of the output
     graph.bind("dmrs", DMRS)
@@ -163,7 +168,7 @@ def dmrs_to_rdf(d, prefix: str, identifier, iname="dmrsi#dmrs", graph=None, out=
     graph.bind("pos", POS)
     
     #Creating RDF triples
-    __nodes_to_rdf__(d, graph, dmrsi, NODES)
+    __nodes_to_rdf__(d, graph, dmrsi, NODES, namespace)
     #Adding top
     graph.add((dmrsi, DMRS['hasTop'], NODES["{}".format(d.top)]))
     #Adding index

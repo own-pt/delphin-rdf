@@ -39,8 +39,8 @@ erg:ind
 
 erg:pt
  a rdf:Property ;
- rdfs:subPropertyOf delph:x ;
- rdfs:domain delph:Identifier ;
+ rdfs:subPropertyOf delph:hasPropertyValue ;
+ rdfs:domain delph:x ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A property that states the pronoum type"@en-us.
 
