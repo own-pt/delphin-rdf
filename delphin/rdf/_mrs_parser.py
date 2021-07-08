@@ -39,10 +39,10 @@ def _vars_to_rdf(m, graph, VARS):
             # adding the properties of the variables
             for props in v[1].items():
                 graph.add((VARS[v[0]], ERG[props[0].lower()], Literal(props[1])))
-            #maybe it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
+            # it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
         else:
             print("Invalid predicate")
-def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
+def _rels_to_rdf(m, graph, mrsi, RELS, VARS, namespace):
     """
     Describes EPs "RELS" in an MRS-RDF format
 
@@ -53,12 +53,14 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
         mrsi: the mrs instance name (the MRS as RDF node name)
         RELS: the URI namespace dedicated to EPs
         VARS: the URI namespace dedicated to variables
+        namespace - the string namespace of a result of the profile.
     """
 
     for rel in range(len(m.rels)):
         mrs_rel = m.rels[rel]
-        rdf_rel = RELS["EP{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
-        pred_rel = RELS["EP{rel}#predicate".format(rel=rel)] #revise
+        rdf_rel = RELS["{rel}".format(rel=rel)] #maybe label EPs in a different manner is better because they aren't ordered.
+        pred_rel = URIRef(f"{namespace}predicate-{rel}")
+        sortinfo_rel = URIRef(f"{namespace}sortinfo-{rel}")
 
         graph.add((mrsi, MRS.hasEP, rdf_rel))
         graph.add((rdf_rel, RDF.type, MRS.ElementaryPredication))
@@ -92,7 +94,8 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
             graph.add((rdf_rel, DELPH.cto, Literal(mrs_rel.cto))) #integer
      
         # parse arguments
-        
+        graph.add((rdf_rel, DELPH.hasSortInfo, sortinfo_rel))
+        graph.add((sortinfo_rel, RDF.type, DELPH.SortInfo))
         for hole, arg in mrs_rel.args.items():
             #if hole == "ARG0": continue
             # arg_type = type(eval(arg.title()))
@@ -100,9 +103,9 @@ def _rels_to_rdf(m, graph, mrsi, RELS, VARS):
             
             # mrs variables as arguments
             if hole.lower() != "carg" :
-                graph.add((rdf_rel, MRS[hole.lower()], VARS[arg]))
+                graph.add((sortinfo_rel, MRS[hole.lower()], VARS[arg]))
             else :
-                graph.add((rdf_rel, DELPH.carg, Literal(arg)))
+                graph.add((sortinfo_rel, DELPH.carg, Literal(arg)))
                 
 
 def _hcons_to_rdf(m, graph, mrsi, HCONS, VARS):
@@ -164,7 +167,7 @@ def mrs_to_rdf(
         m:delphin.mrs._mrs.MRS,
         prefix:str,
         identifier:Union[str, list],
-        iname:str ="mrsi#mrs",
+        iname:str ="mrs",
         graph:rdflib.graph.Graph=None,
         text:str=None) -> rdflib.graph.Graph:
     """
@@ -191,13 +194,13 @@ def mrs_to_rdf(
         identifier = "/".join(identifier)
 
     # creating the namespaces for this MRS instance
-    namespace = prefix + "/" + identifier + "/"
+    namespace = prefix + "/" + identifier + "#"
     mrsi = URIRef(namespace + iname)
     graph.add((mrsi, RDF.type, MRS.MRS))
-    VARS = Namespace(namespace + "variables/")
-    RELS = Namespace(namespace + "rels/")
-    HCONS = Namespace(namespace + "hcons/")
-    ICONS = Namespace(namespace + "icons/")
+    VARS = Namespace(namespace + "variables-")
+    RELS = Namespace(namespace + "EP-")
+    HCONS = Namespace(namespace + "hcons-")
+    ICONS = Namespace(namespace + "icons-")
     
     # creating the prefixes of the output
     graph.bind("mrs", MRS)
@@ -207,7 +210,7 @@ def mrs_to_rdf(
     
     # creating the RDF triples
     _vars_to_rdf(m, graph, VARS)
-    _rels_to_rdf(m, graph, mrsi, RELS, VARS)
+    _rels_to_rdf(m, graph, mrsi, RELS, VARS, namespace)
     _hcons_to_rdf(m, graph, mrsi, HCONS, VARS)
     _icons_to_rdf(m, graph, mrsi, ICONS, VARS)
     # adding top

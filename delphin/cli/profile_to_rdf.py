@@ -58,11 +58,15 @@ def __cli_parse__(args):
         
         # open Test Suite and start conversion
         ts = itsdb.TestSuite(path)
-        logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
-        
+        # logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
+        logger.log(30,f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
+
         # The tsql takes some time to be processed:
-        logger.info(f"Loading the profile")
-        for (parse_id, result_id, text, mrs_string) in tsql.select('parse-id result-id i-input mrs', ts):
+        # logger.info(f"Loading the profile")
+        logger.log(30,f"Loading the profile")
+        profile_data = tsql.select('parse-id result-id i-input mrs', ts)
+        logger.log(30,f"Converting the profile")
+        for (parse_id, result_id, text, mrs_string) in profile_data:
             logger.info(f"Converting the result {result_id} of sentence {parse_id}")
             m = simplemrs.decode(mrs_string)
 
@@ -83,9 +87,9 @@ def __cli_parse__(args):
                         text=text)
 
         # serializes results
-        logger.info(f"Serializing results to {args.output}")
+        logger.log(30,f"Serializing results to {args.output}")
         graph.serialize(destination=args.output, format=args.format)
-        logger.info(f"DONE")
+        logger.log(30,f"DONE")
 
     # except PyDelphinSyntaxError as e:
     #     logger.exception(e)

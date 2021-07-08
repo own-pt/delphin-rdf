@@ -14,7 +14,7 @@ ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
 POS = Namespace("http://www.delph-in.net/schema/pos#")
 
-def __nodes_to_rdf__(e, graph, edsi, NODES):
+def __nodes_to_rdf__(e, graph, edsi, NODES, namespace):
     """
     Creates nodes of variables and nodes specifying their properties.
 
@@ -26,10 +26,13 @@ def __nodes_to_rdf__(e, graph, edsi, NODES):
     edsi - The URI of the EDS instance being parsed.
 
     NODES - the URI namespace dedicated to nodes.
+
+    namespace - the string namespace of a result of the profile.
     """
     for node in e.nodes:
         nodeIRI = NODES[node.id]
-        nodePredIRI = NODES[node.id + "#predicate"]
+        nodePredIRI = URIRef(f"{namespace}predicate-{node.id}")
+        nodeSortInfoIRI = URIRef(f"{namespace}sortinfo-{node.id}")
         
         #Instantiate the Node
         graph.add((nodeIRI, RDF.type, EDS.Node))
@@ -68,12 +71,13 @@ def __nodes_to_rdf__(e, graph, edsi, NODES):
             graph.add((nodeIRI, RDF.type, DELPH[node.type]))
         
         # properties
+        graph.add((nodeIRI, DELPH.hasSortInfo, nodeSortInfoIRI))
+        graph.add((nodeSortInfoIRI, RDF.type, DELPH.SortInfo))
         for prop in node.properties.items():
-            graph.add((nodeIRI, ERG[prop[0].lower()], Literal(prop[1].lower())))
-            
+            graph.add((nodeSortInfoIRI, ERG[prop[0].lower()], Literal(prop[1].lower())))
         # carg
         if node.carg:
-            graph.add((nodeIRI, DELPH.carg, Literal(node.carg)))
+            graph.add((nodeSortInfoIRI, DELPH.carg, Literal(node.carg)))
 
 
 def __edges_to_rdf__(e, graph, NODES):
@@ -92,7 +96,7 @@ def __edges_to_rdf__(e, graph, NODES):
         
 
         
-def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=None, text=None, format="turtle"):
+def eds_to_rdf(e, prefix: str, identifier, iname="eds", graph=None, out=None, text=None, format="turtle"):
     """
     Parses a pydelphin EDS into RDF representation.
 
@@ -107,7 +111,7 @@ def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=Non
     same text admits various eds interpretations.
 
     iname - the eds instance name (the eds as RDF node name)
-    to be used. As default, it is "edsi#eds".
+    to be used. As default, it is "eds".
 
     graph - and rdflib graph. If given, uses it to store the
     mrs as RDF representation.
@@ -122,12 +126,12 @@ def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=Non
     if type(identifier) == list:
         identifier = "/".join(identifier)
     
-    namespace = prefix + "/" + identifier + "/"
+    namespace = prefix + "/" + identifier + "#"
 
     #creating the instance URI and the namespace of nodes
     edsi = URIRef(namespace + iname)
     graph.add((edsi, RDF.type, EDS.EDS))
-    NODES = Namespace(namespace + "nodes/")
+    NODES = Namespace(namespace + "node-")
 
     #creating the prefixes of the output
     graph.bind("eds", EDS)
@@ -136,7 +140,7 @@ def eds_to_rdf(e, prefix: str, identifier, iname="edsi#eds", graph=None, out=Non
     graph.bind("pos", POS)
     
     #Creating the RDF triples
-    __nodes_to_rdf__(e, graph, edsi, NODES)
+    __nodes_to_rdf__(e, graph, edsi, NODES, namespace)
     #Adding top
     graph.add((edsi, DELPH['hasTop'], NODES[e.top]))
     __edges_to_rdf__(e, graph, NODES)
