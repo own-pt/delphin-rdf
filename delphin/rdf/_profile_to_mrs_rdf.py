@@ -38,7 +38,7 @@ def profile_to_mrs_rdf(
         
     # The default graph and the profile uri 
     PROFILE = URIRef(prefix)
-    defaultGraph = Graph(store, identifier=BNode()) # BNode or BNode()?
+    defaultGraph = Graph(store, identifier=BNode) # BNode or BNode()?
     defaultGraph.add((PROFILE, RDF.type, DELPH.Profile))
     
     # iterating over results:
@@ -69,19 +69,30 @@ def profile_to_mrs_rdf(
 #         mrsgraph = _mrs_to_rdf(simplemrs.decode(mrs_string), Namespace(MRS+'#'), mrsgraph)
 
 def _mrs_to_rdf(m:delphin.mrs._mrs.MRS, 
-                MRSI:rdflib.term.URIRef, 
-                mrsGraph:rdflib.graph.Graph, 
-                defaultGraph:rdflib.graph.Graph):
+                MRSI:rdflib.term.URIRef,
+                store:rdflib.plugins.memory.IOMemory=plugin.get("IOMemory", Store)(),
+                defaultGraph:rdflib.graph.Graph=None) -> rdflib.plugins.memory.IOMemory:
     """
     Takes a PyDelphin MRS object "m" and serializes it into a graph (usually named).
 
     Args:
         m: a delphin mrs instance to be converted into RDF format
         MRSI: URI of the MRS instance being converted
-        mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put. 
-        defaultGraph : the default graph of the store
+        store: RDFLib IOMemory store to add the graphs. 
+        defaultGraph : the default graph of the store. If not given, creates one from the 'store'.
+
     Inplace function that alters mrsGraph and defaultGraph to construct the Graph Store.
     """
+    # Making the arguments behave well:
+    if defaultGraph is None:
+        defaultGraph = Graph(store, identifier=BNode)
+
+    if defaultGraph.store != store: # Bad function input
+        defaultGraph = Graph(store, identifier=BNode)
+        print("'defaultGraph' argument not consistent with the 'store' argument. The argument was discarded")
+
+    # MRS graph:
+    mrsGraph = Graph(store, identifier=MRSI)
 
     # Creating the prefix of the MRS elements and relevant namespaces
     insprefix = Namespace(MRSI + '#')
@@ -93,8 +104,9 @@ def _mrs_to_rdf(m:delphin.mrs._mrs.MRS,
     ICONS = Namespace(insprefix + "icons-")
 
     # Adding top and index
-    mrsGraph.add((BNode(), DELPH['hasTop'], VARS[m.top]))
-    mrsGraph.add((BNode(), DELPH['hasIndex'], VARS[m.index]))
+    mBNode = BNode()
+    mrsGraph.add((mBNode, DELPH['hasTop'], VARS[m.top]))
+    mrsGraph.add((mBNode, DELPH['hasIndex'], VARS[m.index]))
     # ALTERNATIVE: ({mrs-node}, DELPH['hasTop'], VARS[m.top]). The issue is that the mrs-node is already the graph identifier
     
     # Populating the graphs
