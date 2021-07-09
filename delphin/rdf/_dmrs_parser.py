@@ -5,7 +5,11 @@ from rdflib import RDFS
 from rdflib import URIRef
 from rdflib import Namespace
 from rdflib import plugin
+from rdflib.store import Store
+from rdflib.term import BNode
+import rdflib
 
+import delphin.dmrs
 import delphin.variable
 import delphin.predicate
 
@@ -32,10 +36,10 @@ def dmrs_to_rdf(d:delphin.dmrs._dmrs.DMRS,
 
     # Making the arguments behave well:
     if defaultGraph is None:
-        defaultGraph = Graph(store, identifier=BNode)
+        defaultGraph = Graph(store, identifier=BNode())
 
     if defaultGraph.store != store: # Bad function input
-        defaultGraph = Graph(store, identifier=BNode)
+        defaultGraph = Graph(store, identifier=BNode())
         print("'defaultGraph' argument not consistent with the 'store' argument. The argument was discarded")
 
     # DMRS graph:
