@@ -29,15 +29,26 @@ from delphin.tsdb import is_database_directory
 from delphin import itsdb
 from delphin import tsql
 
-from rdflib import Graph
+from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import _is_valid_uri
+from rdflib.store import Store
+from rdflib import Namespace
+from rdflib import plugin
+from rdflib.term import BNode
+from rdflib import URIRef
+from rdflib import Literal
+from rdflib import RDF
+from rdflib import RDFS
+
+ERG = Namespace("http://www.delph-in.net/schema/erg#")
+DELPH = Namespace("http://www.delph-in.net/schema/")
+POS = Namespace("http://www.delph-in.net/schema/pos#")
 
 # interface function
 def __cli_parse__(args):
     # remove the not well formed sentences? add option?
     # print MRS or parse to DMRS format?
 
-    graph = Graph()
     path = args.profile
     prefix = args.prefix.strip("/")
     semrep = args.semrep.lower()
@@ -53,19 +64,27 @@ def __cli_parse__(args):
         # validates URI prefix
         if not _is_valid_uri(prefix):
             raise Exception(f'Invalid URI: {prefix}')
-        # validate format and get parsers
-        to_rdf, from_mrs = _get_parsers(semrep)
+        # validate format and get converter
+        to_rdf, from_mrs = _get_converters(semrep)
         
         # open Test Suite and start conversion
         ts = itsdb.TestSuite(path)
         # logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
         logger.log(30,f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
 
+        # Creating the store and the default graph
+        store = plugin.get("IOMemory", Store)()
+        defaultGraph = Graph(store, identifier=BNode())
+        PROFILE = URIRef(f"{prefix}") # review later
+        defaultGraph.add((PROFILE, RDF.type, DELPH.Profile))
+        semrepURI, prof_semrep_relation = _get_RDF_semrep(semrep, store)
+
         # The tsql takes some time to be processed:
         # logger.info(f"Loading the profile")
         logger.log(30,f"Loading the profile")
         profile_data = tsql.select('parse-id result-id i-input mrs', ts)
         logger.log(30,f"Converting the profile")
+        # Iterating over the results:
         for (parse_id, result_id, text, mrs_string) in profile_data:
             logger.info(f"Converting the result {result_id} of sentence {parse_id}")
             m = simplemrs.decode(mrs_string)
@@ -79,16 +98,33 @@ def __cli_parse__(args):
             obj = from_mrs(m)
             logger.debug(f"Result {result_id} of item {parse_id}: \n\t{text}\n\t{obj}\n\t{mrs_string}")
             
-            graph = to_rdf(
-                        obj,
-                        prefix=prefix,
-                        identifier=[str(parse_id), str(result_id)],
-                        graph=graph,
-                        text=text)
+            # Creating URIs for relevant resources.
+            ITEM = URIRef(f"{prefix}/{parse_id}") # The item part may be redundant, maybe iterate before the itens
+            RESULT = URIRef(f"{prefix}/{parse_id}/{result_id}")
+            SEMREPI = URIRef(f"{prefix}/{parse_id}/{result_id}/{semrep}")
+        
+            # adding types:
+            defaultGraph.add((ITEM, RDF.type, DELPH.Item))
+            defaultGraph.add((RESULT, RDF.type, DELPH.Result))
+            defaultGraph.add((SEMREPI, RDF.type, semrepURI))
+        
+            # Associating text to item:
+            defaultGraph.add((ITEM, DELPH.hasText, Literal(text)))
+        
+            # Linking those nodes:
+            defaultGraph.add((PROFILE, DELPH.hasItem, ITEM))
+            defaultGraph.add((ITEM, DELPH.hasResult, RESULT))
+            defaultGraph.add((RESULT, prof_semrep_relation, SEMREPI))
+
+            to_rdf(
+                obj, 
+                SEMREPI, 
+                store, 
+                defaultGraph)
 
         # serializes results
         logger.log(30,f"Serializing results to {args.output}")
-        graph.serialize(destination=args.output, format=args.format)
+        ConjunctiveGraph(store).serialize(destination=args.output, format=args.format)
         logger.log(30,f"DONE")
 
     # except PyDelphinSyntaxError as e:
@@ -100,18 +136,40 @@ def __cli_parse__(args):
     except Exception as e:
         logger.error(e)
     
-def _get_parsers(semrep):
+def _get_converters(semrep):
+    """
+    This function gives us the conversor from MRS to a specific 'semrep'.
+    It returns a conversor function of delphin.rdf from this 'semrep' to RDF and
+    a function that converts PyDelphin MRS object to the specific semantic representation.
+    """
     logger.info(f"Getting parsers for representation: {semrep}")
-
     if semrep == "mrs":
         logger.info("No conversion necessary")
         return mrs_to_rdf, lambda x: x
-    if semrep == "eds":
+    elif semrep == "eds":
         return eds_to_rdf, eds_from_mrs
-    if semrep == "dmrs":
+    elif semrep == "dmrs":
         return dmrs_to_rdf, dmrs_from_mrs
     
     raise PyDelphinException(f"Not a valid format: {semrep}")
+
+def _get_RDF_semrep(semrep, store):
+    """
+    This function binds the prefix of the semantic representation to the RDF store and returns 
+    RDFLib objects that are relevant for the conversion
+    """
+    if semrep == "mrs":
+        MRS = Namespace("http://www.delph-in.net/schema/mrs#")
+        store.bind("mrs", MRS)
+        return MRS.MRS, DELPH.hasMRS
+    elif semrep == "eds":
+        EDS = Namespace("http://www.delph-in.net/schema/mrs#")
+        store.bind("eds",EDS)
+        return EDS.EDS, DELPH.hasEDS
+    elif semrep == "dmrs":
+        DMRS = Namespace("http://www.delph-in.net/schema/dmrs#")
+        store.bind("dmrs", DMRS)
+        return DMRS.DMRS, DELPH.hasDMRS
 
 # sets parser and interface function
 parser = argparse.ArgumentParser(add_help=False)
@@ -130,7 +188,7 @@ parser.add_argument(
     "profile",
     help="profile path")
 
-_default_prefix = "http://example.com/example"
+_default_prefix = "http://example.com/"
 parser.add_argument(
     "-p",
     # "--prefix",
@@ -159,5 +217,5 @@ parser.add_argument(
     # "-t",
     "--to",
     dest="semrep",
-    help=f"(mrs|eds|dmrs) modeled semantic representation (default: {_default_delphin})",
+    help=f"(mrs|dmrs|eds) modeled semantic representation (default: {_default_delphin})",
     default=_default_delphin)
