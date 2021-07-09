@@ -19,7 +19,7 @@ def profile_to_mrs_rdf(
     """
     
     # normalizing prefix:
-    prefix.rstrip('/')
+    prefix = prefix.rstrip('/')
         
     # loading profile
     ts = itsdb.TestSuite(profile_path)
@@ -27,7 +27,7 @@ def profile_to_mrs_rdf(
     # The default graph and the profile uri 
     PROFILE = URIRef(prefix)
     defaultGraph = Graph(store, identifier=BNode()) # BNode or BNode()?
-    graph.add((PROFILE, RDF.type, DELPH.Profile))
+    defaultGraph.add((PROFILE, RDF.type, DELPH.Profile))
     
     # iterating over results:
     for (parse_id, result_id, text, mrs_string) in tsql.select('parse-id result-id i-input mrs', ts):
@@ -36,22 +36,23 @@ def profile_to_mrs_rdf(
         MRSI = URIRef(f"{prefix}/{parse_id}/{result_id}/{iname}")
         
         # adding types:
-        graph.add((ITEM, RDF.type, DELPH.Item))
-        graph.add((RESULT, RDF.type, DELPH.Result))
-        graph.add((MRSI, RDF.type, MRS.MRS))
+        defaultGraph.add((ITEM, RDF.type, DELPH.Item))
+        defaultGraph.add((RESULT, RDF.type, DELPH.Result))
+        defaultGraph.add((MRSI, RDF.type, MRS.MRS))
         
         # Associating text to item:
-        graph.add((ITEM, DELPH.hasText, Literal(text)))
+        defaultGraph.add((ITEM, DELPH.hasText, Literal(text)))
         
         # Linking those nodes:
-        graph.add((PROFILE, DELPH.hasItem, ITEM))
-        graph.add((ITEM, DELPH.hasResult, RESULT))
-        graph.add((RESULT, DELPH.hasMRS, MRSI))
+        defaultGraph.add((PROFILE, DELPH.hasItem, ITEM))
+        defaultGraph.add((ITEM, DELPH.hasResult, RESULT))
+        defaultGraph.add((RESULT, DELPH.hasMRS, MRSI))
 
         _mrs_to_rdf(simplemrs.decode(mrs_string), 
                     MRSI, 
                     Graph(store, identifier=MRSI), 
                     defaultGraph)
+    return store
 #         mrsgraph = Graph(store, identifier=MRS)
 #         mrsgraph = _mrs_to_rdf(simplemrs.decode(mrs_string), Namespace(MRS+'#'), mrsgraph)
 
@@ -69,11 +70,7 @@ def _mrs_to_rdf(m:delphin.mrs._mrs.MRS,
         defaultGraph : the default graph of the store
     Inplace function that alters mrsGraph and defaultGraph to construct the Graph Store.
     """
-    # Adding top and index
-    mrsGraph.add((BNode(), DELPH['hasTop'], VARS[m.top]))
-    mrsGraph.add((BNode(), DELPH['hasIndex'], VARS[m.index]))
-    # ALTERNATIVE: ({mrs-node}, DELPH['hasTop'], VARS[m.top]). The issue is that the mrs-node is already the graph identifier
-    
+
     # Creating the prefix of the MRS elements and relevant namespaces
     insprefix = Namespace(MRSI + '#')
     VARS = Namespace(insprefix + "variable-")
@@ -82,11 +79,17 @@ def _mrs_to_rdf(m:delphin.mrs._mrs.MRS,
     SORTINFO = Namespace(insprefix + "sortinfo-")
     HCONS = Namespace(insprefix + "hcons-")
     ICONS = Namespace(insprefix + "icons-")
+
+    # Adding top and index
+    mrsGraph.add((BNode(), DELPH['hasTop'], VARS[m.top]))
+    mrsGraph.add((BNode(), DELPH['hasIndex'], VARS[m.index]))
+    # ALTERNATIVE: ({mrs-node}, DELPH['hasTop'], VARS[m.top]). The issue is that the mrs-node is already the graph identifier
     
+    # Populating the graphs
     _vars_to_rdf(m, mrsGraph, VARS, SORTINFO)
     _rels_to_rdf(m, mrsGraph, defaultGraph, MRSI, RELS, PREDS, VARS)
-    _hcons_to_rdf(m, graph, MRSI, HCONS, VARS)
-    _icons_to_rdf(m, graph, MRSI, ICONS, VARS)
+    _hcons_to_rdf(m, mrsGraph, defaultGraph, MRSI, HCONS, VARS)
+    _icons_to_rdf(m, mrsGraph, defaultGraph, MRSI, ICONS, VARS)
 
 def _vars_to_rdf(m, mrsGraph, VARS, SORTINFO):
     """
@@ -122,7 +125,7 @@ def _rels_to_rdf(m, mrsGraph, defaultGraph, MRSI, RELS, PREDS, VARS):
     Converts the EPs of a MRS to the graph
 
     Args:
-        m: a delphin mrs instance to be parsed into RDF format
+        m: a delphin mrs instance to be converted into RDF format
         mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put.
         defaultGraph: the default graph of the Store with the mrsGraph
         MRSI: the node of the MRS instance being converted
@@ -172,13 +175,59 @@ def _rels_to_rdf(m, mrsGraph, defaultGraph, MRSI, RELS, PREDS, VARS):
         for hole, arg in mrs_rel.args.items():
             # mrs variables as arguments
             if hole.lower() != "carg" :
-                graph.add((EPNode, MRS[hole.lower()], VARS[arg]))
+                mrsGraph.add((EPNode, MRS[hole.lower()], VARS[arg]))
             else :
-                graph.add((EPNode, DELPH.carg, Literal(arg)))
+                mrsGraph.add((EPNode, DELPH.carg, Literal(arg)))
 
-def _hcons_to_rdf(m, defaultGraph, VARS):
-    pass
+def _hcons_to_rdf(m, mrsGraph, defaultGraph, MRSI, HCONS, VARS):
+    """
+    Describes handle constraints "HCONS" in an MRS-RDF format
 
-def _icons_to_rdf(m, defaultGraph, VARS):
-    pass
+    Args:
+        m: a delphin mrs instance to be converted into RDF format
+        mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put.
+        defaultGraph: the default graph of the Store with the mrsGraph
+        MRSI: the node of the MRS instance being converted
+        HCONS: the URI namespace dedicated to handle constraints
+        VARS: the URI namespace dedicated to variables
+    """
 
+    for id_hcons in range(len(m.hcons)):
+        mrs_hcons = m.hcons[id_hcons]
+        HCONSNode = HCONS[f"{id_hcons}"]
+        
+        # adds hcons to graphs
+        defaultGraph.add((MRSI, MRS.hasHcons, HCONSNode))
+        mrsGraph.add((HCONSNode, RDF.type, MRS[mrs_hcons.relation.capitalize()]))
+        mrsGraph.add((HCONSNode, MRS.highHcons, VARS[mrs_hcons.hi]))
+        mrsGraph.add((HCONSNode, MRS.lowHcons, VARS[mrs_hcons.lo]))
+
+def _icons_to_rdf(m, mrsGraph, defaultGraph, MRSI, ICONS, VARS):
+    """
+    Describes individual constraints "ICONS" in MRS-RDF format
+
+    Args:
+        m: a delphin mrs instance to be converted into RDF format
+        mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put.
+        defaultGraph: the default graph of the Store with the mrsGraph
+        MRSI: the node of the MRS instance being converted
+        ICONS: the URI namespace dedicated to individual constraints
+        VARS: the URI namespace dedicated to variables
+    """
+
+    for id_icons in range(len(m.icons)):
+        mrs_icons = m.icons[id_icons]
+        ICONSNode = ICONS[f"{id_icons}"]
+        
+        # adds icons to graphs
+        defaultGraph.add((MRSI, MRS.hasIcons, ICONSNode))
+        mrsGraph.add((ICONSNode, RDF.type, ERG[mrs_icons.relation]))
+        mrsGraph.add((ICONSNode, MRS.leftIcons, VARS[mrs_icons.left])) # should be revisited
+        mrsGraph.add((ICONSNode, MRS.rightIcons, VARS[mrs_icons.right])) # should be revisited
+
+        # by now, the ICONSs seems to be grammar-specific
+        # and this relation must be defined in ERG as an icons.
+        # As we don't have an exhaustive list of the possible icons in ERG (and any other grammar),
+        # we'll create on the final graph those icons. This is provisory
+        defaultGraph.add((ERG[mrs_icons.relation], RDF.type, RDFS.Class))
+        defaultGraph.add((ERG[mrs_icons.relation], RDFS.subClassOf, MRS.Icons))
