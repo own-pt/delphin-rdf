@@ -1,3 +1,9 @@
+# Useful namespaces
+MRS = Namespace("http://www.delph-in.net/schema/mrs#")
+ERG = Namespace("http://www.delph-in.net/schema/erg#")
+DELPH = Namespace("http://www.delph-in.net/schema/")
+POS = Namespace("http://www.delph-in.net/schema/pos#")
+
 def profile_to_mrs_rdf(
         profile_path:str, 
         prefix:str, 
@@ -17,7 +23,13 @@ def profile_to_mrs_rdf(
 
     Returns the RDFLib IOMemory store with the added graphs.
     """
-    
+
+    # binding prefixes on the store
+    graph.bind("mrs", MRS)
+    graph.bind("delph", DELPH)
+    graph.bind("erg", ERG)
+    graph.bind("pos", POS)
+
     # normalizing prefix:
     prefix = prefix.rstrip('/')
         
