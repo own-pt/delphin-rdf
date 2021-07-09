@@ -1,12 +1,13 @@
-from rdflib import Graph
+from rdflib.graph import Graph
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import RDFS
 from rdflib import URIRef
 from rdflib import Namespace
+from rdflib import plugin
 
-import delphin  
-from delphin import eds
+import delphin.variable
+import delphin.predicate
 
 # some useful namespaces
 EDS = Namespace("http://www.delph-in.net/schema/eds#")
@@ -14,140 +15,130 @@ ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
 POS = Namespace("http://www.delph-in.net/schema/pos#")
 
-def __nodes_to_rdf__(e, graph, edsi, NODES, namespace):
+def eds_to_rdf(e:delphin.eds._eds.EDS, 
+               EDSI: rdflib.term.URIRef, 
+               store:rdflib.plugins.memory.IOMemory=plugin.get("IOMemory", Store)(),
+               defaultGraph:rdflib.graph.Graph=None) -> rdflib.plugins.memory.IOMemory: 
     """
-    Creates nodes of variables and nodes specifying their properties.
-
-    e - a delphin eds instance to be parsed into RDF format.
+    Takes a PyDelphin EDS object "e" and serializes it into a named RDF graph inside a store.
     
-    graph - and rdflib graph that is used to store the EDS as RDF
-    representation.
+    Args:
+        e: a PyDelphin EDS instance to be converted into RDF format
+        EDSI: URI of the EDS instance being converted
+        store: RDFLib IOMemory store to add the graphs. 
+        defaultGraph : the default graph of the store. If not given, creates one from the 'store'.
+    Inplace function that alters the store with the serialized EDS and return the store as well.
+    """
+    # Before running this, use delphin.eds.make_ids_unique(e, m) if possible
+
+   # Making the arguments behave well:
+    if defaultGraph is None:
+        defaultGraph = Graph(store, identifier=BNode)
+
+    if defaultGraph.store != store: # Bad function input
+        defaultGraph = Graph(store, identifier=BNode)
+        print("'defaultGraph' argument not consistent with the 'store' argument. The argument was discarded")
+
+    # EDS graph:
+    edsGraph = Graph(store, identifier=EDSI)
+
+    # Creating the prefix of the EDSI elements and relevant namespaces
+    insprefix = Namespace(EDSI + '#')
+    NODES = Namespace(insprefix + "node-")
+    PREDS = Namespace(insprefix + "predicate-")
+    SORTINFO = Namespace(insprefix + "sortinfo-")
+
+    # Adding top
+    edsGraph.add((BNode(), DELPH['hasTop'], NODES[e.top]))
+
+    # creating the prefixes of the output
+    # graph.bind("eds", EDS)
+    # graph.bind("delph", DELPH)
+    # graph.bind("erg", ERG)
+    # graph.bind("pos", POS)
     
-    edsi - The URI of the EDS instance being parsed.
+    # Populating the graphs
+    __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO)
+    __edges_to_rdf__(e, edsGraph, NODES)
 
-    NODES - the URI namespace dedicated to nodes.
+    return store
 
-    namespace - the string namespace of a result of the profile.
+
+def __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO):
+    """
+    Creates in the graphs the nodes of EDS predications and their properties.
+
+    Args:
+        e: a PyDelphin EDS instance to be converted into RDF format
+        edsGraph: rdflib Graph of a Store of graphs where the EDS triples will be put.
+        defaultGraph: the default graph of the Store with the edsGraph
+        EDSI: the node of the EDS instance being converted
+        NODES: the URI namespace dedicated to EDS predications
+        PREDS: the URI namespace dedicated to predicates
+        SORTINFO: the URI namespace dedicated to the sortinfo (morphosemantic information).
     """
     for node in e.nodes:
-        nodeIRI = NODES[node.id]
-        nodePredIRI = URIRef(f"{namespace}predicate-{node.id}")
-        nodeSortInfoIRI = URIRef(f"{namespace}sortinfo-{node.id}")
+        nodeURI = NODES[node.id]
+        predURI = PREDS[node.id]
+        sortinfoURI = SORTINFO[node.id]
         
-        #Instantiate the Node
-        graph.add((nodeIRI, RDF.type, EDS.Node))
-        graph.add((edsi, EDS.hasNode, nodeIRI))
+        edsGraph.add((nodeURI, RDF.type, EDS.Node))
+        edsGraph.add((sortinfoURI, RDF.type, DELPH.SortInfo))
+
+        # Information about the EDS node
+        defaultGraph.add((EDSI, EDS.hasNode, nodeURI))
+        edsGraph.add((nodeURI, DELPH.hasPredicate, predURI))
+        edsGraph.add((nodeURI, DELPH.hasSortInfo, sortinfoURI))
+        edsGraph.add((nodeURI, EDS.nodeIdentifier, Literal(node.id))) # review later if this is useful
+        edsGraph.add((nodeURI, RDFS.label, Literal(f"{delphin.predicate.normalize(node.predicate)}<{node.cfrom},{node.cto}>")))
+        #type:
+        if node.type is not None:
+            edsGraph.add((nodeURI, RDF.type, DELPH[node.type]))
         
-        #typing the predicate
+        # Information about the predicate
+        edsGraph.add((predURI, DELPH.predText, Literal(delphin.predicate.normalize(node.predicate))))
         if delphin.predicate.is_surface(node.predicate):
-            graph.add((nodePredIRI, RDF.type, DELPH.SurfacePredicate))
+            edsGraph.add((predURI, RDF.type, DELPH.SurfacePredicate))
         elif delphin.predicate.is_abstract(node.predicate):
-            graph.add((nodePredIRI, RDF.type, DELPH.AbstractPredicate))
+            edsGraph.add((predURI, RDF.type, DELPH.AbstractPredicate))
         else: #not surface neither abstract
-            print("{} is an invalid predicate".format(node.predicate))
-            graph.add((nodePredIRI, RDF.type, DELPH.Predicate))
-            
-        #Declaring the node predicate
-        graph.add((nodeIRI, DELPH.hasPredicate, nodePredIRI))
-        graph.add((nodePredIRI, DELPH.predText, Literal(delphin.predicate.normalize(node.predicate))))
+            edsGraph.add((predURI, RDF.type, DELPH.Predicate))
+            print(f"{node.predicate} is an invalid predicate.")
         
-        # surface and its parts:
         splittedPredicate = delphin.predicate.split(delphin.predicate.normalize(node.predicate))
         if splittedPredicate[0] is not None: #is this possible?
-            graph.add((nodePredIRI, DELPH.hasLemma, Literal(splittedPredicate[0])))
+            edsGraph.add((predURI, DELPH.hasLemma, Literal(splittedPredicate[0])))
         if splittedPredicate[1] is not None:
-            graph.add((nodePredIRI, DELPH.hasPos, POS[splittedPredicate[1]]))
+            edsGraph.add((predURI, DELPH.hasPos, POS[splittedPredicate[1]]))
         if splittedPredicate[2] is not None:
-            graph.add((nodePredIRI, DELPH.hasSense, Literal(splittedPredicate[2])))
+            edsGraph.add((predURI, DELPH.hasSense, Literal(splittedPredicate[2])))
         
         #lnk:
         if node.cfrom is not None: 
-            graph.add((nodeIRI, DELPH.cfrom, Literal(node.cfrom)))
+            edsGraph.add((nodeURI, DELPH.cfrom, Literal(node.cfrom)))
         if node.cto is not None:
-            graph.add((nodeIRI, DELPH.cto, Literal(node.cto)))
-        
-        # type of node:
-        if node.type is not None:
-            graph.add((nodeIRI, RDF.type, DELPH[node.type]))
+            edsGraph.add((nodeURI, DELPH.cto, Literal(node.cto)))
         
         # properties
-        graph.add((nodeIRI, DELPH.hasSortInfo, nodeSortInfoIRI))
-        graph.add((nodeSortInfoIRI, RDF.type, DELPH.SortInfo))
         for prop in node.properties.items():
-            graph.add((nodeSortInfoIRI, ERG[prop[0].lower()], Literal(prop[1].lower())))
-        # carg
+            graph.add((sortinfoURI, ERG[prop[0].lower()], Literal(prop[1].lower())))
+        
+        # carg; review later
         if node.carg:
-            graph.add((nodeSortInfoIRI, DELPH.carg, Literal(node.carg)))
+            graph.add((nodeURI, DELPH.carg, Literal(node.carg)))
 
 
-def __edges_to_rdf__(e, graph, NODES):
+def __edges_to_rdf__(e, edsGraph, NODES):
     """
-    Creates nodes of variables and nodes specifying their properties.
+    Creates in the graph triples that links the EDS nodes, the edges.
 
-    e - a delphin eds instance to be parsed into RDF format.
-    
-    graph - and rdflib graph that is used to store the EDS as RDF
-    representation.
-
-    NODES - the IRI namespace dedicated to nodes.
+    Args:
+        e: a PyDelphin EDS instance to be converted into RDF format
+        edsGraph: rdflib Graph of a Store of graphs where the EDS triples will be put.
+        NODES: the URI namespace dedicated to EDS predications
     """
     for edge in e.edges:
-        graph.add((NODES[edge[0]], EDS[edge[1].lower()], NODES[edge[2]]))
+        edsGraph.add((NODES[edge[0]], EDS[edge[1].lower()], NODES[edge[2]]))
         
 
         
-def eds_to_rdf(e, prefix: str, identifier, iname="eds", graph=None, out=None, text=None, format="turtle"):
-    """
-    Parses a pydelphin EDS into RDF representation.
-
-    e - a delphin EDS instance to be parsed into RDF format.
-    
-    prefix - the IRI to be prefixed to the RDF formated eds.
-    
-    identifier - an string or a list of strings identifying
-    the eds. It should be unique, possibly using a composite
-    identifier, given in list.
-    For instance one may use it as [textid, eds-id] if the
-    same text admits various eds interpretations.
-
-    iname - the eds instance name (the eds as RDF node name)
-    to be used. As default, it is "eds".
-
-    graph - and rdflib graph. If given, uses it to store the
-    mrs as RDF representation.
-    
-    text - the text that is represented in eds as RDF.
-    """
-    
-    # Before running this, use delphin.eds.make_ids_unique(e, m) if possible
-    
-    # same graph for different EDSs
-    if graph is None: graph = Graph()
-    if type(identifier) == list:
-        identifier = "/".join(identifier)
-    
-    namespace = prefix + "/" + identifier + "#"
-
-    #creating the instance URI and the namespace of nodes
-    edsi = URIRef(namespace + iname)
-    graph.add((edsi, RDF.type, EDS.EDS))
-    NODES = Namespace(namespace + "node-")
-
-    #creating the prefixes of the output
-    graph.bind("eds", EDS)
-    graph.bind("delph", DELPH)
-    graph.bind("erg", ERG)
-    graph.bind("pos", POS)
-    
-    #Creating the RDF triples
-    __nodes_to_rdf__(e, graph, edsi, NODES, namespace)
-    #Adding top
-    graph.add((edsi, DELPH['hasTop'], NODES[e.top]))
-    __edges_to_rdf__(e, graph, NODES)
-    
-    # add text as one graph node if it's given
-    if text is not None: graph.add((edsi, DELPH.text, Literal(text)))
-    # serializes graph if given an output file
-    if out is not None: graph.serialize(destination=out, format=format)
-
-    return graph
