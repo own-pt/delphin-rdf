@@ -1,5 +1,4 @@
 from rdflib.graph import Graph
-from rdflib.graph import ConjunctiveGraph
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import RDFS
@@ -22,10 +21,10 @@ def mrs_to_rdf(m:delphin.mrs._mrs.MRS,
                 store:rdflib.plugins.memory.IOMemory=plugin.get("IOMemory", Store)(),
                 defaultGraph:rdflib.graph.Graph=None) -> rdflib.plugins.memory.IOMemory:
     """
-    Takes a PyDelphin MRS object "m" and serializes it into a named graph inside a store.
+    Takes a PyDelphin MRS object "m" and serializes it into a named RDF graph inside a store.
 
     Args:
-        m: a delphin mrs instance to be converted into RDF format
+        m: a PyDelphin MRS instance to be converted into RDF format
         MRSI: URI of the MRS instance being converted
         store: RDFLib IOMemory store to add the graphs. 
         defaultGraph : the default graph of the store. If not given, creates one from the 'store'.
@@ -130,7 +129,7 @@ def _rels_to_rdf(m, mrsGraph, defaultGraph, MRSI, RELS, PREDS, VARS):
 
         mrsGraph.add((EPNode, DELPH.hasPredicate, predNode))
         mrsGraph.add((predNode, DELPH.predText, Literal(delphin.predicate.normalize(mrs_rel.predicate))))
-        mrsGraph.add((predNode, RDFS.label, Literal(delphin.predicate.normalize(mrs_rel.predicate))))
+        mrsGraph.add((EPNode, RDFS.label, Literal(f"{delphin.predicate.normalize(mrs_rel.predicate)}<{mrs_rel.cfrom},{mrs_rel.cto}>")))
 
         if splittedPredicate[0] is not None: #here, lemma = name by now.
             mrsGraph.add((predNode, DELPH.hasLemma, Literal(splittedPredicate[0])))
