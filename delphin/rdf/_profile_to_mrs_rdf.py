@@ -73,7 +73,7 @@ def _mrs_to_rdf(m:delphin.mrs._mrs.MRS,
                 store:rdflib.plugins.memory.IOMemory=plugin.get("IOMemory", Store)(),
                 defaultGraph:rdflib.graph.Graph=None) -> rdflib.plugins.memory.IOMemory:
     """
-    Takes a PyDelphin MRS object "m" and serializes it into a graph (usually named).
+    Takes a PyDelphin MRS object "m" and serializes it into a named graph inside a store.
 
     Args:
         m: a delphin mrs instance to be converted into RDF format
@@ -81,7 +81,7 @@ def _mrs_to_rdf(m:delphin.mrs._mrs.MRS,
         store: RDFLib IOMemory store to add the graphs. 
         defaultGraph : the default graph of the store. If not given, creates one from the 'store'.
 
-    Inplace function that alters mrsGraph and defaultGraph to construct the Graph Store.
+    Inplace function that alters the store with the serialized MRS and return the store as well.
     """
     # Making the arguments behave well:
     if defaultGraph is None:
@@ -114,6 +114,8 @@ def _mrs_to_rdf(m:delphin.mrs._mrs.MRS,
     _rels_to_rdf(m, mrsGraph, defaultGraph, MRSI, RELS, PREDS, VARS)
     _hcons_to_rdf(m, mrsGraph, defaultGraph, MRSI, HCONS, VARS)
     _icons_to_rdf(m, mrsGraph, defaultGraph, MRSI, ICONS, VARS)
+
+    return store
 
 def _vars_to_rdf(m, mrsGraph, VARS, SORTINFO):
     """
