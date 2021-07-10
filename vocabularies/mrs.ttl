@@ -100,6 +100,12 @@ mrs:Outscopes
 
 
 #Defining properties
+delph:hasMRS
+ rdf:subPropertyOf delph:hasSemanticRepresentation
+ rdfs:domain delph:Result ;
+ rdfs:range mrs:MRS ;
+ rdfs:comment "A property that links a result to its MRS."@en-us.
+
 mrs:hasEP
  a rdf:Property ;
  rdfs:subPropertyOf delph:hasPredication ;

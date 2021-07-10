@@ -30,6 +30,12 @@ eds:edge
  rdfs:comment "EDS way to explicit the role between predications"@en-us.
 #Is it?
 
+delph:hasEDS
+ rdf:subPropertyOf delph:hasSemanticRepresentation
+ rdfs:domain delph:Result ;
+ rdfs:range eds:EDS ;
+ rdfs:comment "A property that links a result to its EDS."@en-us.
+
 eds:hasNode
  a rdf:Property ;
  rdfs:subProperty delph:hasPredication ;
