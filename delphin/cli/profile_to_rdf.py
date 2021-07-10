@@ -87,6 +87,10 @@ def __cli_parse__(args):
         PROFILE = URIRef(f"{prefix}") # review later
         defaultGraph.add((PROFILE, RDF.type, DELPH.Profile))
         semrepURI, prof_semrep_relation = _get_RDF_semrep(semrep, store)
+        store.bind("erg", ERG)
+        store.bind("delph", DELPH)
+        store.bind("pos", POS)
+        # store.bind("upref", prefix) # may be useful
 
         # The tsql takes some time to be processed:
         # logger.info(f"Loading the profile")
