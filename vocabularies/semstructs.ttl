@@ -142,7 +142,7 @@ delph:hasPredication
 
 delph:hasSortInfo
  a rdf:Property ;
- rdfs:domain delph:Predication ;
+ rdfs:domain delph:u ;
  rdfs:range delph:SortInfo ;
  rdfs:comment "A property that links a predication to its information"@en-us.
 
