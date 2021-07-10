@@ -44,6 +44,7 @@ from rdflib import RDFS
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
 POS = Namespace("http://www.delph-in.net/schema/pos#")
+logging.addLevelName(25,"SURFINFO")
 
 # interface function
 def __cli_parse__(args):
@@ -54,7 +55,14 @@ def __cli_parse__(args):
     prefix = args.prefix.strip("/")
     semrep = args.semrep.lower()
     parser = None
-    
+    # Setting verbosity; need to figure a better solution.
+    if args.verbosity == 1:
+        logger.setLevel(25)
+    elif args.verbosity == 2:
+        logger.setLevel(20)
+    elif args.verbosity >= 3:
+        logger.setLevel(10)
+
     try:
         # validates path
         if not isdir(path):
@@ -71,7 +79,7 @@ def __cli_parse__(args):
         # open Test Suite and start conversion
         ts = itsdb.TestSuite(path)
         # logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
-        logger.log(30,f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
+        logger.log(25,f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
 
         # Creating the store and the default graph
         store = plugin.get("IOMemory", Store)()
@@ -82,9 +90,9 @@ def __cli_parse__(args):
 
         # The tsql takes some time to be processed:
         # logger.info(f"Loading the profile")
-        logger.log(30,f"Loading the profile")
+        logger.log(25,f"Loading the profile")
         profile_data = tsql.select('parse-id result-id i-input mrs', ts)
-        logger.log(30,f"Converting the profile")
+        logger.log(25,f"Converting the profile")
         # Iterating over the results:
         for (parse_id, result_id, text, mrs_string) in profile_data:
             logger.info(f"Converting the result {result_id} of sentence {parse_id}")
@@ -124,9 +132,9 @@ def __cli_parse__(args):
                 defaultGraph)
 
         # serializes results
-        logger.log(30,f"Serializing results to {args.output}")
+        logger.log(25,f"Serializing results to {args.output}")
         ConjunctiveGraph(store).serialize(destination=args.output, format=args.format)
-        logger.log(30,f"DONE")
+        logger.log(25,f"DONE")
 
     # except PyDelphinSyntaxError as e:
     #     logger.exception(e)
@@ -143,9 +151,9 @@ def _get_converters(semrep):
     It returns a conversor function of delphin.rdf from this 'semrep' to RDF and
     a function that converts PyDelphin MRS object to the specific semantic representation.
     """
-    logger.info(f"Getting parsers for representation: {semrep}")
+    logger.log(25, f"Getting parsers for representation: {semrep}")
     if semrep == "mrs":
-        logger.info("No conversion necessary")
+        logger.log(25, "No conversion necessary")
         return mrs_to_rdf, lambda x: x
     elif semrep == "eds":
         return eds_to_rdf, eds_from_mrs
@@ -179,7 +187,7 @@ parser.set_defaults(func=__cli_parse__)
 # sets the command infos
 COMMAND_INFO = {
     'name': 'profile-to-rdf',               # Required
-    'help': 'tsdb database to rdf',         # Optional
+    'help': 'incr tsdb test suite to rdf',  # Optional
     'description': __doc__,                 # Optional
     'parser': parser,                       # Required
 }
