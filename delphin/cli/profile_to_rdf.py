@@ -1,5 +1,6 @@
 """
-Transcribes a profile intro a RDF graph.
+Transcribes a profile into a RDF graph.
+It creates named graphs, but it has support to creating files only with triples like ntriples or turtle.
 
 For more details, see: {https://github.com/own-pt/delphin-rdf}.
 """
@@ -178,7 +179,7 @@ parser.set_defaults(func=__cli_parse__)
 # sets the command infos
 COMMAND_INFO = {
     'name': 'profile-to-rdf',               # Required
-    'help': 'delphin profile to rdf',       # Optional
+    'help': 'tsdb database to rdf',         # Optional
     'description': __doc__,                 # Optional
     'parser': parser,                       # Required
 }
@@ -196,7 +197,7 @@ parser.add_argument(
     help=f"URI prefix (default: {_default_prefix})",
     default=_default_prefix)
 
-_default_output = "output.ttl"
+_default_output = "output.nq"
 parser.add_argument(
     "-o",
     # "--output",
@@ -204,7 +205,7 @@ parser.add_argument(
     help=f"output file name (default: {_default_output})",
     default=_default_output)
 
-_defaut_format = "turtle"
+_defaut_format = "nquads"
 parser.add_argument(
     "-f",
     # "--format",
@@ -217,5 +218,5 @@ parser.add_argument(
     # "-t",
     "--to",
     dest="semrep",
-    help=f"(mrs|dmrs|eds) modeled semantic representation (default: {_default_delphin})",
+    help=f"(mrs|dmrs|eds) semantic representation to serialize (default: {_default_delphin})",
     default=_default_delphin)
