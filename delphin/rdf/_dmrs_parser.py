@@ -52,11 +52,7 @@ def dmrs_to_rdf(d:delphin.dmrs._dmrs.DMRS,
     PREDS = Namespace(insprefix + "predicate-")
     SORTINFO = Namespace(insprefix + "sortinfo-")
 
-    #creating the instance URI and the namespaces
-    dmrsi = URIRef(namespace + iname)
-    graph.add((dmrsi, RDF.type, DMRS.DMRS))
-    NODES = Namespace(namespace + "node-")
-    LINKS = Namespace(namespace + "link-")
+    defaultGraph.add((DMRSI, RDF.type, DMRS.DMRS))
     
     # Adding top and index
     dBNode = BNode()
@@ -141,8 +137,7 @@ def __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO):
 
         # carg; review later
         if node.carg is not None:
-            graph.add((nodeURI, DELPH.carg, Literal(node.carg)))
-
+            dmrsGraph.add((nodeURI, DELPH.carg, Literal(node.carg)))
 
 def __links_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, LINKS, NODES):
     """
