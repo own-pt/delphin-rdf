@@ -125,11 +125,11 @@ def __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO):
         
         # properties
         for prop in node.properties.items():
-            graph.add((sortinfoURI, ERG[prop[0].lower()], Literal(prop[1].lower())))
+            edsGraph.add((sortinfoURI, ERG[prop[0].lower()], Literal(prop[1].lower())))
         
         # carg; review later
         if node.carg:
-            graph.add((nodeURI, DELPH.carg, Literal(node.carg)))
+            edsGraph.add((nodeURI, DELPH.carg, Literal(node.carg)))
 
 
 def __edges_to_rdf__(e, edsGraph, NODES):
