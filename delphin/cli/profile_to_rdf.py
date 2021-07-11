@@ -176,7 +176,7 @@ def _get_RDF_semrep(semrep, store):
         store.bind("mrs", MRS)
         return MRS.MRS, DELPH.hasMRS
     elif semrep == "eds":
-        EDS = Namespace("http://www.delph-in.net/schema/mrs#")
+        EDS = Namespace("http://www.delph-in.net/schema/eds#")
         store.bind("eds",EDS)
         return EDS.EDS, DELPH.hasEDS
     elif semrep == "dmrs":
