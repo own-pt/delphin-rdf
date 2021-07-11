@@ -5,7 +5,7 @@
 
 __name__ = "Delphin RDF"
 __summary__ = "DELPH-IN formats in RDF"
-__version__ = "1.0.1"
+__version__ = "1.0.3"
 
 __author__ = "foo"
 __email__ = "foo"
