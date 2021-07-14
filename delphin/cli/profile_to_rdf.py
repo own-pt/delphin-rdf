@@ -44,7 +44,6 @@ from rdflib import RDFS
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
 POS = Namespace("http://www.delph-in.net/schema/pos#")
-logging.addLevelName(25,"SURFINFO")
 
 # interface function
 def __cli_parse__(args):
@@ -57,10 +56,8 @@ def __cli_parse__(args):
     parser = None
     # Setting verbosity; need to figure a better solution.
     if args.verbosity == 1:
-        logger.setLevel(25)
-    elif args.verbosity == 2:
         logger.setLevel(20)
-    elif args.verbosity >= 3:
+    elif args.verbosity >= 2:
         logger.setLevel(10)
 
     try:
@@ -79,7 +76,7 @@ def __cli_parse__(args):
         # open Test Suite and start conversion
         ts = itsdb.TestSuite(path)
         # logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
-        logger.log(25,f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
+        logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
 
         # Creating the store and the default graph
         store = plugin.get("IOMemory", Store)()
@@ -94,12 +91,12 @@ def __cli_parse__(args):
 
         # The tsql takes some time to be processed:
         # logger.info(f"Loading the profile")
-        logger.log(25,f"Loading the profile")
+        logger.info(f"Loading the profile")
         profile_data = tsql.select('parse-id result-id i-input mrs', ts)
-        logger.log(25,f"Converting the profile")
+        logger.info(f"Converting the profile")
         # Iterating over the results:
         for (parse_id, result_id, text, mrs_string) in profile_data:
-            logger.info(f"Converting the result {result_id} of sentence {parse_id}")
+            logger.debug(f"Converting the result {result_id} of sentence {parse_id}")
             m = simplemrs.decode(mrs_string)
 
             # making sure of the well formedness of "m"
@@ -109,7 +106,7 @@ def __cli_parse__(args):
 
             # converting the MRS object to the representation intended to be converted
             obj = from_mrs(m)
-            logger.debug(f"Result {result_id} of item {parse_id}: \n\t{text}\n\t{obj}\n\t{mrs_string}")
+            # logger.debug(f"Result {result_id} of item {parse_id}: \n\t{text}\n\t{obj}\n\t{mrs_string}")
             
             # Creating URIs for relevant resources.
             ITEM = URIRef(f"{prefix}/{parse_id}") # The item part may be redundant, maybe iterate before the itens
@@ -136,9 +133,9 @@ def __cli_parse__(args):
                 defaultGraph)
 
         # serializes results
-        logger.log(25,f"Serializing results to {args.output}")
+        logger.info(f"Serializing results to {args.output}")
         ConjunctiveGraph(store).serialize(destination=args.output, format=args.format)
-        logger.log(25,f"DONE")
+        logger.info(f"DONE")
 
     # except PyDelphinSyntaxError as e:
     #     logger.exception(e)
@@ -157,7 +154,7 @@ def _get_converters(semrep):
     """
     logger.log(25, f"Getting parsers for representation: {semrep}")
     if semrep == "mrs":
-        logger.log(25, "No conversion necessary")
+        logger.info("No conversion necessary")
         return mrs_to_rdf, lambda x: x
     elif semrep == "eds":
         return eds_to_rdf, eds_from_mrs
