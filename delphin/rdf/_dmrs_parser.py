@@ -55,11 +55,8 @@ def dmrs_to_rdf(d:delphin.dmrs._dmrs.DMRS,
     defaultGraph.add((DMRSI, RDF.type, DMRS.DMRS))
     
     # Adding top and index
-    dBNode = BNode()
-    dmrsGraph.add((dBNode, DELPH['hasTop'], NODES[d.top]))
-    dmrsGraph.add((dBNode, DELPH['hasIndex'], NODES[d.index]))
-    # ALTERNATIVE: ({dmrs-node}, DELPH['hasTop'], VARS[m.top]). The issue is that the dmrs-node is already the graph identifier
-
+    dmrsGraph.add((DMRSI, DELPH['hasTop'], NODES[d.top]))
+    dmrsGraph.add((DMRSI, DELPH['hasIndex'], NODES[d.index]))
 
     # creating the prefixes of the output
     # graph.bind("dmrs", DMRS)
@@ -97,7 +94,7 @@ def __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO):
         dmrsGraph.add((sortinfoURI, RDF.type, DELPH.SortInfo))
 
         # Information about the DMRS node
-        defaultGraph.add((DMRSI, DMRS.hasNode, nodeURI))
+        dmrsGraph.add((DMRSI, DMRS.hasNode, nodeURI))
         dmrsGraph.add((nodeURI, DELPH.hasPredicate, predURI))
         dmrsGraph.add((nodeURI, DELPH.hasSortInfo, sortinfoURI))
         dmrsGraph.add((nodeURI, DMRS.hasId, Literal(node.id))) # review later if this is useful
@@ -156,7 +153,7 @@ def __links_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, LINKS, NODES):
         link = d.links[i]
         linkURI = LINKS[f"{i}"]
         
-        defaultGraph.add((DMRSI, DMRS.hasLink, linkURI))
+        dmrsGraph.add((DMRSI, DMRS.hasLink, linkURI))
         dmrsGraph.add((linkURI, RDF.type, DMRS.Link))
         dmrsGraph.add((linkURI, RDFS.label, Literal(f"{link.role}/{link.post}")))
         

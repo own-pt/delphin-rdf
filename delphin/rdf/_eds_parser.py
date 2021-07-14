@@ -53,7 +53,7 @@ def eds_to_rdf(e:delphin.eds._eds.EDS,
     SORTINFO = Namespace(insprefix + "sortinfo-")
 
     # Adding top
-    edsGraph.add((BNode(), DELPH['hasTop'], NODES[e.top]))
+    edsGraph.add((EDSI, DELPH['hasTop'], NODES[e.top]))
 
     # creating the prefixes of the output
     # graph.bind("eds", EDS)
@@ -90,7 +90,7 @@ def __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO):
         edsGraph.add((sortinfoURI, RDF.type, DELPH.SortInfo))
 
         # Information about the EDS node
-        defaultGraph.add((EDSI, EDS.hasNode, nodeURI))
+        edsGraph.add((EDSI, EDS.hasNode, nodeURI))
         edsGraph.add((nodeURI, DELPH.hasPredicate, predURI))
         edsGraph.add((nodeURI, DELPH.hasSortInfo, sortinfoURI))
         edsGraph.add((nodeURI, EDS.nodeIdentifier, Literal(node.id))) # review later if this is useful

@@ -56,10 +56,9 @@ def mrs_to_rdf(m:delphin.mrs._mrs.MRS,
     ICONS = Namespace(insprefix + "icons-")
 
     # Adding top and index
-    mBNode = BNode()
-    mrsGraph.add((mBNode, DELPH['hasTop'], VARS[m.top]))
-    mrsGraph.add((mBNode, DELPH['hasIndex'], VARS[m.index]))
-    # ALTERNATIVE: ({mrs-node}, DELPH['hasTop'], VARS[m.top]). The issue is that the mrs-node is already the graph identifier
+    mrsGraph.add((MRSI, DELPH['hasTop'], VARS[m.top]))
+    mrsGraph.add((MRSI, DELPH['hasIndex'], VARS[m.index]))
+    # ALTERNATIVE: (BNode, DELPH['hasTop'], VARS[m.top])
     
     # Populating the graphs
     _vars_to_rdf(m, mrsGraph, VARS, SORTINFO)
@@ -117,7 +116,7 @@ def _rels_to_rdf(m, mrsGraph, defaultGraph, MRSI, RELS, PREDS, VARS):
         EPNode = RELS[f"{rel}"] #maybe label EPs in a different manner is better because they aren't ordered.
         predNode = PREDS[f"{rel}"]
 
-        defaultGraph.add((MRSI, MRS.hasEP, EPNode))
+        mrsGraph.add((MRSI, MRS.hasEP, EPNode))
         mrsGraph.add((EPNode, RDF.type, MRS.ElementaryPredication))
         mrsGraph.add((EPNode, MRS.hasLabel, VARS[mrs_rel.label]))
         # graph.add((rdf_rel, MRS.var, VARS[mrs_rel.iv])) #not needed because ARG0 is already being included at the end of function
@@ -175,7 +174,7 @@ def _hcons_to_rdf(m, mrsGraph, defaultGraph, MRSI, HCONS, VARS):
         HCONSNode = HCONS[f"{id_hcons}"]
         
         # adds hcons to graphs
-        defaultGraph.add((MRSI, MRS.hasHcons, HCONSNode))
+        mrsGraph.add((MRSI, MRS.hasHcons, HCONSNode))
         mrsGraph.add((HCONSNode, RDF.type, MRS[mrs_hcons.relation.capitalize()]))
         mrsGraph.add((HCONSNode, MRS.highHcons, VARS[mrs_hcons.hi]))
         mrsGraph.add((HCONSNode, MRS.lowHcons, VARS[mrs_hcons.lo]))
@@ -198,7 +197,7 @@ def _icons_to_rdf(m, mrsGraph, defaultGraph, MRSI, ICONS, VARS):
         ICONSNode = ICONS[f"{id_icons}"]
         
         # adds icons to graphs
-        defaultGraph.add((MRSI, MRS.hasIcons, ICONSNode))
+        mrsGraph.add((MRSI, MRS.hasIcons, ICONSNode))
         mrsGraph.add((ICONSNode, RDF.type, ERG[mrs_icons.relation]))
         mrsGraph.add((ICONSNode, MRS.leftIcons, VARS[mrs_icons.left])) # should be revisited
         mrsGraph.add((ICONSNode, MRS.rightIcons, VARS[mrs_icons.right])) # should be revisited
