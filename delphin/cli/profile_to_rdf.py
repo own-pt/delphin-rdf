@@ -152,7 +152,7 @@ def _get_converters(semrep):
     It returns a conversor function of delphin.rdf from this 'semrep' to RDF and
     a function that converts PyDelphin MRS object to the specific semantic representation.
     """
-    logger.log(25, f"Getting parsers for representation: {semrep}")
+    logger.info(f"Getting parsers for representation: {semrep}")
     if semrep == "mrs":
         logger.info("No conversion necessary")
         return mrs_to_rdf, lambda x: x
