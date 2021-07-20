@@ -28,6 +28,12 @@ dmrs:Role
  a rdfs:Class ;
  rdfs:comment "The class of the roles of a link in DMRS"@en-us.
 
+delph:hasDMRS
+ rdf:subPropertyOf delph:hasSemanticRepresentation
+ rdfs:domain delph:Result ;
+ rdfs:range dmrs:DMRS ;
+ rdfs:comment "A property that links a result to its DMRS."@en-us.
+
 dmrs:hasNode
  a rdf:Property ;
  rdfs:subProperty delph:hasPredication ;

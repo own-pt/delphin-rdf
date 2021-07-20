@@ -13,6 +13,19 @@
 
 
 #Declaring the classes:
+
+delph:Profile
+ a rdfs:Class ;
+ rdfs:comment "The class of the [incr tsdb()] test suites"@en-us .
+
+delph:Item
+ a rdfs:Class ;
+ rdfs:comment "The class of the itens of a profile. Represents sentences"@en-us .
+
+delph:Result
+ a rdfs:Class ;
+ rdfs:comment "The class of the results of a profile, the itens after being processed by the grammar"@en-us .
+
 delph:SemanticStructure
  a rdfs:Class ;
  rdfs:comment "The class dedicated to the skeleton of semantic structures. Those are rooted DAGS with a bag of Predications."@en-us .
@@ -85,6 +98,30 @@ delph:x
 
 
 #Declaring important relations
+delph:hasItem   
+ a rdf:Property ;
+ rdfs:domain delph:Profile ;
+ rdfs:range delph:Item ;
+ rdfs:comment "A mapping of a profile to one of its itens."@en-us.
+
+delph:hasResult  
+ a rdf:Property ;
+ rdfs:domain delph:Item ;
+ rdfs:range delph:Result ;
+ rdfs:comment "A mapping of an item to one of its results."@en-us.
+
+delph:hasText
+ a rdf:Property ;
+ rdfs:domain delph:Item ;
+ rdfs:range rdfs:Literal ;
+ rdfs:comment "A mapping of a item to the associated sentence's text."@en-us.
+
+delph:hasSemanticRepresentation
+ a rdf:Property ;
+ rdfs:domain delph:Result ;
+ rdfs:range delph:SemanticStructure ;
+ rdfs:comment "General property that links a result to one of its semantic structures."@en-us.
+
 delph:hasTop
  a rdf:Property ;
  rdfs:domain delph:SemanticStructure ;
@@ -105,7 +142,7 @@ delph:hasPredication
 
 delph:hasSortInfo
  a rdf:Property ;
- rdfs:domain delph:Predication ;
+ rdfs:domain delph:u ;
  rdfs:range delph:SortInfo ;
  rdfs:comment "A property that links a predication to its information"@en-us.
 
@@ -157,14 +194,6 @@ delph:hasPropertyValue
  rdfs:domain delph:SortInfo ;
  rdfs:range rdfs:Literal ;
  rdfs:comment "A general property to link an SortInfo node to a morphosemantic property value"@en-us.
-
-delph:text
- a rdf:Property ;
- rdfs:domain delph:SemanticStructure ;
- rdfs:range rdfs:Literal ;
- rdfs:comment "The property that links a semantic structure to the text that generated it"@en-us.
-
-
 
 
 # Defining the Parts of speech
