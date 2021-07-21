@@ -48,10 +48,10 @@ mrs:Icons
  rdfs:comment "The class of the relations between two variables"@en-us .
 
 mrs:hasHcons
- a rdf:Property ;
- rdfs:domain mrs:MRS ;
- rdfs:range mrs:Hcons .
- rdfs:comment "Property that links the MRS node to one of its HCONS"@en-us .
+    a rdf:Property ;
+    rdfs:domain mrs:MRS ;
+    rdfs:range mrs:Hcons ;
+    rdfs:comment "Property that links the MRS node to one of its HCONS"@en-us .
 
 mrs:hasIcons
  a rdf:Property ;
@@ -79,10 +79,10 @@ mrs:leftIcons
  rdfs:comment "The left hand side intrinsic variable of the constraining EP"@en-us.
 
 mrs:rightIcons
- a rdf:Property ;
- rdfs:domain mrs:Icons ;
- rdfs:range delph:u .
- rdfs:comment "The right hand side intrinsic variable of the constraining EP"@en-us.
+    a rdf:Property ;
+    rdfs:domain mrs:Icons ;
+    rdfs:range delph:u ;
+    rdfs:comment "The right hand side intrinsic variable of the constraining EP"@en-us.
 
 mrs:Qeq
  a rdfs:Class;
@@ -101,10 +101,10 @@ mrs:Outscopes
 
 #Defining properties
 delph:hasMRS
- rdf:subPropertyOf delph:hasSemanticRepresentation
- rdfs:domain delph:Result ;
- rdfs:range mrs:MRS ;
- rdfs:comment "A property that links a result to its MRS."@en-us.
+    rdf:subPropertyOf delph:hasSemanticRepresentation ;
+    rdfs:domain delph:Result ;
+    rdfs:range mrs:MRS ;
+    rdfs:comment "A property that links a result to its MRS."@en-us .
 
 mrs:hasEP
  a rdf:Property ;
@@ -120,15 +120,16 @@ mrs:hasLabel
  rdfs:comment "A mapping of an EP to its scope handle"@en-us .
 
 # by http://svn.delph-in.net/erg/trunk/etc/erg.smi
+
 mrs:role 
  a rdf:Property ;
  rdfs:comment "The general property of roles in MRS"@en-us .
 
 mrs:rstr
- a rdfs:subPropertyOf mrs:role ;
- rdfs:domain mrs:ElementaryPredication ;
- rdfs:range mrs:h ;
- rdfs:label "rstr" .
+    rdfs:subPropertyOf mrs:role ;
+    rdfs:domain mrs:ElementaryPredication ;
+    rdfs:range mrs:h ;
+    rdfs:label "rstr" .
 
 mrs:body
  a rdf:Property ;

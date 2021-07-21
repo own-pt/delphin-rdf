@@ -6,13 +6,15 @@
 @prefix pos: <http://www.delph-in.net/schema/pos#> . # maybe use "/pos/"
 @prefix mrs: <http://www.delph-in.net/schema/mrs#> .
 
-#This document contains the metaspecification of the semantic structures and its parts.
-#Heavily inspired on the classes of PyDelphin objects.
+# This document contains the metaspecification of the semantic
+# structures and its parts.  Heavily inspired on the classes of
+# PyDelphin objects.
 
-#About Lnks, they will only appear on predications for now, not on the semantic structures. They will be represented only by cfroms and ctos.
+# About Lnks, they will only appear on predications for now, not on
+# the semantic structures. They will be represented only by cfroms and
+# ctos.
 
-
-#Declaring the classes:
+# Declaring the classes:
 
 delph:Profile
  a rdfs:Class ;
@@ -59,14 +61,14 @@ delph:SortInfo
  rdfs:comment "The class for nodes which represents the morphosemantic information of a predication"@en-us .
 
 delph:Pos
- a rdf:Class ;
+    a rdf:Class .
  
-#delph:Identifier
+# delph:Identifier
 # a rdfs:Class ;
 # rdfs:comment "The class of the identifiers of the predications of a semantic structure"@en-us .
 
 
-#About types (using :
+# About types (using :
 # http://svn.delph-in.net/erg/trunk/etc/erg.smi
 # http://svn.delph-in.net/erg/trunk/semi.vpm
 # and pydelphin variable.py):
@@ -238,23 +240,22 @@ pos:q
 pos:x
  a delph:Pos ;
  rdfs:comment "PoS tag dedicated to other closed classes."@en-us .
-#
 
 pos:u
  a delph:Pos ;
  rdfs:comment "PoS tag dedicated to unknown classes(?)."@en-us .
 
-#Not including the "discourse" PoS as its discouraged.
+# Not including the "discourse" PoS as its discouraged.
 
+# The roles will be specified in each semantic representation as its
+# not trivial to generalize: In MRS, the role links an Predication
+# (EP) to a variable(delph:u) In EDS, the role is a link between two
+# nodes (predications) In DMRS, the role relates two nodes
+# (predication) but they are followed by a scopal relationship.  The
+# only role which will be put here is the Carg.
 
-#The roles will be specified in each semantic representation as its not trivial to generalize:
-#In MRS, the role links an Predication (EP) to a variable(delph:u)
-#In EDS, the role is a link between two nodes (predications)
-#In DMRS, the role relates two nodes (predication) but they are followed by a scopal relationship.
-#The only role which will be put here is the Carg.
-
-
-#By now, we'll consider the roles not ERG-specific, but maybe we should.
+# By now, we'll consider the roles not ERG-specific, but maybe we
+# should.
 
 delph:carg
  a rdf:Property ;

@@ -3,8 +3,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dmrs: <http://www.delph-in.net/schema/dmrs#> .
 @prefix erg: <http://www.delph-in.net/schema/erg#> .
-@prefix delph: <http://www.delph-in.net/schema/> 
-
+@prefix delph: <http://www.delph-in.net/schema/> .
 
 dmrs:DMRS
  a rdfs:Class ;
@@ -21,19 +20,19 @@ dmrs:Link
  rdfs:comment "DMRS way to represent arguments without variables"@en-us .
 
 dmrs:ScopalRelation
- a rdfs:Class
- rdfs:comment "The class of the scopal relationships between DMRS nodes"@en-us.
+    a rdfs:Class ;
+    rdfs:comment "The class of the scopal relationships between DMRS nodes"@en-us .
 
 dmrs:Role
  a rdfs:Class ;
- rdfs:comment "The class of the roles of a link in DMRS"@en-us.
+ rdfs:comment "The class of the roles of a link in DMRS"@en-us .
 
 delph:hasDMRS
- rdf:subPropertyOf delph:hasSemanticRepresentation
- rdfs:domain delph:Result ;
- rdfs:range dmrs:DMRS ;
- rdfs:comment "A property that links a result to its DMRS."@en-us.
-
+    rdf:subPropertyOf delph:hasSemanticRepresentation ;
+    rdfs:domain delph:Result ;
+    rdfs:range dmrs:DMRS ;
+    rdfs:comment "A property that links a result to its DMRS."@en-us .
+    
 dmrs:hasNode
  a rdf:Property ;
  rdfs:subProperty delph:hasPredication ;
@@ -55,14 +54,14 @@ dmrs:hasId
  
 
 dmrs:hasFrom
- a rdf:Property .
- rdfs:domain dmrs:Link ;
- rdfs:range dmrs:Node . 
+    a rdf:Property ;
+    rdfs:domain dmrs:Link ;
+    rdfs:range dmrs:Node . 
 
 dmrs:hasTo
- a rdf:Property .
- rdfs:domain dmrs:Link ;
- rdfs:range dmrs:Node .
+    a rdf:Property ;
+    rdfs:domain dmrs:Link ;
+    rdfs:range dmrs:Node .
 
 dmrs:hasScopalRelation
  a rdf:Property ;
