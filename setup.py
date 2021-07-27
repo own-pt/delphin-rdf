@@ -26,8 +26,8 @@ setup(
        "delphin.cli"],
     keywords="delphin pydelphin rdf mrs eds dmrs",
     install_requires=[
-       "pydelphin",
-       "rdflib"],
+       "pydelphin==1.*",
+       "rdflib==6.*"],
     # author=about["__author__"],
     # author_email=about["__email__"],
     # maintainer="",
