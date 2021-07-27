@@ -19,36 +19,28 @@ This subcommand requires the path to the profile to serialize as argument. There
 
 ## Python module
 
-To use the function of the transformation as a Python module, it's only needed to import `delphin.rdf`, which exports three main functions: `mrs_to_rdf`, `dmrs_to_rdf` and `eds_to_rdf`. They operate on [IO Memory](https://rdflib.readthedocs.io/en/stable/_modules/rdflib/plugins/memory.html#IOMemory) RDFLib object, creating named graphs for each instance in the context of this optimizd RDFLib store. For example, to serialize a profile to DMRS-RDF, we can do
+To use the function of the transformation as a Python module, it's only needed to import `delphin.rdf`, which exports three main functions: `mrs_to_rdf`, `dmrs_to_rdf` and `eds_to_rdf`. They operate on a [ConjunctiveGraph](https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.html#rdflib.graph.ConjunctiveGraph) RDFLib object, creating named graphs for each instance in the context of this conjunctive graph, which is the graph that has all quads of a specific store. For example, to serialize a profile to DMRS-RDF, we can do
 ```python
 import delphin.rdf as drdf
-from delphin import itsdb
-from delphin import tsql
+from delphin import itsdb, tsql
 from delphin.dmrs import from_mrs as dmrs_from_mrs
 from delphin.codecs.simpledmrs import decode
-from rdflib import plugin
 from rdflib.graph import Graph, ConjunctiveGraph
-from rdflib.store import Store
-from rdflib.term import BNode
-from rdflib import URIRef
-from rdflib.store import Store
-from rdflib import RDF, RDFS
-from rdflib import Namespace, Literal
+from rdflib import URIRef, Namespace, Literal RDF, RDFS
 
 path_to_profile = "./erg/trunk/tsdb/gold/mrs"
 ts = itsdb.TestSuite(path_to_profile)
-store = plugin.get("IOMemory", Store)()
+defaultGraph = ConjunctiveGraph()
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
 POS = Namespace("http://www.delph-in.net/schema/pos#")
 DMRS = Namespace("http://www.delph-in.net/schema/dmrs#")
-store.bind("erg", ERG)
-store.bind("delph", DELPH)
-store.bind("pos", POS)
-store.bind("dmrs", DMRS)
+defaultGraph.bind("erg", ERG)
+defaultGraph.bind("delph", DELPH)
+defaultGraph.bind("pos", POS)
+defaultGraph.bind("dmrs", DMRS)
 prefix = "http://example.com"
 PROFILE = URIRef(prefix)
-defaultGraph = Graph(store, identifier=BNode())
 defaultGraph.add((PROFILE, RDF.type, DELPH.Profile))
 
 for (parse_id, result_id, text, mrs_string) in tsql.select('parse-id result-id i-input mrs', ts):
@@ -69,10 +61,9 @@ for (parse_id, result_id, text, mrs_string) in tsql.select('parse-id result-id i
 
   drdf.dmrs_to_rdf(dmrs_from_mrs(simplemrs.decode(mrs_string)), 
                    DMRSI, 
-                   store, 
-                   defaultGraph) #inplace, change store and defaultGraph
+                   defaultGraph) #inplace, change defaultGraph
                           
-ConjunctiveGraph(store).serialize("./dmrs-erg-gold.nq", format="nquads")
+defaultGraph.serialize("./dmrs-erg-gold.nq", format="nquads")
 ```
 
 ## Development
