@@ -1,4 +1,4 @@
-from rdflib.graph import Graph
+from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import RDFS
@@ -21,29 +21,22 @@ POS = Namespace("http://www.delph-in.net/schema/pos#")
 
 def dmrs_to_rdf(d:delphin.dmrs._dmrs.DMRS, 
                 DMRSI: rdflib.term.URIRef, 
-                store:rdflib.plugins.memory.IOMemory=plugin.get("IOMemory", Store)(),
-                defaultGraph:rdflib.graph.Graph=None) -> rdflib.plugins.memory.IOMemory:
+                defaultGraph:rdflib.graph.ConjunctiveGraph=None) -> rdflib.graph.ConjunctiveGraph:
     """
     Takes a PyDelphin DMRS object "d" and serializes it into a named RDF graph inside a store.
     
     Args:
         d: a PyDelphin DMRS instance to be converted into RDF format
         DMRSI: URI of the DMRS instance being converted
-        store: RDFLib IOMemory store to add the graphs. 
-        defaultGraph : the default graph of the store. If not given, creates one from the 'store'.
+        defaultGraph : the conjunctive graph representing the profile graph. If not given, creates one.
     Inplace function that alters the store with the serialized DMRS and return the store as well.
     """
-
     # Making the arguments behave well:
     if defaultGraph is None:
-        defaultGraph = Graph(store, identifier=BNode())
-
-    if defaultGraph.store != store: # Bad function input
-        defaultGraph = Graph(store, identifier=BNode())
-        print("'defaultGraph' argument not consistent with the 'store' argument. The argument was discarded")
+        defaultGraph = ConjunctiveGraph()
 
     # DMRS graph:
-    dmrsGraph = Graph(store, identifier=DMRSI)
+    dmrsGraph = Graph(store=defaultGraph.store, identifier=DMRSI)
 
     # Creating the prefix of the DMRS elements and relevant namespaces
     insprefix = Namespace(DMRSI + '#')
@@ -57,18 +50,12 @@ def dmrs_to_rdf(d:delphin.dmrs._dmrs.DMRS,
     # Adding top and index
     dmrsGraph.add((DMRSI, DELPH['hasTop'], NODES[d.top]))
     dmrsGraph.add((DMRSI, DELPH['hasIndex'], NODES[d.index]))
-
-    # creating the prefixes of the output
-    # graph.bind("dmrs", DMRS)
-    # graph.bind("delph", DELPH)
-    # graph.bind("erg", ERG)
-    # graph.bind("pos", POS)
     
     # Populating the graphs
     __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO)
     __links_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, LINKS, NODES)
 
-    return store
+    return defaultGraph
 
 
 def __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO):
@@ -77,8 +64,8 @@ def __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO):
 
     Args:
         d: a PyDelphin DMRS instance to be converted into RDF format
-        dmrsGraph: rdflib Graph of a Store of graphs where the DMRS triples will be put.
-        defaultGraph: the default graph of the Store with the dmrsGraph
+        dmrsGraph: a rdflib Graph where the DMRS triples will be put.
+        defaultGraph: the conjunctive graph of the profile
         DMRSI: the node of the DMRS instance being converted
         NODES: the URI namespace dedicated to DMRS predications
         PREDS: the URI namespace dedicated to predicates
@@ -142,8 +129,8 @@ def __links_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, LINKS, NODES):
 
     Args:
         d: a PyDelphin DMRS instance to be converted into RDF format
-        dmrsGraph: rdflib Graph of a Store of graphs where the DMRS triples will be put.
-        defaultGraph: the default graph of the Store with the dmrsGraph
+        dmrsGraph: a rdflib Graph where the DMRS triples will be put.
+        defaultGraph: the conjunctive graph of the profile
         DMRSI: the node of the DMRS instance being converted
         LINKS: the URI namespace dedicated to DMRS links.
         NODES: the URI namespace dedicated to DMRS predications

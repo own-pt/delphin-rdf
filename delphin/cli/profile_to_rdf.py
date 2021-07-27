@@ -32,14 +32,13 @@ from delphin import tsql
 
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import _is_valid_uri
-from rdflib.store import Store
 from rdflib import Namespace
 from rdflib import plugin
 from rdflib.term import BNode
 from rdflib import URIRef
 from rdflib import Literal
 from rdflib import RDF
-from rdflib import RDFS
+from rdflib import RDFS 
 
 ERG = Namespace("http://www.delph-in.net/schema/erg#")
 DELPH = Namespace("http://www.delph-in.net/schema/")
@@ -78,16 +77,16 @@ def __cli_parse__(args):
         # logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
         logger.info(f"Converting {len(ts['result'])} analysis of {len(ts['item'])} sentences from {args.profile}")
 
-        # Creating the store and the default graph
-        store = plugin.get("IOMemory", Store)()
-        defaultGraph = Graph(store, identifier=BNode())
+
+        # Creating the Conjunctive Graph
+        defaultGraph = ConjunctiveGraph()
         PROFILE = URIRef(f"{prefix}") # review later
         defaultGraph.add((PROFILE, RDF.type, DELPH.Profile))
-        semrepURI, prof_semrep_relation = _get_RDF_semrep(semrep, store)
-        store.bind("erg", ERG)
-        store.bind("delph", DELPH)
-        store.bind("pos", POS)
-        # store.bind("upref", prefix) # may be useful
+        semrepURI, prof_semrep_relation = _get_RDF_semrep(semrep, defaultGraph)
+        defaultGraph.bind("erg", ERG)
+        defaultGraph.bind("delph", DELPH)
+        defaultGraph.bind("pos", POS)
+        # defaultGraph.bind("upref", prefix) # may be useful
 
         # The tsql takes some time to be processed:
         # logger.info(f"Loading the profile")
@@ -128,13 +127,12 @@ def __cli_parse__(args):
 
             to_rdf(
                 obj, 
-                SEMREPI, 
-                store, 
+                SEMREPI,
                 defaultGraph)
 
         # serializes results
         logger.info(f"Serializing results to {args.output}")
-        ConjunctiveGraph(store).serialize(destination=args.output, format=args.format)
+        defaultGraph.serialize(destination=args.output, format=args.format)
         logger.info(f"DONE")
 
     # except PyDelphinSyntaxError as e:
@@ -163,22 +161,22 @@ def _get_converters(semrep):
     
     raise PyDelphinException(f"Not a valid format: {semrep}")
 
-def _get_RDF_semrep(semrep, store):
+def _get_RDF_semrep(semrep, defaultGraph):
     """
-    This function binds the prefix of the semantic representation to the RDF store and returns 
+    This function binds the prefix of the semantic representation to the conjunctive graph and returns 
     RDFLib objects that are relevant for the conversion
     """
     if semrep == "mrs":
         MRS = Namespace("http://www.delph-in.net/schema/mrs#")
-        store.bind("mrs", MRS)
+        defaultGraph.bind("mrs", MRS)
         return MRS.MRS, DELPH.hasMRS
     elif semrep == "eds":
         EDS = Namespace("http://www.delph-in.net/schema/eds#")
-        store.bind("eds",EDS)
+        defaultGraph.bind("eds",EDS)
         return EDS.EDS, DELPH.hasEDS
     elif semrep == "dmrs":
         DMRS = Namespace("http://www.delph-in.net/schema/dmrs#")
-        store.bind("dmrs", DMRS)
+        defaultGraph.bind("dmrs", DMRS)
         return DMRS.DMRS, DELPH.hasDMRS
 
 # sets parser and interface function
