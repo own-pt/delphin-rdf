@@ -1,4 +1,4 @@
-from rdflib.graph import Graph
+from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import RDFS
@@ -21,30 +21,26 @@ POS = Namespace("http://www.delph-in.net/schema/pos#")
 
 def eds_to_rdf(e:delphin.eds._eds.EDS, 
                EDSI: rdflib.term.URIRef, 
-               store:rdflib.plugins.memory.IOMemory=plugin.get("IOMemory", Store)(),
-               defaultGraph:rdflib.graph.Graph=None) -> rdflib.plugins.memory.IOMemory: 
+               defaultGraph:rdflib.graph.ConjunctiveGraph=None) -> rdflib.graph.ConjunctiveGraph:
     """
     Takes a PyDelphin EDS object "e" and serializes it into a named RDF graph inside a store.
     
     Args:
         e: a PyDelphin EDS instance to be converted into RDF format
         EDSI: URI of the EDS instance being converted
-        store: RDFLib IOMemory store to add the graphs. 
-        defaultGraph : the default graph of the store. If not given, creates one from the 'store'.
-    Inplace function that alters the store with the serialized EDS and return the store as well.
+        defaultGraph : the conjunctive graph representing the profile graph. If not given, creates one.
+
+    Inplace function that alters the conjunctive graph with the serialized EDS and return the conjunctive graph as well.
+    In case of using it without giving the graph, it creates one and returns it.
     """
     # Before running this, use delphin.eds.make_ids_unique(e, m) if possible
 
-   # Making the arguments behave well:
+    # Making the arguments behave well:
     if defaultGraph is None:
-        defaultGraph = Graph(store, identifier=BNode())
-
-    if defaultGraph.store != store: # Bad function input
-        defaultGraph = Graph(store, identifier=BNode())
-        print("'defaultGraph' argument not consistent with the 'store' argument. The argument was discarded")
+        defaultGraph = ConjunctiveGraph()
 
     # EDS graph:
-    edsGraph = Graph(store, identifier=EDSI)
+    edsGraph = Graph(store=defaultGraph.store, identifier=EDSI)
 
     # Creating the prefix of the EDSI elements and relevant namespaces
     insprefix = Namespace(EDSI + '#')
@@ -55,17 +51,11 @@ def eds_to_rdf(e:delphin.eds._eds.EDS,
     # Adding top
     edsGraph.add((EDSI, DELPH['hasTop'], NODES[e.top]))
 
-    # creating the prefixes of the output
-    # graph.bind("eds", EDS)
-    # graph.bind("delph", DELPH)
-    # graph.bind("erg", ERG)
-    # graph.bind("pos", POS)
-    
     # Populating the graphs
     __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO)
     __edges_to_rdf__(e, edsGraph, NODES)
 
-    return store
+    return defaultGraph
 
 
 def __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO):
@@ -74,8 +64,8 @@ def __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO):
 
     Args:
         e: a PyDelphin EDS instance to be converted into RDF format
-        edsGraph: rdflib Graph of a Store of graphs where the EDS triples will be put.
-        defaultGraph: the default graph of the Store with the edsGraph
+        edsGraph: a rdflib Graph where the EDS triples will be put.
+        defaultGraph : the conjunctive graph representing the profile graph.
         EDSI: the node of the EDS instance being converted
         NODES: the URI namespace dedicated to EDS predications
         PREDS: the URI namespace dedicated to predicates
@@ -138,7 +128,7 @@ def __edges_to_rdf__(e, edsGraph, NODES):
 
     Args:
         e: a PyDelphin EDS instance to be converted into RDF format
-        edsGraph: rdflib Graph of a Store of graphs where the EDS triples will be put.
+        edsGraph: a rdflib Graph where the EDS triples will be put.
         NODES: the URI namespace dedicated to EDS predications
     """
     for edge in e.edges:

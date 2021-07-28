@@ -1,4 +1,4 @@
-from rdflib.graph import Graph
+from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib import Literal
 from rdflib import RDF
 from rdflib import RDFS
@@ -22,29 +22,24 @@ POS = Namespace("http://www.delph-in.net/schema/pos#")
 
 def mrs_to_rdf(m:delphin.mrs._mrs.MRS, 
                 MRSI:rdflib.term.URIRef,
-                store:rdflib.plugins.memory.IOMemory=plugin.get("IOMemory", Store)(),
-                defaultGraph:rdflib.graph.Graph=None) -> rdflib.plugins.memory.IOMemory:
+                defaultGraph:rdflib.graph.ConjunctiveGraph=None) -> rdflib.graph.ConjunctiveGraph:
     """
     Takes a PyDelphin MRS object "m" and serializes it into a named RDF graph inside a store.
 
     Args:
         m: a PyDelphin MRS instance to be converted into RDF format
         MRSI: URI of the MRS instance being converted
-        store: RDFLib IOMemory store to add the graphs. 
-        defaultGraph : the default graph of the store. If not given, creates one from the 'store'.
+        defaultGraph : the conjunctive graph representing the profile graph. If not given, creates one.
 
-    Inplace function that alters the store with the serialized MRS and return the store as well.
+    Inplace function that alters the conjunctive graph with the serialized MRS and return the conjunctive graph as well.
+    In case of using it without giving the graph, it creates one and returns it.
     """
     # Making the arguments behave well:
     if defaultGraph is None:
-        defaultGraph = Graph(store, identifier=BNode())
-
-    if defaultGraph.store != store: # Bad function input
-        defaultGraph = Graph(store, identifier=BNode())
-        print("'defaultGraph' argument not consistent with the 'store' argument. The argument was discarded")
+        defaultGraph = ConjunctiveGraph()
 
     # MRS graph:
-    mrsGraph = Graph(store, identifier=MRSI)
+    mrsGraph = Graph(store=defaultGraph.store, identifier=MRSI)
 
     # Creating the prefix of the MRS elements and relevant namespaces
     insprefix = Namespace(MRSI + '#')
@@ -66,7 +61,7 @@ def mrs_to_rdf(m:delphin.mrs._mrs.MRS,
     _hcons_to_rdf(m, mrsGraph, defaultGraph, MRSI, HCONS, VARS)
     _icons_to_rdf(m, mrsGraph, defaultGraph, MRSI, ICONS, VARS)
 
-    return store
+    return defaultGraph
 
 def _vars_to_rdf(m, mrsGraph, VARS, SORTINFO):
     """
@@ -74,7 +69,7 @@ def _vars_to_rdf(m, mrsGraph, VARS, SORTINFO):
 
     Args: 
         m: a delphin mrs instance to be converted into RDF format
-        mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put.
+        mrsGraph: a rdflib Graph where the MRS triples will be put.
         VARS: the URI namespace dedicated to variables.
         SORTINFO: the URI namespace dedicated to the sortinfo (morphosemantic information).
     """
@@ -103,8 +98,8 @@ def _rels_to_rdf(m, mrsGraph, defaultGraph, MRSI, RELS, PREDS, VARS):
 
     Args:
         m: a delphin mrs instance to be converted into RDF format
-        mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put.
-        defaultGraph: the default graph of the Store with the mrsGraph
+        mrsGraph: a rdflib Graph where the MRS triples will be put.
+        defaultGraph: the conjunctive graph of the profile
         MRSI: the node of the MRS instance being converted
         RELS: the URI namespace dedicated to EPs
         PREDS: the URI namespace dedicated to predicates
@@ -162,8 +157,8 @@ def _hcons_to_rdf(m, mrsGraph, defaultGraph, MRSI, HCONS, VARS):
 
     Args:
         m: a delphin mrs instance to be converted into RDF format
-        mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put.
-        defaultGraph: the default graph of the Store with the mrsGraph
+        mrsGraph: a rdflib Graph where the MRS triples will be put.
+        defaultGraph: the conjunctive graph of the profile
         MRSI: the node of the MRS instance being converted
         HCONS: the URI namespace dedicated to handle constraints
         VARS: the URI namespace dedicated to variables
@@ -185,8 +180,8 @@ def _icons_to_rdf(m, mrsGraph, defaultGraph, MRSI, ICONS, VARS):
 
     Args:
         m: a delphin mrs instance to be converted into RDF format
-        mrsGraph: rdflib Graph of a Store of graphs where the MRS triples will be put.
-        defaultGraph: the default graph of the Store with the mrsGraph
+        mrsGraph: a rdflib Graph where the MRS triples will be put.
+        defaultGraph: the conjunctive graph of the profile
         MRSI: the node of the MRS instance being converted
         ICONS: the URI namespace dedicated to individual constraints
         VARS: the URI namespace dedicated to variables
