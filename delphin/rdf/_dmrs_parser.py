@@ -39,17 +39,16 @@ def dmrs_to_rdf(d:delphin.dmrs._dmrs.DMRS,
     dmrsGraph = Graph(store=defaultGraph.store, identifier=DMRSI)
 
     # Creating the prefix of the DMRS elements and relevant namespaces
-    insprefix = Namespace(DMRSI + '#')
-    NODES = Namespace(insprefix + "node-")
-    LINKS = Namespace(insprefix + "link-")
-    PREDS = Namespace(insprefix + "predicate-")
-    SORTINFO = Namespace(insprefix + "sortinfo-")
+    NODES = Namespace(DMRSI + "#node-")
+    LINKS = Namespace(DMRSI + "#link-")
+    PREDS = Namespace(DMRSI + "#predicate-")
+    SORTINFO = Namespace(DMRSI + "#sortinfo-")
 
     defaultGraph.add((DMRSI, RDF.type, DMRS.DMRS))
     
     # Adding top and index
-    dmrsGraph.add((DMRSI, DELPH['hasTop'], NODES[d.top]))
-    dmrsGraph.add((DMRSI, DELPH['hasIndex'], NODES[d.index]))
+    dmrsGraph.add((DMRSI, DELPH['hasTop'], NODES[f"{d.top}"]))
+    dmrsGraph.add((DMRSI, DELPH['hasIndex'], NODES[f"{d.index}"]))
     
     # Populating the graphs
     __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO)
