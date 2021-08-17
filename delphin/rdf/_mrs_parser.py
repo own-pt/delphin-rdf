@@ -51,6 +51,7 @@ def mrs_to_rdf(m:delphin.mrs._mrs.MRS,
     ICONS = Namespace(insprefix + "icons-")
 
     # Adding top and index
+    mrsGraph.add((MRSI, RDF.type, MRS.mrs))
     mrsGraph.add((MRSI, DELPH['hasTop'], VARS[m.top]))
     mrsGraph.add((MRSI, DELPH['hasIndex'], VARS[m.index]))
     # ALTERNATIVE: (BNode, DELPH['hasTop'], VARS[m.top])

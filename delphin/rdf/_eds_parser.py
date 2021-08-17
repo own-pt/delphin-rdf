@@ -41,7 +41,9 @@ def eds_to_rdf(e:delphin.eds._eds.EDS,
 
     # EDS graph:
     edsGraph = Graph(store=defaultGraph.store, identifier=EDSI)
-
+    
+    edsGraph.add((EDSI, RDF.type, EDS.eds))
+    
     # Creating the prefix of the EDSI elements and relevant namespaces
     insprefix = Namespace(EDSI + '#')
     NODES = Namespace(insprefix + "node-")

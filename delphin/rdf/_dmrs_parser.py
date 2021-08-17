@@ -44,7 +44,7 @@ def dmrs_to_rdf(d:delphin.dmrs._dmrs.DMRS,
     PREDS = Namespace(DMRSI + "#predicate-")
     SORTINFO = Namespace(DMRSI + "#sortinfo-")
 
-    defaultGraph.add((DMRSI, RDF.type, DMRS.DMRS))
+    dmrsGraph.add((DMRSI, RDF.type, DMRS.DMRS))
     
     # Adding top and index
     dmrsGraph.add((DMRSI, DELPH['hasTop'], NODES[f"{d.top}"]))
