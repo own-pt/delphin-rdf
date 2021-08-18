@@ -77,12 +77,10 @@ def __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO):
         sortinfoURI = SORTINFO[f"{node.id}"]
         
         dmrsGraph.add((nodeURI, RDF.type, DMRS.Node))
-        dmrsGraph.add((sortinfoURI, RDF.type, DELPH.SortInfo))
 
         # Information about the DMRS node
         dmrsGraph.add((DMRSI, DMRS.hasNode, nodeURI))
         dmrsGraph.add((nodeURI, DELPH.hasPredicate, predURI))
-        dmrsGraph.add((nodeURI, DELPH.hasSortInfo, sortinfoURI))
         dmrsGraph.add((nodeURI, DMRS.hasId, Literal(node.id))) # review later if this is useful
         dmrsGraph.add((nodeURI, RDFS.label, Literal(f"{delphin.predicate.normalize(node.predicate)}<{node.cfrom},{node.cto}>")))
         #type:
@@ -114,9 +112,12 @@ def __nodes_to_rdf__(d, dmrsGraph, defaultGraph, DMRSI, NODES, PREDS, SORTINFO):
         if node.cto is not None:
             dmrsGraph.add((nodeURI, DELPH.cto, Literal(node.cto)))
 
-        # properties / sortinfo
-        for prop, val in node.properties.items():
-            dmrsGraph.add((sortinfoURI, ERG[prop.lower()], Literal(val.lower())))
+        # properties / sortinfo        
+        if node.properties != {}: 
+            dmrsGraph.add((sortinfoURI, RDF.type, DELPH.SortInfo))
+            dmrsGraph.add((nodeURI, DELPH.hasSortInfo, sortinfoURI))
+            for prop, val in node.properties.items():
+                dmrsGraph.add((sortinfoURI, ERG[prop.lower()], Literal(val.lower())))
 
         # carg; review later
         if node.carg is not None:
