@@ -79,12 +79,10 @@ def __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO):
         sortinfoURI = SORTINFO[node.id]
         
         edsGraph.add((nodeURI, RDF.type, EDS.Node))
-        edsGraph.add((sortinfoURI, RDF.type, DELPH.SortInfo))
 
         # Information about the EDS node
         edsGraph.add((EDSI, EDS.hasNode, nodeURI))
         edsGraph.add((nodeURI, DELPH.hasPredicate, predURI))
-        edsGraph.add((nodeURI, DELPH.hasSortInfo, sortinfoURI))
         edsGraph.add((nodeURI, EDS.nodeIdentifier, Literal(node.id))) # review later if this is useful
         edsGraph.add((nodeURI, RDFS.label, Literal(f"{delphin.predicate.normalize(node.predicate)}<{node.cfrom},{node.cto}>")))
         #type:
@@ -116,9 +114,12 @@ def __nodes_to_rdf__(e, edsGraph, defaultGraph, EDSI, NODES, PREDS, SORTINFO):
             edsGraph.add((nodeURI, DELPH.cto, Literal(node.cto)))
         
         # properties
-        for prop in node.properties.items():
-            edsGraph.add((sortinfoURI, ERG[prop[0].lower()], Literal(prop[1].lower())))
-        
+        if node.properties != {}:
+            edsGraph.add((nodeURI, DELPH.hasSortInfo, sortinfoURI))
+            edsGraph.add((sortinfoURI, RDF.type, DELPH.SortInfo))
+            for prop in node.properties.items():
+                edsGraph.add((sortinfoURI, ERG[prop[0].lower()], Literal(prop[1].lower())))
+            
         # carg; review later
         if node.carg:
             edsGraph.add((nodeURI, DELPH.carg, Literal(node.carg)))
