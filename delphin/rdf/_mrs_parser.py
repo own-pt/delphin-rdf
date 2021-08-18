@@ -85,13 +85,13 @@ def _vars_to_rdf(m, mrsGraph, VARS, SORTINFO):
             else :
                 mrsGraph.add((VARS[v[0]], RDF.type, MRS['h']))
 
-            # associating the variable to its sortinfo
-            mrsGraph.add((VARS[v[0]], DELPH.hasSortInfo, SORTINFO[v[0]]))
-
-            # adding the properties of the variables
-            for props in v[1].items():
-                mrsGraph.add((SORTINFO[v[0]], ERG[props[0].lower()], Literal(props[1])))
-            # it won't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
+            # variable properties:
+            if v[1] != {}:
+                mrsGraph.add((SORTINFO[v[0]], RDF.type, DELPH.SortInfo))
+                mrsGraph.add((VARS[v[0]], DELPH.hasSortInfo, SORTINFO[v[0]]))
+                for props in v[1].items():
+                    mrsGraph.add((SORTINFO[v[0]], ERG[props[0].lower()], Literal(props[1])))
+                # it wouldn't be harmful to reassure that the property is defined in ERG, but it'll be like that for now.
         else: # very rare event, should it be removed?
             print("Invalid variable name")
 
