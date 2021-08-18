@@ -41,6 +41,8 @@ def mrs_to_rdf(m:delphin.mrs._mrs.MRS,
     # MRS graph:
     mrsGraph = Graph(store=defaultGraph.store, identifier=MRSI)
 
+    mrsGraph.add((MRSI, RDF.type, MRSI.mrs))
+    
     # Creating the prefix of the MRS elements and relevant namespaces
     insprefix = Namespace(MRSI + '#')
     VARS = Namespace(insprefix + "variable-")
